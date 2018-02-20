@@ -288,7 +288,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(user[1], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[2], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[3], '0x0000000000000000000000000000000000000000000000000000000000000000')
-    assert.equal(user[4].toNumber(), 0)
+    assert.equal(user[4], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[5], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[6], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[7], '0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -300,7 +300,8 @@ contract('RoleManagement', async function (accounts) {
       web3.fromAscii('John'),
       web3.fromAscii("Doe"),
       web3.fromAscii('testorganization'),
-      web3.fromAscii('Main St'), 123,
+      web3.fromAscii('Main St'),
+      web3.fromAscii('123'),
       web3.fromAscii('01234'),
       web3.fromAscii('Anytown'),
       web3.fromAscii('USA'),
@@ -311,7 +312,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -327,7 +328,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -339,7 +340,8 @@ contract('RoleManagement', async function (accounts) {
       web3.fromAscii('John2'),
       web3.fromAscii("Doe2"),
       web3.fromAscii('testorganization2'),
-      web3.fromAscii('Main St2'), 1232,
+      web3.fromAscii('Main St2'),
+      web3.fromAscii('1232'),
       web3.fromAscii('012342'),
       web3.fromAscii('Anytown2'),
       web3.fromAscii('USA2'),
@@ -350,7 +352,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St2', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 1232)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '1232', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '012342', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown2', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA2', 'user[7] failed after')
@@ -367,7 +369,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St2', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 1232)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '1232', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '012342', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown2', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA2', 'user[7] failed after')
@@ -381,7 +383,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St2', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 1232)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '1232', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '012342', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown2', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA2', 'user[7] failed after')
@@ -397,7 +399,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(user[1], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[2], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[3], '0x0000000000000000000000000000000000000000000000000000000000000000')
-    assert.equal(user[4].toNumber(), 0)
+    assert.equal(user[4], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[5], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[6], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[7], '0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -426,7 +428,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(user[1], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[2], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[3], '0x0000000000000000000000000000000000000000000000000000000000000000')
-    assert.equal(user[4].toNumber(), 0)
+    assert.equal(user[4], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[5], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[6], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[7], '0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -443,7 +445,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -465,7 +467,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -482,7 +484,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(user[1], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[2], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[3], '0x0000000000000000000000000000000000000000000000000000000000000000')
-    assert.equal(user[4].toNumber(), 0)
+    assert.equal(user[4], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[5], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[6], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[7], '0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -496,7 +498,8 @@ contract('RoleManagement', async function (accounts) {
         web3.fromAscii('John'),
         web3.fromAscii("Doe"),
         web3.fromAscii('testorganization'),
-        web3.fromAscii('Main St'), 123,
+        web3.fromAscii('Main St'),
+        web3.fromAscii('123'),
         web3.fromAscii('01234'),
         web3.fromAscii('Anytown'),
         web3.fromAscii('USA'),
@@ -511,7 +514,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(user[1], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[2], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[3], '0x0000000000000000000000000000000000000000000000000000000000000000')
-    assert.equal(user[4].toNumber(), 0)
+    assert.equal(user[4], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[5], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[6], '0x0000000000000000000000000000000000000000000000000000000000000000')
     assert.equal(user[7], '0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -527,7 +530,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -549,7 +552,7 @@ contract('RoleManagement', async function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -588,13 +591,30 @@ contract('RoleManagement', async function (accounts) {
 
   it("should be able as assetAdmin to register new assets", async function () {
 
-    tx = await AssetLog.registerAsset(accounts[9], accounts[3], 0, 1234567890, 100000, 1, 0, true, '0x0000000000000000000000000000000000000000000000000000000000000001', { from: accounts[2] })
-    let rightsAfter = ((await UserLog.getRolesRights(accounts[3])).toNumber())
+    await AssetLog.createAsset({ from: accounts[2] })
+    await AssetLog.initGeneral(0,
+      accounts[9],
+      accounts[0],
+      0,
+      1234567890,
+      100000,
+      true,
+      { from: accounts[2] }
+    )
+    await AssetLog.initLocation(
+      0,
+      web3.fromAscii("Germany"),
+      web3.fromAscii("Saxony"),
+      web3.fromAscii("123412"),
+      web3.fromAscii("Mittweida"),
+      web3.fromAscii("Markt"),
+      web3.fromAscii("16a"),
+      web3.fromAscii("0.1232423423"),
+      web3.fromAscii("0.2342342445"),
+      { from: accounts[2] }
 
-    assert.isFalse(await UserLog.isRole(0, accounts[3]))
-    assert.isFalse(await UserLog.isRole(1, accounts[3]))
-    assert.isFalse(await UserLog.isRole(2, accounts[3]))
-    assert.isFalse(await UserLog.isRole(3, accounts[3]))
+    )
+
 
   })
 
@@ -621,10 +641,10 @@ contract('RoleManagement', async function (accounts) {
   })
 
   it("should not allow userAdmiuns to update a smartmeter", async function () {
-    let tx = await AssetLog.registerAsset('0x0000000000000000000000000000000000000001', accounts[3], 0, new Date().getMilliseconds(), 1000, 10000, 10, true, '0x0000000000000000000000000000000000000000000000000000000000000000', { from: accounts[2] })
+    //   let tx = await AssetLog.registerAsset('0x0000000000000000000000000000000000000001', accounts[3], 0, new Date().getMilliseconds(), 1000, 10000, 10, true, '0x0000000000000000000000000000000000000000000000000000000000000000', { from: accounts[2] })
     let failed = false
     try {
-      let tx = await AssetLog.updateSmartMeter(1, '0x0000000000000000000000000000000000000002', { from: accounts[1] })
+      let tx = await AssetLog.updateSmartMeter(0, '0x0000000000000000000000000000000000000002', { from: accounts[1] })
       if (tx.receipt.status == '0x00') failed = true
     } catch (ex) {
       failed = true
@@ -682,7 +702,7 @@ contract('RoleManagement', async function (accounts) {
 
     let failed = false
     try {
-      await UserLog.isRole(6, accounts[3])
+      await UserLog.isRole(99, accounts[3])
 
     } catch (e) {
       failed = true

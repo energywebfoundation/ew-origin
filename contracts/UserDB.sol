@@ -13,10 +13,10 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
-
 pragma solidity ^0.4.18;
 
 import "./Owned.sol";
+import "./LocationDefinition.sol";
 
 /// @title The database contract for the users, traders and admins of the certificate of origin
 /// @notice This contract only provides getter and setter methods that are only callable by the corresponging owner-contract
@@ -29,12 +29,7 @@ contract UserDB is Owned {
         bytes32 firstName;
         bytes32 surname;
         bytes32 organization;
-        bytes32 street;
-        uint number;
-        bytes32 zip;
-        bytes32 city;
-        bytes32 country;
-        bytes32 state;
+        LocationDefinition.Location location;
         uint roles;
         bool active;
        
@@ -48,15 +43,46 @@ contract UserDB is Owned {
         _;
     }
 
-//    address[] public addressList;
-
     /// @notice The constructor of the UserDB
     /// @dev the deployer of this contract will get full adminrights!
     function UserDB(address _logic) Owned(_logic) public {
     }
 
-    function () public {
+    function () external {
         revert();
+    }
+
+    /// @notice function to set a new address for an existing organization 
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of the organization
+    /// @param _street new streetname
+    /// @param _number new number
+    /// @param _zip new zip-code
+    /// @param _city new city
+    /// @param _country new country
+    /// @param _state new state
+    function setAddress(address _user, bytes32 _street, bytes32 _number, bytes32 _zip, bytes32 _city, bytes32 _country, bytes32 _state)
+        external
+        onlyOwner
+        userExists(_user)
+    {
+        User storage u = userList[_user];
+        u.location.street = _street;
+        u.location.houseNumber = _number;
+        u.location.zip = _zip;
+        u.location.city = _city;
+        u.location.country = _country;
+        u.location.region = _state;
+        u.active = true;
+    }
+    /// @notice function to change the name of an existing organization, can only be used when the user already exists
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of an user
+    /// @param _organization new name of the organization
+    function setOrganization(address _user, bytes32 _organization) external onlyOwner userExists(_user){
+        User storage u = userList[_user];
+        u.organization = _organization;
+        u.active = true;
     }
 
     /// @notice function for creating, editing an user, it cannot be used to set a Role of an user
@@ -78,7 +104,7 @@ contract UserDB is Owned {
         bytes32 _surname, 
         bytes32 _organization,
         bytes32 _street,
-        uint _number,
+        bytes32 _number,
         bytes32 _zip,
         bytes32 _city,
         bytes32 _country,
@@ -88,23 +114,34 @@ contract UserDB is Owned {
         onlyOwner 
     {
         User storage u = userList[_user];
-/*
-        if(!u.exists) {
-            addressList.push(_user);
-        }
-*/
+
+        LocationDefinition.Location storage loc = u.location;
 
         u.firstName = _firstName;
         u.surname = _surname;
         u.organization = _organization;
-        
-        u.street = _street;
-        u.number = _number;
-        u.zip = _zip;
-        u.city = _city;
-        u.country = _country;
-        u.state = _state;
+        u.location = loc;
+
+        loc = u.location;
+        loc.country = _country;
+        loc.region = _state;
+        loc.city = _city;
+        loc.street = _street;
+        loc.zip = _zip;
+        loc.houseNumber = _number;
+        loc.gpsLatitude = 0x0;
+        loc.gpsLongitude = 0x0;
+        loc.exists = true;
         u.active = true;
+    }
+ 
+    /// @notice function to (de-)active a user, dan only be used when the user already exists
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of an user
+    /// @param _active flag if the account should be active
+    function setUserActive(address _user, bool _active) external onlyOwner {
+        User storage u = userList[_user];
+        u.active = _active;
     }
 
     /// @notice function to change the username, can only be used when the user already exists
@@ -123,49 +160,6 @@ contract UserDB is Owned {
         u.active = true;
     }
 
-    /// @notice function to change the name of an existing organization, can only be used when the user already exists
-    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
-    /// @param _user ethereum-address of an user
-    /// @param _organization new name of the organization
-    function setOrganization(address _user, bytes32 _organization) external onlyOwner userExists(_user){
-        User storage u = userList[_user];
-        u.organization = _organization;
-        u.active = true;
-    }
-
-    /// @notice function to set a new address for an existing organization 
-    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
-    /// @param _user ethereum-address of the organization
-    /// @param _street new streetname
-    /// @param _number new number
-    /// @param _zip new zip-code
-    /// @param _city new city
-    /// @param _country new country
-    /// @param _state new state
-    function setAddress(address _user, bytes32 _street, uint _number, bytes32 _zip, bytes32 _city, bytes32 _country, bytes32 _state)
-        external
-        onlyOwner
-        userExists(_user)
-    {
-        User storage u = userList[_user];
-        u.street = _street;
-        u.number = _number;
-        u.zip = _zip;
-        u.city = _city;
-        u.country = _country;
-        u.state = _state;
-        u.active = true;
-    }
-
-    /// @notice function to (de-)active a user, dan only be used when the user already exists
-    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
-    /// @param _user ethereum-address of an user
-    /// @param _active flag if the account should be active
-    function setUserActive(address _user, bool _active) external onlyOwner {
-        User storage u = userList[_user];
-        u.active = _active;
-    }
-
     /// @notice function for editing the rights of an user
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user address of the user
@@ -174,34 +168,14 @@ contract UserDB is Owned {
         User storage u = userList[_user];
         u.roles = _roles;
     }
-
-    /// @notice function to retrieve the rights of an user
-    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
-    /// @dev if the user does not exist in the mapping it will return 0x0 thus preventing them from accidently getting any rights
-    /// @param _user user someone wants to know its rights
-    /// @return bitmask with the rights of the user
-    function getRolesRights(address _user) 
-        onlyOwner
-        public 
-        view 
-        returns (uint) 
-    {
-        return userList[_user].roles;
-    }
-
-    /*
-    function getAddressArrayLength() public constant returns(uint) {
-        return addressList.length;
-    }
-    */
-
+    
     /// @notice function that checks if there is an user for the provided ethereum-address
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
     /// @param _user ethereum-address of that user
     /// @return bool if the user exists
     function doesUserExist(address _user) 
         onlyOwner
-        public 
+        external 
         view 
     returns (bool) {
         return userList[_user].active;
@@ -213,14 +187,14 @@ contract UserDB is Owned {
     /// @return returns firstName, surname, organization, street, number, zip, city, country, state, roles and the active-flag
     function getFullUser(address _user)
         onlyOwner
-        public
+        external
         view 
         returns (
             bytes32 firstName,
             bytes32 surname,
             bytes32 organization,
             bytes32 street,
-            uint number,
+            bytes32 number,
             bytes32 zip,
             bytes32 city,
             bytes32 country,
@@ -230,7 +204,21 @@ contract UserDB is Owned {
         )
     {
         User storage u = userList[_user];
-        return (u.firstName, u.surname, u.organization, u.street, u.number, u.zip, u.city, u.country, u.state, u.roles, u.active);
+        return (u.firstName, u.surname, u.organization, u.location.street, u.location.houseNumber, u.location.zip, u.location.city, u.location.country, u.location.region, u.roles, u.active);
     }  
+
+    /// @notice function to retrieve the rights of an user
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
+    /// @dev if the user does not exist in the mapping it will return 0x0 thus preventing them from accidently getting any rights
+    /// @param _user user someone wants to know its rights
+    /// @return bitmask with the rights of the user
+    function getRolesRights(address _user) 
+        onlyOwner
+        external 
+        view 
+        returns (uint) 
+    {
+        return userList[_user].roles;
+    }
 
 }

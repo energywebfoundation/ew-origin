@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/CertificateLogic.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> CertificateLogic.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>10/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">63.64% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>7/11</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">59.09% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/22</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at &lt;http://www.gnu.org/licenses/&gt;.
+//
+// @authors: slock.it GmbH, Jonas Bentke, jonas.bentke@slock.it
+&nbsp;
+pragma solidity ^0.4.17;
+&nbsp;
+/// @title The logic contract for the Certificate of Origin list
+/// @notice This contract provides the logic that determines how the data is stored
+/// @dev Needs a valid CertificateDB contract to function correctly
+&nbsp;
+import "./Owned.sol";
+import "./RoleManagement.sol";
+import "./UserDB.sol";
+import "./CoO.sol";
+import "./CertificateDB.sol";
+import "./Updatable.sol";
+import "./AssetRegistryLogic.sol";
+&nbsp;
+contract CertificateLogic is RoleManagement, Updatable {
+&nbsp;
+    ///@notice The address of a CertificateDB contract
+    CertificateDB public certificateDb;
+&nbsp;
+    /// @notice Logs the creation of an event
+    event LogCreatedCertificate(uint _certificateId, uint powerInW);
+    /// @notice Logs the request of an retirement of a certificate
+    event LogRetireRequest(uint _id, bool _retire);
+&nbsp;
+    /// @notice Constructor
+    /// @param _coo The Master contract
+    function CertificateLogic(CoO _coo) RoleManagement(_coo) public {
+&nbsp;
+    }
+&nbsp;
+    /// @notice Initialises the contract by binding it to a logic contract
+    /// @param _database Sets the logic contract
+    function init(address _database) public onlyRole(RoleManagement.Role.TopAdmin) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(certificateDb == CertificateDB(0x0));
+        certificateDb = CertificateDB(_database);
+    }
+&nbsp;
+    /// @notice Creates a certificate of origin. Checks in the AssetRegistry if requested wh are available.
+    /// @param _assetId The id of the Certificate
+    /// @param _owner The owner of the Certificate
+    /// @param _powerInW The amount of Watts the Certificate holds
+    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog) public isMatcherOrDemand isInitialized  returns (uint) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(AssetRegistryLogic(address(cooContract.assetRegistry())).useWhForCertificate(_assetId, _powerInW));
+        uint co = AssetRegistryLogic(address(cooContract.assetRegistry())).getCoSaved(_assetId, _powerInW);
+        uint ret = certificateDb.createCertificate(_assetId, _owner, _powerInW, _dataLog, co);
+        LogCreatedCertificate(ret, _powerInW);
+        return ret;
+    }
+&nbsp;
+    /// @notice Flags a certificate as retired
+    /// @param _id The id of the certificate
+<span class="fstat-no" title="function not covered" >    function retireCertificate(uint _id) public isInitialized() onlyRole(RoleManagement.Role.AssetAdmin</span>) {
+        //TODO: Check if it is on the trading platform
+<span class="cstat-no" title="statement not covered" >        if (certificateDb.isRetired(_id))</span>
+            certificateDb.retireCertificate(_id);
+    }
+&nbsp;
+    /// @notice Request a certificate to retire. Only Certificate owner can request retirement
+    /// @param _id The id of the certificate
+<span class="fstat-no" title="function not covered" >    function retireCertificateRequest(uint _id) public isInitialized(</span>) {
+        CertificateDB.Certificate memory c;
+<span class="cstat-no" title="statement not covered" >        (c.assetId, c.owner, c.powerInW, c.retired, c.retiredRequested, c.dataLog) = certificateDb.getCertificate(_id)</span>;
+<span class="cstat-no" title="statement not covered" >        require(c.owner == msg.sender)</span>;
+        certificateDb.setRetireRequest(_id, true);
+<span class="cstat-no" title="statement not covered" >        LogRetireRequest(_id, true)</span>;
+    }
+&nbsp;
+    /// @notice Sets a new owner for the certificate
+    /// @param _id The id of the certificate
+    /// @param _newOwner The address of the new owner of the certificate
+<span class="fstat-no" title="function not covered" >    function changeCertificateOwner(uint _id, address _newOwner) public isInitialized() onlyRole(RoleManagement.Role.AssetAdmin) userExists(_newOwner</span>) {
+        certificateDb.setCertificateOwner(_id, _newOwner);
+    }
+&nbsp;
+    /// @notice Getter for a specific Certificate
+    /// @param _certificateId The id of the requested certificate
+    /// @return the certificate as single values
+<span class="fstat-no" title="function not covered" >    function getCertificate(uint _certificateId) public view returns (uint, address, uint, bool, bool, bytes32</span>) {
+<span class="cstat-no" title="statement not covered" >        return certificateDb.getCertificate(_certificateId);</span>
+    }
+&nbsp;
+    /// @notice Getter for the length of the list of certificates
+    /// @return the length of the array
+    function getCertificateListLength() public view returns (uint) {
+        return certificateDb.getCertificateListLength();
+    }
+&nbsp;
+    /// @notice Checks if the contract is initialized
+    modifier isInitialized() {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(certificateDb != CertificateDB(0x0));
+        _;
+    }
+&nbsp;
+    /// @notice Checks if the sender is allowed to create certificates
+    modifier isMatcherOrDemand() {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == address(cooContract.demandRegistry()) || isRole(RoleManagement.Role.Matcher, msg.sender));
+        _;
+    }
+&nbsp;
+    /// @notice Updates the logic contract
+    /// @param _newLogic Address of the new logic contract
+    function update(address _newLogic) 
+        external
+        onlyAccount(address(cooContract))
+    {
+        certificateDb.changeOwner(_newLogic);
+    }
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 16 2018 09:05:01 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

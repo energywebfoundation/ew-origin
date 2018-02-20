@@ -40,32 +40,49 @@ contract('AssetRegistryLogic', function (accounts) {
     assert.equal(await assetLog.db.call(), AssetRegistryDB.address)
   })
 
-  it("should register an asset with an existing owner", async function () {
-    await assetLog.registerAsset(
+  it("should create an new empty asset", async function () {
+    await assetLog.createAsset()
+  })
+
+  it("should register general information of an asset with an existing owner", async function () {
+    await assetLog.initGeneral(0,
       accounts[9],
       accounts[0],
       0,
       1234567890,
       100000,
-      1,
-      0,
       true,
-      '0x0000000000000000000000000000000000000000000000000000000000000001',
       { from: accounts[2] }
     )
 
-    const asset = await assetLog.getAsset.call(0)
-    assert.equal(asset[0], accounts[9])
-    assert.equal(asset[1], accounts[0])
-    assert.equal(asset[2], 0)
-    assert.equal(asset[3], 1234567890)
-    assert.equal(asset[4], 100000)
-    assert.equal(asset[5], 1)
-    assert.equal(asset[6], 0)
-    assert.equal(asset[7], true)
-    assert.equal(asset[8], '0x0000000000000000000000000000000000000000000000000000000000000001')
-
+    /*
+  const asset = await assetLog.getAsset.call(0)
+  assert.equal(asset[0], accounts[9])
+  assert.equal(asset[1], accounts[0])
+  assert.equal(asset[2], 0)
+  assert.equal(asset[3], 1234567890)
+  assert.equal(asset[4], 100000)
+  assert.equal(asset[5], 1)
+  assert.equal(asset[6], 0)
+  assert.equal(asset[7], true)
+  assert.equal(asset[8], '0x0000000000000000000000000000000000000000000000000000000000000001')
+    */
   })
+
+  it("should register location information of an asset with an existing owner", async function () {
+    await assetLog.initLocation(
+      0,
+      web3.fromAscii("Germany"),
+      web3.fromAscii("Saxony"),
+      web3.fromAscii("123412"),
+      web3.fromAscii("Mittweida"),
+      web3.fromAscii("Markt"),
+      web3.fromAscii("16a"),
+      web3.fromAscii("0.1232423423"),
+      web3.fromAscii("0.2342342445")
+    )
+  })
+
 
   it("should not register an asset with a non existing owner", async function () {
     let failed = false
@@ -85,9 +102,11 @@ contract('AssetRegistryLogic', function (accounts) {
       0,
       201,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
+      401,
+      true,
       { from: accounts[9] }
     )
-    const asset = await assetLog.getAsset.call(0)
+    const asset = await assetLog.getAssetGeneral(0)
     assert.equal(asset[1], accounts[0])
     assert.equal(asset[2], 0)
     assert.equal(asset[3], 1234567890)
@@ -102,7 +121,7 @@ contract('AssetRegistryLogic', function (accounts) {
   it("other account than smart meter should not log data", async function () {
     let failed = false
     try {
-      const tx = await assetLog.logData(0, 201, { from: accounts[8] })
+      const tx = await assetLog.saveSmartMeterRead(0, 201, '0x0000000000000000000000000000000000000000000000000000000000000001', { from: accounts[8] })
       if (tx.receipt.status == '0x00') failed = true
 
     } catch (ex) {
@@ -115,7 +134,7 @@ contract('AssetRegistryLogic', function (accounts) {
 
   it("should retire an asset", async function () {
     await assetLog.setActive(0, false, { from: accounts[2] })
-    const asset = await assetLog.getAsset.call(0)
+    const asset = await assetLog.getAssetGeneral.call(0)
     assert.equal(asset[7], false)
 
   })
@@ -123,7 +142,7 @@ contract('AssetRegistryLogic', function (accounts) {
   it("smart meter should not be able to log data for a retired asset ", async function () {
     let failed = false
     try {
-      const tx = await assetLog.logData(0, 401, { from: accounts[9] })
+      const tx = await assetLog.saveSmartMeterRead(0, 401, '0x0000000000000000000000000000000000000000000000000000000000000001', { from: accounts[9] })
       if (tx.receipt.status == '0x00') failed = true
 
     } catch (ex) {

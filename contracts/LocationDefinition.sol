@@ -12,36 +12,22 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuchler, martin.kuchler@slock.it
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
+pragma solidity ^0.4.19;
 
-pragma solidity ^0.4.17;
+contract LocationDefinition {
 
-/// @title The Database contract for the AgreementDB of Origin list
-/// @notice This contract only provides getter and setter methods
-
-import "./AssetRegistryDB.sol";
-import "./DemandDb.sol";
-
-interface DemandInterface {
-
-//    function createDemand();
-
-    /// certlogic ruft das auf 
-    function matchDemand();
-
-    function getAllDemandListLength() public view returns (uint);
-
-   // function getDemandAt();
-
-    function getActiveDemandListLength() public view returns (uint);
-
-    function getActiveDemandIdAt(uint _index) public view returns (uint);
-
-    // calc
-    function currentPeriode(DemandDB.TimeFrame _tf) public view returns (uint);
-    
+    struct Location {
+        bytes32 country;
+        bytes32 region;
+        bytes32 city;
+        bytes32 street;
+        bytes32 zip;
+        bytes32 houseNumber;
+        bytes32 gpsLatitude;
+        bytes32 gpsLongitude;
+        bool exists;
+    }
 
 
-
-    
 }

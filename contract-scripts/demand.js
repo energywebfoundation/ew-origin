@@ -16,71 +16,61 @@
 
 var DemandLogic = artifacts.require("DemandLogic");
 
-module.exports = async function(callback) {
+module.exports = async function (callback) {
 
-    const sleep = (ms) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-    if (process.argv[4] === '--create') {
-        const demandLogic = await DemandLogic.deployed();
-        const tx = await demandLogic.createDemand(
-          web3.fromAscii(process.argv[5]),
-          web3.eth.accounts[process.argv[6]],
-          web3.eth.accounts[process.argv[7]],
-          parseInt(process.argv[8], 10),
-          parseInt(process.argv[9], 10),
-          parseInt(process.argv[10], 10),
-          parseInt(process.argv[11], 10),
-          process.argv[12] === 'true',
-          parseInt(process.argv[13], 10),
-          [],
-          []
-        )
-        console.log(tx);
-        callback();
+  if (process.argv[4] === '--create') {
+    const demandLogic = await DemandLogic.deployed();
+    const createTx = await demandLogic.createDemand()
 
-      } else if(process.argv[4] === '--start-generator') {
-        const demandLogic = await DemandLogic.deployed();
-        
-        while(true) {
-          console.log(demandLogic.address)
-          const txCd = await demandLogic.createDemand(web3.fromAscii('Test1'), web3.eth.accounts[4], web3.eth.accounts[3], new Date().getMilliseconds(), new Date().getMilliseconds(), new Date().getMilliseconds() + 2000, 0, false, 0, [], [])
-          console.log(txCd);
-
-          const txMp = await demandLogic.createMatchProperties(web3.fromAscii('Test1'),
-            100,
-            200,
-            300,
-            400,
-            web3.eth.accounts[8]
-          )
-          console.log(txMp);
-
-          const txPd = await demandLogic.createPriceDriving(web3.fromAscii('Test1'),
-            'Germany',
-            'Saxony',
-            0,
-            100
-          )
-          console.log(txPd);
-
-          await sleep(4000);
-        }
-        callback();
-      } else {
-        console.log("Demand")
-        console.log("e.g.: truffle exec create-demand.js --create Test 4 3 0 0 1 0 false 0\n")
-        console.log("e.g.: truffle exec create-demand.js --start-generator\n")
-        callback();
-      }  
-    
+    const agreementDate = Math.round(new Date().getTime() / 1000)
+    const startTime = agreementDate - 1200
+    const endTime = agreementDate + 1200
 
 
-    while(true) {
-        web3.eth.sendTransaction({ from: web3.eth.accounts[0], to: web3.eth.accounts[2], value: 1 });
-        await sleep(4000);
-    }
+    const id = createTx.logs.find((log) => log.event === 'createdEmptyDemand').args.id.toNumber();
+    const generalAndCouplingTx = await demandLogic.initGeneralAndCoupling(
+      id,
+      web3.eth.accounts[8],
+      web3.eth.accounts[9],
+      agreementDate,
+      startTime,
+      endTime,
+      0,
+      10,
+      0,
+      false,
+      -1,
+      -1
+    )
+
+    const txPd = await demandLogic.initPriceDriving(
+      id,
+      'Germany',
+      'Saxony',
+      0,
+      10
+    )
+
+    const txMp = await demandLogic.initMatchProperties(
+      id,
+      100,
+      200,
+      web3.eth.accounts[8]
+    )
+
+    console.log(await demandLogic.getDemandGeneral(id))
+
     callback();
-  
+
+  } else {
+    console.log("Demand")
+    console.log("e.g.: truffle exec create-demand.js --create Test 4 3 0 0 1 0 0 false 0\n")
+
+    callback();
+  }
+
 };

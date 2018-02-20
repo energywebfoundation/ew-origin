@@ -41,7 +41,7 @@ contract CoO is Owned {
     /// @param _certificateRegistry certificate-registry logic contract address
     function init(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry) 
         onlyOwner
-        public
+        external
     {
         require(    
             _userRegistry != address(0) && _assetRegistry != address(0) && _certificateRegistry != address(0) && _demandRegistry != address(0)
@@ -60,7 +60,7 @@ contract CoO is Owned {
     /// @param _certificateRegistry address of the new certificate-registry-logic-contract
     function update(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry)
         onlyOwner 
-        public
+        external
     {
         if (_userRegistry != address(0)) {
            userRegistry.update(_userRegistry);
@@ -86,7 +86,7 @@ contract CoO is Owned {
     }
 
     /// @notice Fallback, will throw when ether is send to the contract
-    function () public {
+    function () external {
         revert();
     }
 

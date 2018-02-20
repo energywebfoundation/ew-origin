@@ -1,4 +1,4 @@
-/ Copyright 2018 Energy Web Foundation
+//Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
 // a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
 // incorporated in Zug, Switzerland.

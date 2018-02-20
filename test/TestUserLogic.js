@@ -72,7 +72,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(user[4].toNumber(), 123)
+    assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(user[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(user[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -89,7 +89,8 @@ contract('UserLogic', function (accounts) {
       web3.fromAscii('John'),
       web3.fromAscii("Doe"),
       web3.fromAscii('testorganization'),
-      web3.fromAscii('Main St'), 123,
+      web3.fromAscii('Main St'),
+      web3.fromAscii('123'),
       web3.fromAscii('01234'),
       web3.fromAscii('Anytown'),
       web3.fromAscii('USA'),
@@ -100,7 +101,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userBefore[1]).replace(/\0/g, ''), '', 'user[1] failed after')
     assert.equal(web3.toAscii(userBefore[2]).replace(/\0/g, ''), '', 'user[2] failed after')
     assert.equal(web3.toAscii(userBefore[3]).replace(/\0/g, ''), '', 'user[3] failed after')
-    assert.equal(userBefore[4].toNumber(), 0)
+    assert.equal(web3.toAscii(userBefore[4]).replace(/\0/g, ''), '', 'user[3] failed after')
     assert.equal(web3.toAscii(userBefore[5]).replace(/\0/g, ''), '', 'user[5] failed after')
     assert.equal(web3.toAscii(userBefore[6]).replace(/\0/g, ''), '', 'user[6] failed after')
     assert.equal(web3.toAscii(userBefore[7]).replace(/\0/g, ''), '', 'user[7] failed after')
@@ -113,7 +114,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userAfter[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(userAfter[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(userAfter[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(userAfter[4].toNumber(), 123)
+    assert.equal(web3.toAscii(userAfter[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userAfter[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(userAfter[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(userAfter[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -135,7 +136,8 @@ contract('UserLogic', function (accounts) {
       web3.fromAscii('John2'),
       web3.fromAscii("Doe2"),
       web3.fromAscii('testorganization2'),
-      web3.fromAscii('Main St2'), 1232,
+      web3.fromAscii('Main St2'),
+      web3.fromAscii('1232'),
       web3.fromAscii('012342'),
       web3.fromAscii('Anytown2'),
       web3.fromAscii('USA2'),
@@ -146,7 +148,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userBefore[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(userBefore[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(userBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(userBefore[4].toNumber(), 123)
+    assert.equal(web3.toAscii(userBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(userBefore[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(userBefore[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -158,7 +160,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userAfter[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(userAfter[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(userAfter[3]).replace(/\0/g, ''), 'Main St2', 'user[3] failed after')
-    assert.equal(userAfter[4].toNumber(), 1232)
+    assert.equal(web3.toAscii(userAfter[4]).replace(/\0/g, ''), '1232', 'user[3] failed after')
     assert.equal(web3.toAscii(userAfter[5]).replace(/\0/g, ''), '012342', 'user[5] failed after')
     assert.equal(web3.toAscii(userAfter[6]).replace(/\0/g, ''), 'Anytown2', 'user[6] failed after')
     assert.equal(web3.toAscii(userAfter[7]).replace(/\0/g, ''), 'USA2', 'user[7] failed after')
@@ -436,7 +438,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userBefore[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
     assert.equal(web3.toAscii(userBefore[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(userBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(userBefore[4].toNumber(), 123)
+    assert.equal(web3.toAscii(userBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(userBefore[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(userBefore[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -448,7 +450,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(userAfter[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(userAfter[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(userAfter[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(userAfter[4].toNumber(), 123)
+    assert.equal(web3.toAscii(userAfter[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userAfter[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(userAfter[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(userAfter[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -476,7 +478,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(orgBefore[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(orgBefore[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
     assert.equal(web3.toAscii(orgBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(orgBefore[4].toNumber(), 123)
+    assert.equal(web3.toAscii(orgBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(orgBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(orgBefore[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(orgBefore[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -488,7 +490,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(orgAfter[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(orgAfter[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(orgAfter[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(orgAfter[4].toNumber(), 123)
+    assert.equal(web3.toAscii(orgAfter[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(orgAfter[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(orgAfter[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(orgAfter[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -511,7 +513,8 @@ contract('UserLogic', function (accounts) {
 
 
     await UserLog.setOrganizationAddress(accounts[3],
-      web3.fromAscii('Main St2'), 1232,
+      web3.fromAscii('Main St2'),
+      web3.fromAscii('1232'),
       web3.fromAscii('012342'),
       web3.fromAscii('Anytown2'),
       web3.fromAscii('USA2'),
@@ -523,7 +526,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(orgBefore[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(orgBefore[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(orgBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
-    assert.equal(orgBefore[4].toNumber(), 123)
+    assert.equal(web3.toAscii(orgBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(orgBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
     assert.equal(web3.toAscii(orgBefore[6]).replace(/\0/g, ''), 'Anytown', 'user[6] failed after')
     assert.equal(web3.toAscii(orgBefore[7]).replace(/\0/g, ''), 'USA', 'user[7] failed after')
@@ -535,7 +538,7 @@ contract('UserLogic', function (accounts) {
     assert.equal(web3.toAscii(orgAfter[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
     assert.equal(web3.toAscii(orgAfter[2]).replace(/\0/g, ''), 'testorganization2', 'user[2] failed after')
     assert.equal(web3.toAscii(orgAfter[3]).replace(/\0/g, ''), 'Main St2', 'user[3] failed after')
-    assert.equal(orgAfter[4].toNumber(), 1232)
+    assert.equal(web3.toAscii(orgAfter[4]).replace(/\0/g, ''), '1232', 'user[3] failed after')
     assert.equal(web3.toAscii(orgAfter[5]).replace(/\0/g, ''), '012342', 'user[5] failed after')
     assert.equal(web3.toAscii(orgAfter[6]).replace(/\0/g, ''), 'Anytown2', 'user[6] failed after')
     assert.equal(web3.toAscii(orgAfter[7]).replace(/\0/g, ''), 'USA2', 'user[7] failed after')
@@ -646,15 +649,123 @@ contract('UserLogic', function (accounts) {
     assert.equal(rightsAfter, 1)
   })
 
-  /*
-  it("should still have only 2 accounts", async function () {
-    assert.equal(awaåit UserDb.getAddressArrayLength(), 2)
+  it("should not be possible to remove AdminRole", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+    try {
+      await UserLog.removeAdminRole(accounts[5], 0, { from: accounts[9] })
+    } catch (ex) {
+
+    }
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 1)
+    assert.equal(rightsAfter, 1)
   })
-  */
-  /*
- 
- it.skip("should update the contract", async function () { })
- 
- it.skip("should update (2) the contract", async function () { })
- */
+
+  it("should be possible to remove AdminRole", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+    await UserLog.removeAdminRole(accounts[5], 0)
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 1)
+    assert.equal(rightsAfter, 0)
+  })
+
+  it("should be possible to remove AdminRole without the user beeing a an Admin", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+    await UserLog.removeAdminRole(accounts[5], 0)
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 0)
+    assert.equal(rightsAfter, 0)
+  })
+
+
+  it("should be possible to add as AssetManager", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+    await UserLog.addAssetManagerRole(accounts[5])
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 0)
+    assert.equal(rightsAfter, 16)
+  })
+
+  it("should  be possible to remove AssetManagerRole  ", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+
+    await UserLog.removeAssetManagerRole(accounts[5], { from: accounts[0] })
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 16)
+    assert.equal(rightsAfter, 0)
+  })
+
+  it("should  be possible to remove a non existing AssetManagerRole ", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+
+    await UserLog.removeAssetManagerRole(accounts[5], { from: accounts[0] })
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 0)
+    assert.equal(rightsAfter, 0)
+  })
+
+  it("should be possible to add as Trader", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+    await UserLog.addTraderRole(accounts[5])
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 0)
+    assert.equal(rightsAfter, 32)
+  })
+
+  it("should  be possible to remove AssetManagerRole  ", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+
+    await UserLog.removeTraderRole(accounts[5], { from: accounts[0] })
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 32)
+    assert.equal(rightsAfter, 0)
+  })
+
+  it("should  be possible to remove a non existing AssetManagerRole ", async function () {
+
+    let rightsBefore = (await UserLog.getRolesRights(accounts[5])).toNumber()
+    //  console.log(await UserLog.getFullUser(accounts[5]))
+
+    await UserLog.removeTraderRole(accounts[5], { from: accounts[0] })
+
+    let rightsAfter = (await UserLog.getRolesRights(accounts[5])).toNumber()
+
+    assert.equal(rightsBefore, 0)
+    assert.equal(rightsAfter, 0)
+  })
+
+
+
+
 })

@@ -55,9 +55,11 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @param _assetId The id of the Certificate
     /// @param _owner The owner of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
-    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog) public isMatcherOrDemand isInitialized  returns (uint) {
+    function createCertificate(uint _assetId, address _owner, uint _powerInW) public isMatcherOrDemand isInitialized  returns (uint) {
         require(AssetRegistryLogic(address(cooContract.assetRegistry())).useWhForCertificate(_assetId, _powerInW));
-        uint ret = certificateDb.createCertificate(_assetId, _owner, _powerInW, _dataLog);
+        uint co = AssetRegistryLogic(address(cooContract.assetRegistry())).getCoSaved(_assetId, _powerInW);
+        bytes32 dataLog = AssetRegistryLogic(address(cooContract.assetRegistry())).getAssetDataLog(_assetId);
+        uint ret = certificateDb.createCertificate(_assetId, _owner, _powerInW, dataLog, co);
         LogCreatedCertificate(ret, _powerInW);
         return ret;
     }
@@ -74,7 +76,7 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @param _id The id of the certificate
     function retireCertificateRequest(uint _id) public isInitialized() {
         CertificateDB.Certificate memory c;
-        (c.assetId, c.owner, c.powerInW, c.retired, c.retiredRequested, c.dataLog) = certificateDb.getCertificate(_id);
+        (c.assetId, c.owner, c.powerInW, c.retired, c.retiredRequested, c.dataLog, c.coSaved) = certificateDb.getCertificate(_id);
         require(c.owner == msg.sender);
         certificateDb.setRetireRequest(_id, true);
         LogRetireRequest(_id, true);
@@ -90,8 +92,15 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @notice Getter for a specific Certificate
     /// @param _certificateId The id of the requested certificate
     /// @return the certificate as single values
-    function getCertificate(uint _certificateId) public view returns (uint, address, uint, bool, bool, bytes32) {
+    function getCertificate(uint _certificateId) public view returns (uint, address, uint, bool, bool, bytes32, uint) {
         return certificateDb.getCertificate(_certificateId);
+    }
+
+    /// @notice Getter for a specific Certificate
+    /// @param _certificateId The id of the requested certificate
+    /// @return the certificate as single values
+    function getCertificateOwner(uint _certificateId) public view returns (address) {
+        return certificateDb.getCertificateOwner(_certificateId);
     }
 
     /// @notice Getter for the length of the list of certificates

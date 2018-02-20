@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/UserDB.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> UserDB.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.56% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>40/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/2</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">91.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>11/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.67% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>42/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">102×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">61×</span>
+<span class="cline-any cline-yes">61×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at &lt;http://www.gnu.org/licenses/&gt;.
+//
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
+pragma solidity ^0.4.18;
+&nbsp;
+import "./Owned.sol";
+import "./LocationDefinition.sol";
+&nbsp;
+/// @title The database contract for the users, traders and admins of the certificate of origin
+/// @notice This contract only provides getter and setter methods that are only callable by the corresponging owner-contract
+contract UserDB is Owned {
+    
+    /// @notice The structure of an user / admin / trader
+    /// @dev as it's for now impossible to return a struct, there is a special get-function for this struct. 
+    /// @dev keep in mind to update that function aswell when changing the user-struct
+    struct User {
+        bytes32 firstName;
+        bytes32 surname;
+        bytes32 organization;
+        LocationDefinition.Location location;
+        uint roles;
+        bool active;
+       
+    }
+&nbsp;
+    /// @notice mapping for addresses to users
+    mapping(address =&gt; User) private userList;  
+&nbsp;
+    modifier userExists(address _user) {
+        require(userList[_user].firstName != 0x0 &amp;&amp; userList[_user].surname != 0x0);
+        _;
+    }
+&nbsp;
+    /// @notice The constructor of the UserDB
+    /// @dev the deployer of this contract will get full adminrights!
+    function UserDB(address _logic) Owned(_logic) public {
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function () publi</span>c {
+<span class="cstat-no" title="statement not covered" >        revert()</span>;
+    }
+&nbsp;
+    /// @notice function for creating, editing an user, it cannot be used to set a Role of an user
+    /// @notice if the user does not exists yet it will be creates, otherwise the older userdata will be overwritten
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user address of the user
+    /// @param _firstName first name of the user
+    /// @param _surname surname of the user
+    /// @param _organization organization the user is representing
+    /// @param _street streetname 
+    /// @param _number housenumber
+    /// @param _zip zip-code
+    /// @param _city city-name
+    /// @param _country country-name
+    /// @param _state state
+    function setUser(
+        address _user, 
+        bytes32 _firstName, 
+        bytes32 _surname, 
+        bytes32 _organization,
+        bytes32 _street,
+        bytes32 _number,
+        bytes32 _zip,
+        bytes32 _city,
+        bytes32 _country,
+        bytes32 _state
+    ) 
+        external 
+        onlyOwner 
+    {
+        User storage u = userList[_user];
+/*
+        if(!u.exists) {
+            addressList.push(_user);
+        }
+*/
+&nbsp;
+        LocationDefinition.Location storage loc;
+&nbsp;
+        u.firstName = _firstName;
+        u.surname = _surname;
+        u.organization = _organization;
+        u.location = loc;
+&nbsp;
+        loc = u.location;
+        loc.country = _country;
+        loc.region = _state;
+        loc.city = _city;
+        loc.street = _street;
+        loc.zip = _zip;
+        loc.houseNumber = _number;
+        loc.gpsLatitude = 0x0;
+        loc.gpsLongitude = 0x0;
+        loc.exists = true;
+        u.active = true;
+    }
+&nbsp;
+    /// @notice function to change the username, can only be used when the user already exists
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of an user
+    /// @param _firstName new first name
+    /// @param _surname new surname
+    function setUserName(address _user, bytes32 _firstName, bytes32 _surname) 
+        external 
+        onlyOwner 
+        userExists(_user) 
+    {   
+        User storage u = userList[_user];
+        u.firstName = _firstName;
+        u.surname = _surname;
+        u.active = true;
+    }
+&nbsp;
+    /// @notice function to change the name of an existing organization, can only be used when the user already exists
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of an user
+    /// @param _organization new name of the organization
+    function setOrganization(address _user, bytes32 _organization) external onlyOwner userExists(_user){
+        User storage u = userList[_user];
+        u.organization = _organization;
+        u.active = true;
+    }
+&nbsp;
+    /// @notice function to set a new address for an existing organization 
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of the organization
+    /// @param _street new streetname
+    /// @param _number new number
+    /// @param _zip new zip-code
+    /// @param _city new city
+    /// @param _country new country
+    /// @param _state new state
+    function setAddress(address _user, bytes32 _street, bytes32 _number, bytes32 _zip, bytes32 _city, bytes32 _country, bytes32 _state)
+        external
+        onlyOwner
+        userExists(_user)
+    {
+        User storage u = userList[_user];
+        u.location.street = _street;
+        u.location.houseNumber = _number;
+        u.location.zip = _zip;
+        u.location.city = _city;
+        u.location.country = _country;
+        u.location.region = _state;
+        u.active = true;
+    }
+&nbsp;
+    /// @notice function to (de-)active a user, dan only be used when the user already exists
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user ethereum-address of an user
+    /// @param _active flag if the account should be active
+    function setUserActive(address _user, bool _active) external onlyOwner {
+        User storage u = userList[_user];
+        u.active = _active;
+    }
+&nbsp;
+    /// @notice function for editing the rights of an user
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
+    /// @param _user address of the user
+    /// @param _roles first name of the user
+    function setRoles(address _user, uint _roles) external onlyOwner {
+        User storage u = userList[_user];
+        u.roles = _roles;
+    }
+&nbsp;
+    /// @notice function to retrieve the rights of an user
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
+    /// @dev if the user does not exist in the mapping it will return 0x0 thus preventing them from accidently getting any rights
+    /// @param _user user someone wants to know its rights
+    /// @return bitmask with the rights of the user
+    function getRolesRights(address _user) 
+        onlyOwner
+        public 
+        view 
+        returns (uint) 
+    {
+        return userList[_user].roles;
+    }
+&nbsp;
+    /*
+    function getAddressArrayLength() public constant returns(uint) {
+        return addressList.length;
+    }
+    */
+&nbsp;
+    /// @notice function that checks if there is an user for the provided ethereum-address
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
+    /// @param _user ethereum-address of that user
+    /// @return bool if the user exists
+    function doesUserExist(address _user) 
+        onlyOwner
+        public 
+        view 
+    returns (bool) {
+        return userList[_user].active;
+    }
+&nbsp;
+    /// @notice function to return all the data of an user
+    /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to read directly from the contract
+    /// @param _user user 
+    /// @return returns firstName, surname, organization, street, number, zip, city, country, state, roles and the active-flag
+    function getFullUser(address _user)
+        onlyOwner
+        public
+        view 
+        returns (
+            bytes32 firstName,
+            bytes32 surname,
+            bytes32 organization,
+            bytes32 street,
+            bytes32 number,
+            bytes32 zip,
+            bytes32 city,
+            bytes32 country,
+            bytes32 state,
+            uint roles,
+            bool active
+        )
+    {
+        User storage u = userList[_user];
+        return (u.firstName, u.surname, u.organization, u.location.street, u.location.houseNumber, u.location.zip, u.location.city, u.location.country, u.location.region, u.roles, u.active);
+    }  
+&nbsp;
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 16 2018 09:05:01 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

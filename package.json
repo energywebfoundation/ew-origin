@@ -13,6 +13,12 @@
     "migrate": "rm -rf build && truffle migrate",
     "deploy": "rm -rf build && truffle deploy",
     "test": "rm -rf build && truffle compile && truffle test",
+    "startSim": "truffle exec contract-scripts/simulation.js",
+    "coverage": "./node_modules/.bin/solidity-coverage",
+    "wincompile": "rmdir build /s && truffle compile",
+    "winmigrate": "rmdir build /s && truffle migrate",
+    "windeploy": "rmdir build /s && truffle deploy",
+    "wintest": "rmdir build /s && truffle compile && truffle test",
     "remixd": "open https://remix.ethereum.org/#version=soljson-v0.4.17+commit.bdeb9e52.js; remixd -S $(pwd)/contracts"
   },
   "repository": {
@@ -30,8 +36,9 @@
   "homepage": "https://github.com/slockit/ewf-coo#readme",
   "dependencies": {
     "remixd": "^0.1.2",
+    "solidity-coverage": "^0.4.9",
     "typescript": "^2.7.1",
-    "web3": "^1.0.0-beta.29"
+    "web3": "^1.0.0-beta.30"
   },
   "devDependencies": {
     "@types/node": "^9.4.5"

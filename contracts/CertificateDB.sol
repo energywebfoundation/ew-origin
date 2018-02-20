@@ -36,6 +36,7 @@ contract CertificateDB is Owned {
         /// @dev could make a invariant that retired is only allowed to be true if request is true as well
         bool retiredRequested;
         bytes32 dataLog;
+        uint coSaved;
     }
 
     /// @notice An array containing all created certificates
@@ -51,8 +52,8 @@ contract CertificateDB is Owned {
     /// @param _owner The owner of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
     /// @return The id of the certificate
-    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog) public onlyOwner returns (uint) {
-        return certificateList.push(Certificate(_assetId, _owner, _powerInW, false, false, _dataLog)) - 1;
+    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved) public onlyOwner returns (uint) {
+        return certificateList.push(Certificate(_assetId, _owner, _powerInW, false, false, _dataLog, _coSaved)) - 1;
         
     }
 
@@ -86,8 +87,15 @@ contract CertificateDB is Owned {
     /// @notice Returns the certificate that corresponds to the given array id
     /// @param _certificateId The array position in which the certificate is stored
     /// @return all elements of the certificate
-    function getCertificate(uint _certificateId) public onlyOwner view returns (uint, address, uint, bool, bool, bytes32) {
-        return (certificateList[_certificateId].assetId, certificateList[_certificateId].owner, certificateList[_certificateId].powerInW, certificateList[_certificateId].retired, certificateList[_certificateId].retiredRequested, certificateList[_certificateId].dataLog);
+    function getCertificate(uint _certificateId) public onlyOwner view returns (uint, address, uint, bool, bool, bytes32, uint) {
+        return (certificateList[_certificateId].assetId, certificateList[_certificateId].owner, certificateList[_certificateId].powerInW, certificateList[_certificateId].retired, certificateList[_certificateId].retiredRequested, certificateList[_certificateId].dataLog, certificateList[_certificateId].coSaved);
+    }
+
+    /// @notice Returns the certificate owner
+    /// @param _certificateId The array position in which the certificate is stored
+    /// @return address owner
+    function getCertificateOwner(uint _certificateId) public onlyOwner view returns (address) {
+        return certificateList[_certificateId].owner;
     }
 
     function getCertificateListLength() public onlyOwner view returns (uint) {
