@@ -75,7 +75,7 @@ contract CertificateDB is Owned {
     /// @param _certificateId The array position in which the certificate is stored
     /// @return bool true if retirement was requested
     function isRetired(uint _certificateId) public view onlyOwner returns (bool) {
-        return certificateList[_certificateId].retiredRequested;
+        return certificateList[_certificateId].retired;
     }
 
     /// @notice Sets a certificate to retired
