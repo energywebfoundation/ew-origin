@@ -16,17 +16,17 @@
 
 var CertificateLogic = artifacts.require("CertificateLogic");
 var CertificateDB = artifacts.require("CertificateDB");
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic");
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
 var CoO = artifacts.require("CoO")
 
-contract('CertificateLogic', function (accounts) {
+contract('CertificateLogic', function(accounts) {
 
   var certLog,
     certDb,
     assetLogic;
 
   it("should get the instances", async function () {
-    assetLogic = await AssetRegistryLogic.deployed();
+    assetLogic = await AssetProducingRegistryLogic.deployed();
     certLog = await CertificateLogic.deployed();
     certDb = await CertificateDB.deployed();
   })
@@ -40,17 +40,7 @@ contract('CertificateLogic', function (accounts) {
     assert.equal(await certLog.certificateDb.call(), CertificateDB.address, "should be equal")
   })
 
-  /// @dev done by asset
-  it.skip("should create a certificate", async function () { })
-
-  /// @dev done by asset
-  it.skip("should retire a certificate", async function () {
-    //create an certificate through the asset contract
-    //retire that same certificate
-    //check
-  })
-
-  it("should change certificate owner", async function () {
+  it("should create a certificate and change the owner owner", async function () {
     //called by asset admin
     //new owner needs to be a user
 
@@ -59,6 +49,7 @@ contract('CertificateLogic', function (accounts) {
     await assetLogic.initGeneral(0,
       accounts[9],
       accounts[0],
+      0,
       0,
       1234567890,
       100000,
@@ -84,8 +75,8 @@ contract('CertificateLogic', function (accounts) {
       from: accounts[9]
     })
     //certificate erstellen
-    await certLog.createCertificate(0, accounts[0], 100, {
-      from: accounts[0]
+    await certLog.createCertificateForAssetOwner(0, 10000, {
+      from: accounts[8]
     })
 
     //get the old owner (for reset)
@@ -109,16 +100,41 @@ contract('CertificateLogic', function (accounts) {
 
   })
 
-  it.skip("should retire a certificate")
+  it("should retire a certificate", async function () {
+    var retiredStatusOld = await certLog.isRetired(0)
+    assert.isFalse(retiredStatusOld, "should not have been retired")
 
-  /// @dev no clue whats wrong man
-  it.skip("should successfully request the retirement of a certificate", async function () {
-    await certLog.retireCertificateRequest(0, {
-      from: accounts[9]
+    await certLog.retireCertificate(0, {
+      from: accounts[0]
     })
+
+    var retiredStatusNew = await certLog.isRetired(0)
+    assert.isTrue(retiredStatusNew, "should have retired the certificate")
+  })
+
+  it("should throw if it is already initialised", async function() {
+    var res = false
+    try {
+      await certLog.init('0x0')
+    } catch (ex) {
+      res = true
+    }
+    assert.isTrue(res, "should have thrown an exception because already initialized")
+  })
+
+  it("should throw the retirement if it is not the certificate owner who is calling", async function() {
+    var res = false
+    try {
+      await certLog.retireCertificate(0, {
+        from: accounts[5]
+      })
+    } catch (ex) {
+      res = true
+    }
+    assert.isTrue(res, "should have thrown an exception because the wrong caller")
   })
 
   /// @dev done by asset
-  it.skip("should set the asset contract correctly", async function () { })
+  it.skip("should set the asset contract correctly", async function () {})
 
 })

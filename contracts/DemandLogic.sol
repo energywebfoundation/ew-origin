@@ -20,7 +20,9 @@ import "./RoleManagement.sol";
 import "./CertificateLogic.sol";
 import "./Updatable.sol";
 import "./CoO.sol";
-import "./AssetRegistryLogic.sol";
+import "./AssetProducingRegistryLogic.sol";
+import "./AssetConsumingRegistryLogic.sol";
+
 
 /// @title The logic contract for the AgreementDB of Origin list
 contract DemandLogic is RoleManagement, Updatable {
@@ -29,6 +31,8 @@ contract DemandLogic is RoleManagement, Updatable {
     DemandDB public db;
 
     event createdEmptyDemand(address sender, uint id);
+    event LogDemandFullyCreated(uint id);
+    event LogDemandExpired(uint id);
     event LogMatcherPropertiesUpdate(uint index, uint currentWhPerPeriod, uint certInCurrentPeriod, uint currentPeriod, uint certID);
 
     enum TimeFrame{
@@ -43,6 +47,17 @@ contract DemandLogic is RoleManagement, Updatable {
         USD,
         SingaporeDollar,
         Ether
+    }
+
+    enum DemandProperties {
+        originator,
+        assetType, 
+        compliance, 
+        country, 
+        region, 
+        minCO2, 
+        producing, 
+        consuming  
     }
 
     modifier isInitialized {
@@ -66,13 +81,15 @@ contract DemandLogic is RoleManagement, Updatable {
 
     /// @notice Function to create an empty demand, functions initGeneralandCouplong, initMatcherProperties and initPricedriving have to be called in order to fully create a demandc
     /// @dev will return an event with the event-Id
-    function createDemand()
+    function createDemand(bool[] _properties)
         external
-     isInitialized
-     onlyRole(RoleManagement.Role.AgreementAdmin)
+        isInitialized
+        onlyRole(RoleManagement.Role.AgreementAdmin)
      {
         // TODO: create empty demand in array
-        uint demandID = db.createEmptyDemand();
+
+        if(_properties[0] && _properties[6]) revert();
+        uint demandID = db.createEmptyDemand(createDemandBitmask(_properties));
         createdEmptyDemand(msg.sender, demandID);
     }
 
@@ -92,7 +109,6 @@ contract DemandLogic is RoleManagement, Updatable {
     /// @param _buyer address oh the buyer
     /// @param _pricePerCertifiedKWh price per certified kWh
     /// @param _currency currency to be used
-    /// @param _coupled flag if the creation is coupled with consuming assets
     /// @param _tf timeFrame
     /// @param _prodAsset array with producing assets, can be empty
     /// @param _consAsset array with consuming assets, can be empty 
@@ -100,36 +116,75 @@ contract DemandLogic is RoleManagement, Updatable {
         uint _id,
         address _originator,
         address _buyer,
-        uint _startTime,
+        uint _startTime,   
         uint _endTime,
-        TimeFrame _tf,
+        TimeFrame _tf,     
         uint _pricePerCertifiedKWh,
         Currency _currency,
-        bool _coupled,
-        int _prodAsset,
-        int _consAsset
+        uint _prodAsset,
+        uint _consAsset
     )
         external
         onlyRole(RoleManagement.Role.AgreementAdmin)
         isInitialized
         doesNotExist(_id)
     {
-
-        db.createGeneralDemand(_id, _originator, _buyer, _startTime, _endTime, uint(_tf), _pricePerCertifiedKWh, uint(_currency), _coupled);
-        db.createCoupling(_id, _prodAsset, _consAsset);
+        uint demandMask = db.getDemandMask(_id);
+/*   consumingAsset: (min(maxcapacity oder targetWhPerPerid oder consumed(meterread)) - wie viel energie bereits geliefert ) <= neue energie   
+        */
+        createGeneralDemandInternal( 
+             _id,
+             _originator,
+             _buyer,
+             _startTime,   
+             _endTime,
+             _tf,     
+             _pricePerCertifiedKWh,
+             _currency,
+             demandMask);
+        createCouplingInternal(_id, _prodAsset, _consAsset, demandMask);
         checkForFullDemand(_id);
 
+    }
+
+    function createCouplingInternal(uint _id, uint _prodAsset, uint _consAsset, uint _demandMask)
+        internal
+    {
+        
+        if(hasDemandPropertySet(DemandProperties.producing, _demandMask)){
+            require(AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getActive((_prodAsset)));
+        }
+
+        if(hasDemandPropertySet(DemandProperties.consuming, _demandMask)){
+            require(AssetConsumingRegistryLogic(address(cooContract.assetConsumingRegistry())).getActive((_consAsset)));
+        }
+         db.createCoupling(_id, _prodAsset, _consAsset);
+    }
+
+    function createGeneralDemandInternal( 
+        uint _id,
+        address _originator,
+        address _buyer,
+        uint _startTime,   
+        uint _endTime,
+        TimeFrame _tf,     
+        uint _pricePerCertifiedKWh,
+        Currency _currency,
+        uint _demandMask)
+        internal
+    {
+        db.createGeneralDemand(_id, _originator, _buyer, _startTime, _endTime, uint(_tf), _pricePerCertifiedKWh, uint(_currency));
     }
 
       /// @notice function to create the matcher-properties
     /// @param _id identifier
     /// @param _kWAmountPerPeriod amounts of KW per Period
-    /// @param _consumptionLastSetInPeriod todo: needed?
+    /// @param _productionLastSetInPeriod todo: needed?
     /// @param _matcher address of the matcher
     function initMatchProperties(
         uint _id,
         uint _kWAmountPerPeriod,
-        uint _consumptionLastSetInPeriod,
+        uint _productionLastSetInPeriod,
         address _matcher
     )
         external
@@ -137,7 +192,7 @@ contract DemandLogic is RoleManagement, Updatable {
         isInitialized
         doesNotExist(_id)
     {
-        db.createMatchProperties(_id, _kWAmountPerPeriod, 0, 0, _consumptionLastSetInPeriod, _matcher);
+        db.createMatchProperties(_id, _kWAmountPerPeriod, 0, 0, _productionLastSetInPeriod, _matcher);
         checkForFullDemand(_id);
     }
 
@@ -151,29 +206,65 @@ contract DemandLogic is RoleManagement, Updatable {
         uint _id,
         bytes32 _locationCountry,
         bytes32 _locationRegion,
-        AssetRegistryLogic.AssetType _type,
-        uint _minCO2Offset 
+        AssetProducingRegistryLogic.AssetType _type,
+        uint _minCO2Offset,
+        int _registryCompliance
+        
     )
         external
         onlyRole(RoleManagement.Role.AgreementAdmin) 
         isInitialized
         doesNotExist(_id)
     {
-        db.createPriceDriving( _id, _locationCountry, _locationRegion, 0x0, 0x0, 0x0, 0, 0x0, 0x0, uint(_type), _minCO2Offset);
+        db.createPriceDriving( _id, _locationCountry, _locationRegion, 0x0, 0x0, 0x0, 0, 0x0, 0x0, uint(_type), _minCO2Offset, _registryCompliance);
         checkForFullDemand(_id);
     }
 
+    function matchCertificate(uint _id, uint _certificateId) 
+        external
+        isInitialized
+    {
+        var(prodAssetId, , powerInW, retired, , coSaved, escrow, creationTime) = CertificateLogic(address(cooContract.certificateRegistry())).getCertificate(_certificateId);
+        require(!retired && (creationTime + 365 days) <= now && msg.sender == escrow);
+        var (owner, currentWhPerPeriod, certInCurrentPeriod, currentPeriod) = matchInternal(_id, powerInW, prodAssetId);
+
+          // at the end we have to update the matcher-properties 
+        db.updateMatchProperties(_id, currentWhPerPeriod,certInCurrentPeriod, currentPeriod);
+        LogMatcherPropertiesUpdate(_id, currentWhPerPeriod, certInCurrentPeriod, currentPeriod, _certificateId);
+
+        CertificateLogic(address(cooContract.certificateRegistry())).transferOwnershipByEscrow( _id,  owner);
+    }
+
+    function matchInternal(uint _id, uint _wCreated, uint _prodAssetId)
+        internal
+        isInitialized 
+        returns (address owner,  uint currentWhPerPeriod, uint certInCurrentPeriod, uint currentPeriod)
+    {
+        // we have to check if a demand with that identifier actually exists
+        var (generalExists, priceDrivingExists, matcherExists) = getExistStatus(_id);
+        require(generalExists && priceDrivingExists && matcherExists);
+        bool passCheck;
+        (owner, passCheck,) = checkDemandGeneral(_id, _prodAssetId);
+        require(passCheck);
+        (passCheck,) = checkPriceDriving(_id, _prodAssetId, _wCreated);
+        require(passCheck);
+        (currentWhPerPeriod,certInCurrentPeriod, currentPeriod,passCheck,) = checkMatcher(_id, _wCreated); 
+        require(passCheck);
+
+    }
+
     /// @notice function to match produced energy with the needed demand
-    /// @param _index identifier
+    /// @param _index identifier of the demand
     /// @param _wCreated amount of Wh created
     /// @param _prodAssetId asset-Id that produced the energy
     function matchDemand(uint _index, uint _wCreated, uint _prodAssetId)
         external 
         isInitialized
     {   
-        // we have to check if a demand with that identifier actually exists
+      
+      /*   // we have to check if a demand with that identifier actually exists
         var (generalExists, priceDrivingExists, matcherExists) = getExistStatus(_index);
-        require(generalExists && priceDrivingExists && matcherExists);
+        require(generalExists && priceDrivingExists && matcherExists); 
     
         // we're checking the general-informations. Owner and coupled parameters are returned in order to avoid a 2nd call to get them
         var(owner,passCheck,) = checkDemandGeneral(_index, _prodAssetId);
@@ -181,21 +272,23 @@ contract DemandLogic is RoleManagement, Updatable {
         // we're checking the price-driving informations
         (passCheck,) = checkPriceDriving(_index, _prodAssetId, _wCreated);
         require(passCheck);
+        
         // we're checking if the matching-informations are correct. 
         // CurrentWhPerPriode, certInCurrentPeriod and the currentPeriod are returned to avoid a 2nd call
+        bool passCheck;
         uint currentWhPerPeriod;
         uint certInCurrentPeriod;
         uint currentPeriod;
         (currentWhPerPeriod,certInCurrentPeriod, currentPeriod,passCheck,) = checkMatcher(_index,_wCreated); 
         require(passCheck);
+        */
+        var (owner, currentWhPerPeriod, certInCurrentPeriod, currentPeriod) =   matchInternal(_index, _wCreated, _prodAssetId);
         // all the criteria are matched, so we can create the certificate 
         uint certId = CertificateLogic(address(cooContract.certificateRegistry())).createCertificate(_prodAssetId, owner, _wCreated);
          
         // at the end we have to update the matcher-properties 
         db.updateMatchProperties(_index, currentWhPerPeriod,certInCurrentPeriod, currentPeriod);
-      
         LogMatcherPropertiesUpdate(_index, currentWhPerPeriod, certInCurrentPeriod, currentPeriod, certId);
-       
     }
   
     /// @notice Updates the logic contract
@@ -234,8 +327,8 @@ contract DemandLogic is RoleManagement, Updatable {
         view 
         isInitialized
         returns(
-            int producingAssets,
-            int consumingAssets
+            uint producingAssets,
+            uint consumingAssets
         ) 
     {
        return db.getDemandCoupling(_index);
@@ -256,7 +349,7 @@ contract DemandLogic is RoleManagement, Updatable {
             uint timeframe,
             uint pricePerCertifiedKWh,
             uint currency,
-            bool coupled
+            uint demandMask
         )
     {
         return db.getDemandGeneral(_index);
@@ -273,7 +366,7 @@ contract DemandLogic is RoleManagement, Updatable {
             uint targetWhPerPeriod,
             uint currentWhPerPeriod,
             uint certInCurrentPeriod,
-            uint consumptionLastSetInPeriod,
+            uint productionLastSetInPeriod,
             address matcher
         )
     {
@@ -291,12 +384,13 @@ contract DemandLogic is RoleManagement, Updatable {
             bytes32 locationCountry,
             bytes32 locationRegion,
             uint assettype,
-            uint minCO2Offset
+            uint minCO2Offset,
+            int registryCompliance,
+            bool isInit
         )
     {
       return db.getDemandPriceDriving(_index);
     }
-
 
     /// @notice function to get the existing status of the different demand-structs
     /// @param _index identifier
@@ -310,8 +404,7 @@ contract DemandLogic is RoleManagement, Updatable {
        general = (buyer != address(0));
        var(,,,,matcher) = db.getDemandMatcherProperties(_index);
        matchProp = (matcher != address(0));
-       var(,,,minCO2Offset) = db.getDemandPriceDriving(_index);
-       priceDriving = (minCO2Offset >0);
+       (,,,,priceDriving) = db.getDemandPriceDriving(_index);
 
     }
     /// @notice funciton to remove an active demand, can only be successfully processed if the the endTime already passed
@@ -322,6 +415,7 @@ contract DemandLogic is RoleManagement, Updatable {
         var ( , , , endTime, , , , ) = db.getDemandGeneral(_index);
         require(endTime < now);
         db.removeActiveDemand( _index);
+        LogDemandExpired(_index);
     }
 
     /// @notice function to check the fitting of the general-demand information with a matching
@@ -333,10 +427,13 @@ contract DemandLogic is RoleManagement, Updatable {
         view
         returns (address, bool, string)
     {
-        var   ( originator, buyer, startTime, endTime, , , , coupled) = db.getDemandGeneral(_index);
-        var( , owner, , , , , , , , ,) = AssetRegistryLogic(address(cooContract.assetRegistry())).getAssetGeneral(_prodAssetId); 
+        var   ( originator, buyer, startTime, endTime, , , , ) = db.getDemandGeneral(_index);
+        var( , owner, , , , , , , , , ,) = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetGeneral(_prodAssetId); 
         
-        if(originator != address(0x0)) require(originator == owner);
+        if(originator != address(0x0)) {
+            if(originator != owner)
+             return (0x0, false, "wrong originator");
+            }
 
         if(!( 
            startTime <= now && 
@@ -346,18 +443,20 @@ contract DemandLogic is RoleManagement, Updatable {
            && isRole(RoleManagement.Role.AssetManager, owner) 
         )) return (0x0, false, "starttime or rolecheck");
 
-        if (coupled) {
-   
-        }
-
         var (prodAsset, ) = db.getDemandCoupling(_index);
 
-        if (prodAsset > 0) {
-           if (int(_prodAssetId) != prodAsset)
+        if (hasDemandPropertySet(DemandProperties.producing, db.getDemandMask(_index))) {
+           if (_prodAssetId != prodAsset)
             return (0x0, false, "wrong prodAssetId");
-
         }
-        return (originator, true, "everything ok");
+
+        /*
+        if (consAsset >= 0) {
+           if (int(_consAssetId) != consAsset)
+            return (0x0, false, "wrong consAssetId");
+        }
+        */
+        return (buyer, true, "everything ok");
     }
 
      /// @notice function to check the matcher-properties
@@ -373,15 +472,17 @@ contract DemandLogic is RoleManagement, Updatable {
        
        
         if (matcher != msg.sender) return (0,0,0, false, "wrong matcher");
-        TimeFrame tf = TimeFrame(db.getTimeFrame(_index));
       
-            uint currentPeriod = getCurrentPeriod(tf, _index);
+            uint currentPeriod = getCurrentPeriod(_index);
 
-            if (currentPeriod == lastPeriod) 
-                if(currentWhPerPeriod+_wCreated > whAmountPerPeriod) return (0,0,0, false, "too much whPerPeriode");
-            else 
-                if(_wCreated > whAmountPerPeriod) return (0,0,0, false, "too much whPerPeriode");
-    
+            if (currentPeriod == lastPeriod) {
+                if(currentWhPerPeriod+_wCreated > whAmountPerPeriod) return (0,0,0, false, "too much whPerPeriode"); }            
+                else {
+                if(_wCreated > whAmountPerPeriod) return (0,0,0, false, "too much whPerPeriode and currentPeriod != lastPeriod");
+                lastPeriod = currentPeriod;
+                currentWhPerPeriod = 0;
+                certInCurrentPeriod =0;
+            }
         currentWhPerPeriod += _wCreated;
         certInCurrentPeriod += 1;
         return (currentWhPerPeriod, certInCurrentPeriod, currentPeriod, true, "everything OK");
@@ -393,16 +494,18 @@ contract DemandLogic is RoleManagement, Updatable {
     /// @return if there was an error and what check failed
     function checkPriceDriving(uint _index, uint _prodAssetId, uint _wCreated)
         public
-        view 
+        view
         returns (bool, string)
     {
-        var (locationCountryDemand, locationRegionDemand, assettypeDemand, minCO2OffsetDemand) = db.getDemandPriceDriving(_index);
-        
-        if(AssetRegistryLogic.AssetType(assettypeDemand) != AssetRegistryLogic(cooContract.assetRegistry()).getAssetType( _prodAssetId))
+        if(_wCreated == 0) return (false, "no energy created");
+
+        var (locationCountryDemand, locationRegionDemand, assettypeDemand, minCO2OffsetDemand,compliance, ) = db.getDemandPriceDriving(_index);
+
+        if(AssetProducingRegistryLogic.AssetType(assettypeDemand) != AssetProducingRegistryLogic(cooContract.assetProducingRegistry()).getAssetType( _prodAssetId))
             return (false, "wrong asset type");
 
-        if (locationCountryDemand != 0x0) {
-            var (countryAsset, regionAsset, , , , , ) = AssetRegistryLogic(cooContract.assetRegistry()).getAssetLocation( _prodAssetId);
+        if (locationCountryDemand != 0x0) { 
+            var (countryAsset, regionAsset, , , , , ) = AssetProducingRegistryLogic(cooContract.assetProducingRegistry()).getAssetLocation( _prodAssetId);
         
             if(locationCountryDemand != countryAsset)
                 return (false, "wrong country");
@@ -414,54 +517,46 @@ contract DemandLogic is RoleManagement, Updatable {
             
         }
 
-         uint co2Saved = AssetRegistryLogic(cooContract.assetRegistry()).getCoSaved(_prodAssetId, _wCreated); 
-         uint co2PerWh = ((co2Saved * 1000) / _wCreated)/10;
+        if(compliance > 0){
+           if(uint(AssetProducingRegistryLogic(cooContract.assetProducingRegistry()).getCompliance(_prodAssetId)) != uint(compliance)) return (false, "wrong compliance");
+        }
 
-         if(co2PerWh < minCO2OffsetDemand)
+        uint co2Saved = AssetProducingRegistryLogic(cooContract.assetProducingRegistry()).getCoSaved(_prodAssetId, _wCreated); 
+        uint co2PerWh = ((co2Saved * 1000) / _wCreated)/10;
+
+        if(co2PerWh < minCO2OffsetDemand)
             return (false, "wrong CO2");
+
+        
 
         return (true,"everything OK");
     }
 
     /// @notice function to calculate the current Period for a demand
-    /// @param _tf timeFrame
     /// @param _id identifier
     /// @return current Period 
-    function getCurrentPeriod(TimeFrame _tf, uint _id) 
+    function getCurrentPeriod(uint _id) 
         public 
         view 
         isInitialized
         returns (uint) 
     {
-        if ( _tf == TimeFrame.yearly) 
+
+        uint tf = db.getTimeFrame(_id);
+     // TimeFrame tf = TimeFrame.yearly; 
+        if ( TimeFrame(tf) == TimeFrame.yearly) 
         {
             return ( now - db.getStartEpoche(_id) ) / (1 years);
         }
-        if ( _tf == TimeFrame.monthly) {
+        if ( TimeFrame(tf) == TimeFrame.monthly) {
             return ( now - db.getStartEpoche(_id) ) / (30 days);
         }
-        if ( _tf == TimeFrame.daily) {
+        if ( TimeFrame(tf) == TimeFrame.daily) {
             return ( now - db.getStartEpoche(_id) ) / (1 days);
         }  
-        if ( _tf == TimeFrame.hourly) {
+        if ( TimeFrame(tf) == TimeFrame.hourly) {
             return ( now - db.getStartEpoche(_id) ) / (1 hours);
         }  
-    }
-
-
-
-    /// @notice function to create a coupling 
-    /// @param _id identifier
-    /// @param _prodAssets array with producing assets, can be empty
-    /// @param _consAssets array with consuming assets, can be empty 
-    function createCoupling(
-        uint _id,
-        int _prodAssets,
-        int _consAssets
-    )
-        internal 
-    {
-        db.createCoupling(_id, _prodAssets, _consAssets);
     }
 
     /// @notice function to check if a full demand is created and enabling him
@@ -475,32 +570,28 @@ contract DemandLogic is RoleManagement, Updatable {
             db.setEnabled(_index,true);
             db.addActiveDemand(_index);
             db.setDemandCreationTime(_index, now);
+            LogDemandFullyCreated(_index);
+        }
+    }   
+
+    function createDemandBitmask (bool[] demandArray)
+        public
+        pure
+        returns (uint demandMask)
+    {
+         /** Bitmaske: assetType, compliance, country, region, minCO2, producing, consuming */
+        for(uint8 i = 0; i < 8; i++) {
+            if(demandArray[i]){
+                demandMask += uint(2) ** uint(i);
+            }
         }
     }
-   
-    /// @notice function to create general demand
-    /// @param _id identifier, if it's 0 an id will be generated 
-    /// @param _originator address of an energy-producer, can be 0x0
-    /// @param _buyer address oh the buyer
-    /// @param _pricePerCertifiedKWh price per certified kWh
-    /// @param _currency currency to be used
-    /// @param _coupled flag if the creation is coupled with consuming assets
-    function createGeneralDemand(
-        uint _id,
-        address _originator,
-        address _buyer,
-        uint _startTime,
-        uint _endTime,
-        uint _tf,
-        uint _pricePerCertifiedKWh,
-        uint _currency,
-        bool _coupled
-    )
-        private
-    {
-        require(_buyer != address(0) && _startTime > 0 && _endTime > 0 && _pricePerCertifiedKWh > 0 );
 
-        db.createGeneralDemand(_id, _originator, _buyer, _startTime, _endTime, _tf, _pricePerCertifiedKWh, _currency, _coupled);
-        checkForFullDemand(_id);
-    }    
+    /// @notice funciton for comparing the role and the needed rights of an user
+    /// @return whether the user has the corresponding rights for the intended action
+    function hasDemandPropertySet(DemandProperties _props, uint _demandMask) public pure returns (bool) { 
+        uint demandActive = uint(2) ** uint(_props);
+        return (_demandMask & demandActive != 0);
+    }
+
 }

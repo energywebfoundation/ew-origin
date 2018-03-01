@@ -48,10 +48,6 @@ contract UserDB is Owned {
     function UserDB(address _logic) Owned(_logic) public {
     }
 
-    function () external {
-        revert();
-    }
-
     /// @notice function to set a new address for an existing organization 
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user ethereum-address of the organization

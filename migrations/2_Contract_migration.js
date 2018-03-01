@@ -4,14 +4,17 @@ var CoO = artifacts.require("CoO")
 var UserLogic = artifacts.require("UserLogic")
 var UserDB = artifacts.require("UserDB")
 
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic")
-var AssetRegistryDB = artifacts.require("AssetRegistryDB")
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic")
+var AssetProducingRegistryDB = artifacts.require("AssetProducingRegistryDB")
+
+var AssetConsumingRegistryLogic = artifacts.require("AssetConsumingRegistryLogic")
+var AssetConsumingRegistryDB = artifacts.require("AssetConsumingRegistryDB")
 
 var CertificateLogic = artifacts.require("CertificateLogic")
 var CertificateDB = artifacts.require("CertificateDB")
 
 var UserLogicUpdate = artifacts.require("UserLogic")
-var AssetRegistryLogicUpdate = artifacts.require("AssetRegistryLogic")
+var AssetProducingRegistryLogicUpdate = artifacts.require("AssetProducingRegistryLogic")
 var CertificateLogicUpdate = artifacts.require("CertificateLogic")
 
 var DemandLogic = artifacts.require("DemandLogic")
@@ -24,57 +27,66 @@ module.exports = async (deployer, network, accounts) => {
   var cooInstance
   var certificateLogicInstance
   var userLogicInstance
-  var assetRegistryLogicInstance
+  var assetProducingRegistryLogicInstance
+  var assetConsumingLogicInstance
   var demandLogicInstance
 
 
   var certificateLogicUpdateInstance
   var userLogicUpdateInstance
-  var assetRegistryLogicUpdateInstance
 
   await deployer.deploy(CoO).then(
     async () => { cooInstance = await CoO.deployed() }
   ).then(async () => {
-    await deployer.deploy(CertificateLogic, cooInstance.address).then(
+    await deployer.deploy(CertificateLogic, cooInstance.address, { gas: 79000000 }).then(
       async () => { certificateLogicInstance = await CertificateLogic.deployed() }
     )
   }).then(async () => {
-    await deployer.deploy(CertificateDB, CertificateLogic.address).then(
+    await deployer.deploy(CertificateDB, CertificateLogic.address, { gas: 79000000 }).then(
       async () => { await CertificateDB.deployed() }
     )
   }).then(async () => {
-    await deployer.deploy(UserLogic, cooInstance.address).then(
+    await deployer.deploy(UserLogic, cooInstance.address, { gas: 79000000 }).then(
       async () => { userLogicInstance = await UserLogic.deployed() }
     )
   }).then(async () => {
-    await deployer.deploy(UserDB, UserLogic.address).then(
+    await deployer.deploy(UserDB, UserLogic.address, { gas: 79000000 }).then(
       async () => { await UserDB.deployed() }
     )
   }).then(async () => {
-    await deployer.deploy(DemandLogic, cooInstance.address).then(
+    await deployer.deploy(DemandLogic, cooInstance.address, { gas: 79000000 }).then(
       async () => { demandLogicInstance = await DemandLogic.deployed() }
     )
   })
 
     .then(async () => {
-      await deployer.deploy(DemandDB, DemandLogic.address).then(
+      await deployer.deploy(DemandDB, DemandLogic.address, { gas: 79000000 }).then(
         async () => { await DemandDB.deployed() }
       )
     })
     .then(async () => {
-      await deployer.deploy(AssetRegistryLogic, cooInstance.address).then(
-        async () => { assetRegistryLogicInstance = await AssetRegistryLogic.deployed() }
+      await deployer.deploy(AssetProducingRegistryLogic, cooInstance.address, { gas: 79000000 }).then(
+        async () => { assetProducingRegistryLogicInstance = await AssetProducingRegistryLogic.deployed() }
       )
     }).then(async () => {
-      await deployer.deploy(AssetRegistryDB, assetRegistryLogicInstance.address).then(
-        async () => { await AssetRegistryDB.deployed() }
+      await deployer.deploy(AssetProducingRegistryDB, assetProducingRegistryLogicInstance.address, { gas: 79000000 }).then(
+        async () => { await AssetProducingRegistryDB.deployed() }
+      )
+    })
+    .then(async () => {
+      await deployer.deploy(AssetConsumingRegistryLogic, cooInstance.address, { gas: 79000000 }).then(
+        async () => { assetConsumingRegistryLogicInstance = await AssetConsumingRegistryLogic.deployed() }
+      )
+    }).then(async () => {
+      await deployer.deploy(AssetConsumingRegistryDB, assetConsumingRegistryLogicInstance.address, { gas: 79000000 }).then(
+        async () => { await AssetConsumingRegistryDB.deployed() }
       )
     })
     .then(async () => {
       await userLogicInstance.init(UserDB.address)
     })
     .then(async () => {
-      await assetRegistryLogicInstance.init(AssetRegistryDB.address)
+      await assetProducingRegistryLogicInstance.init(AssetProducingRegistryDB.address)
     })
     .then(async () => {
       await certificateLogicInstance.init(CertificateDB.address)
@@ -83,7 +95,10 @@ module.exports = async (deployer, network, accounts) => {
       await demandLogicInstance.init(DemandDB.address)
     })
     .then(async () => {
-      await cooInstance.init(UserLogic.address, AssetRegistryLogic.address, CertificateLogic.address, DemandLogic.address)
+      await assetConsumingRegistryLogicInstance.init(AssetConsumingRegistryDB.address)
+    })
+    .then(async () => {
+      await cooInstance.init(UserLogic.address, AssetProducingRegistryLogic.address, CertificateLogic.address, DemandLogic.address, AssetConsumingRegistryLogic.address)
     })
     .then(async () => {
       // accounts[2] = assetAdmin
@@ -185,6 +200,10 @@ module.exports = async (deployer, network, accounts) => {
     }).then(async () => {
       // accounts[2] = agreement-Admin
       await userLogicInstance.addAssetManagerRole(accounts[0])
+    })
+    .then(async () => {
+      // accounts[8] = matcher
+      await userLogicInstance.addMatcherRole(accounts[8])
     })
 
 

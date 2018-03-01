@@ -39,11 +39,6 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     function UserLogic(CoO _coo) RoleManagement(_coo) public {
     }
 
-    /// @notice fallback
-    function () external {
-        revert();
-    }
-
     /// @notice grant a user a an admin-right
     /// @param _user user that should get rights
     /// @param role admin-right to be granted
@@ -74,6 +69,18 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         if (!isRole(RoleManagement.Role.AssetManager,_user)) {
             uint roles = db.getRolesRights(_user);
             db.setRoles(_user, roles + uint(2) ** uint(RoleManagement.Role.AssetManager));
+        }
+    }
+
+    /// @notice grants an ethereum-account the matcher-rights
+    /// @param _user ethereum-account
+    function addMatcherRole(address _user)
+        external
+        onlyRole(RoleManagement.Role.TopAdmin)
+    {
+            if (!isRole(RoleManagement.Role.Matcher,_user)) {
+            uint roles = db.getRolesRights(_user);
+            db.setRoles(_user, roles + uint(2) ** uint(RoleManagement.Role.Matcher));
         }
     }
 

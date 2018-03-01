@@ -13,37 +13,32 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 
 pragma solidity ^0.4.18;
 
 import "./Owned.sol";
 import "./LocationDefinition.sol";
+import "./AssetGeneralDefinition.sol";
+import "./AssetDbInterface.sol";
 
 /// @title The Database contract for the Asset Registration
 /// @notice This contract only provides getter and setter methods
-contract AssetRegistryDB is Owned {
+contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInterface {
 
-    struct GeneralInformation {
-        address smartMeter;
-        address owner;
-        uint assetType;
-        uint operationalSince;
+    struct ConsumingProperties {
         uint capacityWh;
-        uint lastSmartMeterReadWh;
-        uint certificatesCreatedForWh;
-        bool active;
-        bytes32 lastSmartMeterReadFileHash;
-        uint lastSmartMeterCO2OffsetRead;
-        uint cO2UsedForCertificate;
-        bool exists;
+        bool maxCapacitySet;
+        uint certificatesUsedForWh;
     }
 
     struct Asset {
         GeneralInformation general;
+        ConsumingProperties consumingProps;
         LocationDefinition.Location location;
         bool exists;
     }
+
 
     /// @notice An array containing all registerd assets
     Asset[] private assets;
@@ -51,10 +46,11 @@ contract AssetRegistryDB is Owned {
     /// @dev empty structs for initializing, used to avoid compile warnings
     GeneralInformation generalEmpty;
     LocationDefinition.Location locationEmpty;
+    ConsumingProperties consumingEmpty;
 
     /// @notice Constructor
     /// @param _owner The owner of the contract
-    function AssetRegistryDB(address _owner) 
+    function AssetConsumingRegistryDB(address _owner) 
         public
         Owned(_owner) 
     {
@@ -68,8 +64,9 @@ contract AssetRegistryDB is Owned {
         onlyOwner
         returns (uint)
     {
-        return assets.push(AssetRegistryDB.Asset({
+        return assets.push(AssetConsumingRegistryDB.Asset({
             general: generalEmpty,
+            consumingProps: consumingEmpty,
             location: locationEmpty,
             exists: false
         })) - 1;
@@ -79,28 +76,23 @@ contract AssetRegistryDB is Owned {
     /// @param _index The index / identifier for that asset
     /// @param _smartMeter The address of the smart meter
     /// @param _owner The address of the asset owner
-    /// @param _assetType The type of asset used to create energy
     /// @param _operationalSince The timestamp since the asset is operational
     /// @param _capacityWh The capacity in Wh of the asset
     /// @param _lastSmartMeterReadWh The smart meter read in Wh
-    /// @param _certificatesCreatedForWh The amount of Wh used to issue certificates
+    /// @param _certificatesUsedForWh The amount of Wh used to issue certificates
     /// @param _active true if active
     /// @param _lastSmartMeterReadFileHash The last meter read file hash
-    /// @param _lastSmartMeterCO2OffsetRead The last reading of the CO2 offset
-    /// @param _cO2UsedForCertificate the amount of CO2-offset already used to create certificates
-    function initGeneral(       
+    function initGeneral (       
             uint _index, 
             address _smartMeter,
             address _owner,
-            uint _assetType,
             uint _operationalSince,
             uint _capacityWh,
+            bool _maxCapacitySet,
             uint _lastSmartMeterReadWh,
-            uint _certificatesCreatedForWh,
+            uint _certificatesUsedForWh,
             bool _active,
-            bytes32 _lastSmartMeterReadFileHash,
-            uint _lastSmartMeterCO2OffsetRead,
-            uint _cO2UsedForCertificate
+            bytes32 _lastSmartMeterReadFileHash
         ) 
         onlyOwner
         external
@@ -108,21 +100,16 @@ contract AssetRegistryDB is Owned {
         Asset storage a = assets[_index];
 
         GeneralInformation storage gi = a.general; 
-        gi.smartMeter = _smartMeter;
-        gi.owner = _owner;
-        gi.assetType = _assetType;
-        gi.operationalSince = _operationalSince;
-        gi.capacityWh = _capacityWh;
-        gi.lastSmartMeterReadWh = _lastSmartMeterReadWh;
-        gi.certificatesCreatedForWh = _certificatesCreatedForWh;
-        gi.active = _active;
-        gi.lastSmartMeterReadFileHash = _lastSmartMeterReadFileHash;
-        gi.lastSmartMeterCO2OffsetRead = _lastSmartMeterCO2OffsetRead;
-        gi.cO2UsedForCertificate = _cO2UsedForCertificate;
-        gi.exists = true;
-    }
+        ConsumingProperties storage cp = a.consumingProps;
+        setGeneralInformationInternal(gi, _smartMeter, _owner, _operationalSince,_lastSmartMeterReadWh, _active, _lastSmartMeterReadFileHash);
+   
+        cp.certificatesUsedForWh = _certificatesUsedForWh;
+        cp.capacityWh = _capacityWh;
+        cp.maxCapacitySet = _maxCapacitySet;
 
-    /// @notice function to set all the location Informations for an asset
+    }
+ 
+     /// @notice function to set all the location Informations for an asset
     /// @param _index The identifier / index of an asset
     /// @param _country The country where the asset is located
     /// @param _region The region / state where the asset is located
@@ -146,19 +133,10 @@ contract AssetRegistryDB is Owned {
         onlyOwner
         external
     {
-        Asset storage a = assets[_index];
-        LocationDefinition.Location storage loc = a.location;
-        loc.country = _country;
-        loc.region = _region;
-        loc.zip = _zip;
-        loc.city = _city;
-        loc.street = _street;
-        loc.houseNumber = _houseNumber;
-        loc.gpsLatitude = _gpsLatitude;
-        loc.gpsLongitude = _gpsLongitude;
-        loc.exists = true;
-    }
-
+        LocationDefinition.Location storage loc = assets[_index].location;
+        initLocationInternal(loc,_country,_region,_zip,_city,_street,_houseNumber,_gpsLatitude,_gpsLongitude);
+    } 
+ 
     /// @notice Sets if an entry in the asset registry is active
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @param _active true if active
@@ -180,15 +158,6 @@ contract AssetRegistryDB is Owned {
         a.exists = _exist;
     }
 
-    /// @notice Sets the fuel type belonging to an entry in the asset registry
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @param _assetType The new fuel type
-    function setAssetType(uint _assetId, uint _assetType) 
-        onlyOwner
-        external
-    {
-        assets[_assetId].general.assetType = _assetType;
-    }
 
     /// @notice Sets the capacity in Wh of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
@@ -197,37 +166,17 @@ contract AssetRegistryDB is Owned {
         onlyOwner
         external
     {
-        assets[_assetId].general.capacityWh = _capacityWh;
+        assets[_assetId].consumingProps.capacityWh = _capacityWh;
     }
 
     /// @notice Sets amount of Wh used to issue certificates belonging to an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
-    /// @param _certificatesCreatedForWh The amount of Wh used to issue certificates
-    function setCertificatesCreatedForWh(uint _assetId, uint _certificatesCreatedForWh) 
+    /// @param _certificatesUsedForWh The amount of Wh used to issue certificates
+    function setCertificatesUsedForWh(uint _assetId, uint _certificatesUsedForWh) 
         onlyOwner
         external
     {
-        assets[_assetId].general.certificatesCreatedForWh = _certificatesCreatedForWh;
-    }
-
-    /// @notice Sets amount of saved CO2 used to issue certificates belonging to an entry in the asset registry
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @param _used The amount of saved CO2 used to issue certificates
-    function setCO2UsedForCertificate(uint _assetId, uint _used) 
-        onlyOwner 
-        external 
-    {
-        assets[_assetId].general.cO2UsedForCertificate += _used;
-    }
-    
-    /// @notice Sets the last smart meter read in saved CO2 of an entry in the asset registry
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @param _lastCO2OffsetReading The new amount of saved CO2
-    function setLastCO2OffsetReading(uint _assetId, uint _lastCO2OffsetReading)
-        onlyOwner
-        external
-    {
-        assets[_assetId].general.cO2UsedForCertificate = _lastCO2OffsetReading;
+        assets[_assetId].consumingProps.certificatesUsedForWh = _certificatesUsedForWh;
     }
 
     /// @notice Sets last meter read file hash
@@ -312,7 +261,7 @@ contract AssetRegistryDB is Owned {
         return assets[_assetId].general.active;
     }
 
- /// @notice Gets the general information of an asset
+    /// @notice Gets the general information of an asset
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return general information of an asset
     function getAssetGeneral(uint _assetId) 
@@ -322,32 +271,28 @@ contract AssetRegistryDB is Owned {
         returns(
             address _smartMeter,
             address _owner,
-            uint _assetType,
             uint _operationalSince,
             uint _capacityWh,
+            bool _maxCapacitySet,
             uint _lastSmartMeterReadWh,
-            uint _certificatesCreatedForWh,
+            uint _certificatesUsedForWh,
             bool _active,
-            bytes32 _lastSmartMeterReadFileHash,
-            uint _lastCO2OffsetReading,
-            uint cO2UsedForCertificate
+            bytes32 _lastSmartMeterReadFileHash
             )
     {
         Asset storage asset = assets[_assetId];
         GeneralInformation storage gi = asset.general;
-        return (
-            gi.smartMeter,
-            gi.owner,
-            gi.assetType,
-            gi.operationalSince,
-            gi.capacityWh,
-            gi.lastSmartMeterReadWh,
-            gi.certificatesCreatedForWh,
-            gi.active,
-            gi.lastSmartMeterReadFileHash,
-            gi.lastSmartMeterCO2OffsetRead,
-            gi.cO2UsedForCertificate
-        );
+        ConsumingProperties storage cp = asset.consumingProps;
+
+        _smartMeter = gi.smartMeter;
+        _owner = gi.owner;
+        _operationalSince = gi.operationalSince;
+        _capacityWh = cp.capacityWh;
+        _maxCapacitySet = cp.maxCapacitySet;
+        _lastSmartMeterReadWh = gi.lastSmartMeterReadWh;
+        _certificatesUsedForWh = cp.certificatesUsedForWh;
+        _active = gi.active;
+        _lastSmartMeterReadFileHash = gi.lastSmartMeterReadFileHash;
     }
 
     /// @notice function to get the amount of assets
@@ -361,7 +306,7 @@ contract AssetRegistryDB is Owned {
         return assets.length;
     }
 
-    /// @notice function to get the informations about the location of a struct
+     /// @notice function to get the informations about the location of a struct
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude
     function getAssetLocation(uint _assetId)
@@ -380,31 +325,8 @@ contract AssetRegistryDB is Owned {
         )
     {
         LocationDefinition.Location storage loc = assets[_assetId].location;
-
-        country = loc.country;
-        region = loc.region;
-        zip = loc.zip;
-        city = loc.city;
-        street = loc.street;
-        houseNumber = loc.houseNumber;
-        gpsLatitude = loc.gpsLatitude;
-        gpsLongitude = loc.gpsLongitude;
-
-        return (country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude);
-    }
-
-
-    /// @notice Gets the asset type belonging to an entry in the asset registry
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @return the type of asset
-    function getAssetType(uint _assetId)
-        onlyOwner
-        external
-        view
-        returns(uint)
-    {
-        return assets[_assetId].general.assetType;
-    }
+        return getAssetLocationInternal(loc);
+    } 
 
     /// @notice Gets the capacity in Wh of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
@@ -415,32 +337,19 @@ contract AssetRegistryDB is Owned {
         view
         returns(uint)
     {
-        return assets[_assetId].general.capacityWh;
+        return assets[_assetId].consumingProps.capacityWh;
     }
 
     /// @notice Gets amount of Wh used to issue certificates belonging to an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return the amount of Wh used to issue certificates
-    function getCertificatesCreatedForWh(uint _assetId)
+    function getCertificatesUsedForWh(uint _assetId)
         onlyOwner
         external
         view
         returns(uint)
     {
-        return assets[_assetId].general.certificatesCreatedForWh;
-    }
-
-
-    /// @notice Gets the amount of already used CO2-offset for creating certificates
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @return the aount of already used CO2-offset
-    function getCo2UsedForCertificate(uint _assetId) 
-        onlyOwner 
-        external 
-        view 
-        returns (uint) 
-    {
-        return assets[_assetId].general.cO2UsedForCertificate;
+        return assets[_assetId].consumingProps.certificatesUsedForWh;
     }
 
     /// @notice function the retrieve the existing status of the general information, the location information and the asset itself
@@ -453,19 +362,7 @@ contract AssetRegistryDB is Owned {
         returns (bool general, bool location, bool asset)
     {
         Asset storage a = assets[_index];
-        return(a.exists, a.general.exists, a.location.exists);
-    }
-
-    /// @notice Gets the last CO2-offset read of an entry in the asset registry
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @return the last loged CO2-offset read tru
-    function getlastSmartMeterCO2OffsetRead(uint _assetId)
-        onlyOwner
-        external 
-        view 
-        returns (uint)
-    {
-        return assets[_assetId].general.lastSmartMeterCO2OffsetRead;
+        return(a.general.exists, a.location.exists, a.exists);
     }
     
     /// @notice Gets last smart merter read file hash

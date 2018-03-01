@@ -89,8 +89,4 @@ contract RoleManagement {
         /// we also don't have to check for a potential overflow here, because the used enum will prevent using roles that do not exist
         return (rights & role != 0);
     }
-
-    
-
-    
 }

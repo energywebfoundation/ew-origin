@@ -33,10 +33,10 @@ contract CertificateDB is Owned {
         address owner;
         uint powerInW;
         bool retired;
-        /// @dev could make a invariant that retired is only allowed to be true if request is true as well
-        bool retiredRequested;
         bytes32 dataLog;
         uint coSaved;
+        address escrow;
+        uint creationTime;
     }
 
     /// @notice An array containing all created certificates
@@ -52,9 +52,16 @@ contract CertificateDB is Owned {
     /// @param _owner The owner of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
     /// @return The id of the certificate
-    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved) public onlyOwner returns (uint) {
-        return certificateList.push(Certificate(_assetId, _owner, _powerInW, false, false, _dataLog, _coSaved)) - 1;
+    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved, address _escrow) public onlyOwner returns (uint) {
+        return certificateList.push(Certificate(_assetId, _owner, _powerInW, false, _dataLog, _coSaved, _escrow, now)) - 1;
         
+    }
+
+    function setCertificateEscrow(uint _certificateId, address _escrow)
+        public
+        onlyOwner
+    {
+        certificateList[_certificateId].escrow = _escrow;
     }
 
     /// @notice Sets the owner of a certificate
@@ -64,19 +71,6 @@ contract CertificateDB is Owned {
         certificateList[_certificateId].owner = _owner;
     }
 
-    /// @notice Sets flag to be retired
-    /// @param _certificateId The array position in which the certificate is stored
-    /// @param _set request or cancel request
-    function setRetireRequest(uint _certificateId, bool _set) public onlyOwner {
-        certificateList[_certificateId].retiredRequested = _set;
-    }
-
-    /// @notice Returns true if it can be retired by admin
-    /// @param _certificateId The array position in which the certificate is stored
-    /// @return bool true if retirement was requested
-    function isRetired(uint _certificateId) public view onlyOwner returns (bool) {
-        return certificateList[_certificateId].retiredRequested;
-    }
 
     /// @notice Sets a certificate to retired
     /// @param _certificateId The array position in which the certificate is stored
@@ -87,8 +81,30 @@ contract CertificateDB is Owned {
     /// @notice Returns the certificate that corresponds to the given array id
     /// @param _certificateId The array position in which the certificate is stored
     /// @return all elements of the certificate
-    function getCertificate(uint _certificateId) public onlyOwner view returns (uint, address, uint, bool, bool, bytes32, uint) {
-        return (certificateList[_certificateId].assetId, certificateList[_certificateId].owner, certificateList[_certificateId].powerInW, certificateList[_certificateId].retired, certificateList[_certificateId].retiredRequested, certificateList[_certificateId].dataLog, certificateList[_certificateId].coSaved);
+    function getCertificate(uint _certificateId) 
+        public 
+        view 
+        returns (
+            uint _assetId, 
+            address _owner, 
+            uint _powerInW, 
+            bool _retired, 
+            bytes32 _dataLog, 
+            uint _coSaved, 
+            address _escrow, 
+            uint _creationTime
+        ) 
+    {
+        Certificate storage c = certificateList[_certificateId];
+
+        _assetId = c.assetId;
+        _owner = c.owner;
+        _powerInW = c.powerInW; 
+        _retired = c.retired;
+        _dataLog = c.dataLog; 
+        _coSaved = c.coSaved;
+        _escrow = c.escrow;
+        _creationTime = c.creationTime;    
     }
 
     /// @notice Returns the certificate owner
@@ -98,8 +114,23 @@ contract CertificateDB is Owned {
         return certificateList[_certificateId].owner;
     }
 
+    /// @notice Getter for state of retirement
+    /// @param _certificateId The id of the requested certificate
+    /// @return bool if it is retired
+    function isRetired(uint _certificateId) public onlyOwner view returns (bool) {
+        return certificateList[_certificateId].retired;
+    }
+
     function getCertificateListLength() public onlyOwner view returns (uint) {
         return certificateList.length;
     }
 
+    function getCertificateEscrow(uint _certificateId) 
+        public
+        onlyOwner
+        view 
+        returns (address) 
+    {
+        return certificateList[_certificateId].escrow;
+    } 
 }

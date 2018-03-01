@@ -14,19 +14,19 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic");
-var AssetRegistryDB = artifacts.require("AssetRegistryDB");
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
+var AssetProducingRegistryDB = artifacts.require("AssetProducingRegistryDB");
 var CoO = artifacts.require("CoO");
 
-contract('AssetRegistryLogic', function (accounts) {
+contract('AssetProducingRegistryLogic', function (accounts) {
 
   var assetLog,
     assetDb,
     coo;
 
   it("should get the instances", async function () {
-    assetLog = await AssetRegistryLogic.deployed();
-    assetDb = await AssetRegistryDB.deployed();
+    assetLog = await AssetProducingRegistryLogic.deployed();
+    assetDb = await AssetProducingRegistryDB.deployed();
     coo = await CoO.deployed()
 
     assert.isNotNull(assetLog)
@@ -37,17 +37,27 @@ contract('AssetRegistryLogic', function (accounts) {
   it("should execute the constructor successfully", async function () { })
 
   it("should be initialized successfully", async function () {
-    assert.equal(await assetLog.db.call(), AssetRegistryDB.address)
+    assert.equal(await assetLog.db.call(), AssetProducingRegistryDB.address)
   })
+
+  it("should have 0 assets in the assetList", async function () {
+    assert.equal((await assetLog.getAssetListLength()).toNumber(), 0)
+  })
+
 
   it("should create an new empty asset", async function () {
     await assetLog.createAsset()
+  })
+
+  it("should have 1 asset in the assetList", async function () {
+    assert.equal((await assetLog.getAssetListLength()).toNumber(), 1)
   })
 
   it("should register general information of an asset with an existing owner", async function () {
     await assetLog.initGeneral(0,
       accounts[9],
       accounts[0],
+      0,
       0,
       1234567890,
       100000,
@@ -88,13 +98,17 @@ contract('AssetRegistryLogic', function (accounts) {
     let failed = false
 
     try {
-      await assetLog.registerAsset(accounts[9], accounts[2], 0, 1234567890, 100000, 1, 0, true, { from: accounts[2] })
+      await assetLog.registerAsset(accounts[9], accounts[2], 0, 0, 1234567890, 100000, 1, 0, true, { from: accounts[2] })
       if (tx.receipt.status == '0x00') failed = true
 
     } catch (ex) {
       failed = true
     }
     assert.isTrue(failed)
+  })
+
+  it("should return 0 when calling getCoSaved wth 0 wh", async function () {
+    assert.equal((await assetLog.getCoSaved(0, 0)).toNumber(), 0)
   })
 
   it("should log data", async function () {
@@ -109,13 +123,18 @@ contract('AssetRegistryLogic', function (accounts) {
     const asset = await assetLog.getAssetGeneral(0)
     assert.equal(asset[1], accounts[0])
     assert.equal(asset[2], 0)
-    assert.equal(asset[3], 1234567890)
-    assert.equal(asset[4], 100000)
-    assert.equal(asset[5], 201)
-    assert.equal(asset[6], 0)
-    assert.equal(asset[7], true)
-    assert.equal(asset[8], '0x0000000000000000000000000000000000000000000000000000000000000001')
+    assert.equal(asset[3], 0)
+    assert.equal(asset[4], 1234567890)
+    assert.equal(asset[5], 100000)
+    assert.equal(asset[6], 201)
+    assert.equal(asset[7], 0)
+    assert.equal(asset[8], true)
+    assert.equal(asset[9], '0x0000000000000000000000000000000000000000000000000000000000000001')
 
+  })
+
+  it("should return 0 when calling getCoSaved wth 0 wh", async function () {
+    assert.equal((await assetLog.getCoSaved(0, 0)).toNumber(), 0)
   })
 
   it("other account than smart meter should not log data", async function () {
@@ -135,7 +154,14 @@ contract('AssetRegistryLogic', function (accounts) {
   it("should retire an asset", async function () {
     await assetLog.setActive(0, false, { from: accounts[2] })
     const asset = await assetLog.getAssetGeneral.call(0)
-    assert.equal(asset[7], false)
+
+    assert.isFalse(asset[8])
+  })
+
+  it("should re-retire an asset", async function () {
+    await assetLog.setActive(0, true, { from: accounts[2] })
+    const asset = await assetLog.getAssetGeneral.call(0)
+    assert.isTrue(asset[8])
 
   })
 

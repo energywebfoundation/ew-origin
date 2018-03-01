@@ -23,9 +23,10 @@ import "./Updatable.sol";
 contract CoO is Owned {
 
     Updatable public userRegistry;
-    Updatable public assetRegistry;
+    Updatable public assetProducingRegistry;
     Updatable public certificateRegistry;
     Updatable public demandRegistry;
+    Updatable public assetConsumingRegistry;
 
     /// @notice The constructor of the UserDB
     function CoO()
@@ -37,28 +38,29 @@ contract CoO is Owned {
 
     /// @notice function to initialize the contracts, setting the needed contract-addresses
     /// @param _userRegistry user-registry logic contract address
-    /// @param _assetRegistry asset-registry logic contract address
+    /// @param _assetProducingRegistry asset-registry logic contract address
     /// @param _certificateRegistry certificate-registry logic contract address
-    function init(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry) 
+    function init(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry) 
         onlyOwner
         external
     {
         require(    
-            _userRegistry != address(0) && _assetRegistry != address(0) && _certificateRegistry != address(0) && _demandRegistry != address(0)
-            && userRegistry == address(0) && assetRegistry == address(0) && certificateRegistry == address(0) && demandRegistry == address(0)
+            _userRegistry != address(0) && _assetProducingRegistry != address(0) && _certificateRegistry != address(0) && _demandRegistry != address(0) && _assetConsumingRegistry != address(0)
+            && userRegistry == address(0) && assetProducingRegistry == address(0) && certificateRegistry == address(0) && demandRegistry == address(0) && assetConsumingRegistry == address(0)
         );
         userRegistry = _userRegistry;
-        assetRegistry = _assetRegistry;
+        assetProducingRegistry = _assetProducingRegistry;
         certificateRegistry = _certificateRegistry;
         demandRegistry = _demandRegistry;
+        assetConsumingRegistry = _assetConsumingRegistry;
         
     }
 
     /// @notice function to update one or more logic-contracts
     /// @param _userRegistry address of the new user-registry-logic-contract
-    /// @param _assetRegistry address of the new asset-registry-logic-contract
+    /// @param _assetProducingRegistry address of the new asset-registry-logic-contract
     /// @param _certificateRegistry address of the new certificate-registry-logic-contract
-    function update(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry)
+    function update(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry)
         onlyOwner 
         external
     {
@@ -67,9 +69,9 @@ contract CoO is Owned {
             userRegistry = _userRegistry;
         }
 
-        if (_assetRegistry != address(0)) {
-            assetRegistry.update(_assetRegistry);
-            assetRegistry = _assetRegistry;
+        if (_assetProducingRegistry != address(0)) {
+            assetProducingRegistry.update(_assetProducingRegistry);
+            assetProducingRegistry = _assetProducingRegistry;
         }
 
         if (_certificateRegistry != address(0)) {
@@ -81,13 +83,11 @@ contract CoO is Owned {
             demandRegistry.update(_demandRegistry);
             demandRegistry = _demandRegistry;
         }
-        
+
+        if(_assetConsumingRegistry != address(0)) {
+            assetConsumingRegistry.update(_assetConsumingRegistry);
+            assetConsumingRegistry = _assetConsumingRegistry;
+        }        
 
     }
-
-    /// @notice Fallback, will throw when ether is send to the contract
-    function () external {
-        revert();
-    }
-
 }

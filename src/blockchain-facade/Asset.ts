@@ -1,6 +1,32 @@
 import Web3Type from '../types/web3'
 import { BlockchainProperties } from './BlockchainProperties'
 
+export interface AssetProperties {
+      // GeneralInformation
+      smartMeter: string
+      owner: string
+      assetType: AssetType
+      operationalSince: number
+      capacityWh: number
+      lastSmartMeterReadWh?: number
+      certificatesCreatedForWh: number
+      active: boolean
+
+      lastSmartMeterReadFileHash?: string
+      lastSmartMeterCO2OffsetRead?: number
+      cO2UsedForCertificate?: number
+      complianceRegistry: Compliance
+
+      country: string
+      region: string
+      zip: string
+      city: string
+      street: string
+      houseNumber: string
+      gpsLatitude: string
+      gpsLongitude: string
+}
+
 export enum AssetType {
     Wind,
     Solar,
@@ -8,7 +34,15 @@ export enum AssetType {
     BiomassGas
 }
 
-export class Asset {
+export enum Compliance {
+    none,
+    IREC,
+    EEC,
+    TIGR
+}
+
+
+export class Asset implements AssetProperties{
     id: number
     // GeneralInformation
     smartMeter: string
@@ -19,9 +53,11 @@ export class Asset {
     lastSmartMeterReadWh: number
     certificatesCreatedForWh: number
     active: boolean
+
     lastSmartMeterReadFileHash: string
     lastSmartMeterCO2OffsetRead: number
     cO2UsedForCertificate: number
+    complianceRegistry: Compliance
     // Location
     country: string
     region: string
@@ -32,11 +68,14 @@ export class Asset {
     gpsLatitude: string
     gpsLongitude: string
 
+    initialized: boolean;
+
     blockchainProperties: BlockchainProperties
 
     constructor(id: number, blockchainProperties: BlockchainProperties) {
         this.id = id
         this.blockchainProperties = blockchainProperties
+        this.initialized = false
     }
 
     static async GET_ASSET_LIST_LENGTH(blockchainProperties: BlockchainProperties) {
@@ -52,6 +91,65 @@ export class Asset {
         
         return Promise.all(assetsPromises)
     
+    }
+
+    static async GET_ALL_ASSET_OWNED_BY(owner: string, blockchainProperties: BlockchainProperties) {
+        return (await Asset.GET_ALL_ASSETS(blockchainProperties))
+            .filter((asset: Asset) => asset.owner === owner)
+    }
+
+    static async CREATE_ASSET(assetProperties: AssetProperties, blockchainProperties: BlockchainProperties): Promise<Asset> {
+
+        const gasCreate = await blockchainProperties.assetLogicInstance.methods
+            .createAsset()
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+        const txCreate = await blockchainProperties.assetLogicInstance.methods
+            .createAsset()
+            .send({from: blockchainProperties.assetAdminAccount, gas: Math.round(gasCreate * 1.1)})
+        
+        const assetId = parseInt(txCreate.events.LogAssetCreated.returnValues.id, 10)
+
+        const initGeneralParams = [
+            assetId,
+            assetProperties.smartMeter,
+            assetProperties.owner,
+            assetProperties.assetType,
+            assetProperties.complianceRegistry,
+            assetProperties.operationalSince,
+            assetProperties.capacityWh,
+            assetProperties.active
+        ]
+
+        const gasInitGeneral = await blockchainProperties.assetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+    
+        const txInitGeneral = await blockchainProperties.assetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .send({from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1)})
+            
+        const initLocationParams = [
+            assetId,
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+        ]
+        
+        const gasInitLocation = await blockchainProperties.assetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitLocation = await blockchainProperties.assetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .send({from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitLocation * 1.1)})
+
+        return (new Asset(assetId, blockchainProperties)).syncWithBlockchain()
+
     }
 
     async syncWithBlockchain(): Promise<Asset> {
@@ -73,6 +171,8 @@ export class Asset {
             this.lastSmartMeterReadFileHash = demandData[0]._lastSmartMeterReadFileHash
             this.lastSmartMeterCO2OffsetRead =  parseInt(demandData[0]._lastCO2OffsetReading, 10)
             this.cO2UsedForCertificate =  parseInt(demandData[0]._cO2UsedForCertificate, 10)
+      
+            this.complianceRegistry = parseInt(demandData[0]._compliance, 10)
             // Location
             this.country = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].country)
             this.region = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].region)
@@ -82,6 +182,8 @@ export class Asset {
             this.houseNumber = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].houseNumber)
             this.gpsLatitude = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].gpsLatitude)
             this.gpsLongitude = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].gpsLongitude)
+
+            this.initialized = true
    
             
         }

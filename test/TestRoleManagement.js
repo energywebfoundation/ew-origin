@@ -15,8 +15,8 @@
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
 
 var UserLogic = artifacts.require("UserLogic");
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic")
-var AssetRegistryDB = artifacts.require("AssetRegistryDB");
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic")
+var AssetProducingRegistryDB = artifacts.require("AssetProducingRegistryDB");
 var CertificateLogic = artifacts.require("CertificateLogic");
 var CoO = artifacts.require("CoO");
 
@@ -29,8 +29,8 @@ contract('RoleManagement', async function (accounts) {
 
   it("should get the instances", async function () {
     UserLog = await UserLogic.deployed();
-    AssetLog = await AssetRegistryLogic.deployed()
-    AssetDb = await AssetRegistryDB.deployed()
+    AssetLog = await AssetProducingRegistryLogic.deployed()
+    AssetDb = await AssetProducingRegistryDB.deployed()
     coo = await CoO.deployed()
 
     assert.isNotNull(UserLog)
@@ -595,6 +595,7 @@ contract('RoleManagement', async function (accounts) {
     await AssetLog.initGeneral(0,
       accounts[9],
       accounts[0],
+      0,
       0,
       1234567890,
       100000,

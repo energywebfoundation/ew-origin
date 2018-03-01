@@ -15,12 +15,12 @@
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
 
 var CoO = artifacts.require("CoO");
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic")
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic")
 var CertificateLogic = artifacts.require("CertificateLogic");
 var UserLogic = artifacts.require("UserLogic");
 
 var UserDB = artifacts.require("UserDB");
-var AssetRegistryDB = artifacts.require("AssetRegistryDB")
+var AssetProducingRegistryDB = artifacts.require("AssetProducingRegistryDB")
 var CertificateDB = artifacts.require("CertificateDB")
 
 contract('CoO update one logic', function (accounts) {
@@ -28,37 +28,37 @@ contract('CoO update one logic', function (accounts) {
     var coo,
         userDb,
         userLogic,
-        assetRegistryDb,
+        assetProducingRegistryDB,
         certificateDb;
 
     it("should get the instances", async function () {
         coo = await CoO.deployed();
         userDb = await UserDB.deployed()
-        assetRegistryDb = await AssetRegistryDB.deployed()
+        assetProducingRegistryDB = await AssetProducingRegistryDB.deployed()
         certificateDb = await CertificateDB.deployed()
         userLogic = await UserLogic.deployed()
         assert.isNotNull(coo)
         assert.isNotNull(userDb)
         assert.isNotNull(userLogic)
-        assert.isNotNull(assetRegistryDb)
+        assert.isNotNull(assetProducingRegistryDB)
         assert.isNotNull(certificateDb)
     })
 
     it("should be initilized successfully", async function () {
         assert.equal(await coo.userRegistry(), UserLogic.address)
         //     assert.equal(await coo.userDB(), UserDB.address)
-        assert.equal(await coo.assetRegistry(), AssetRegistryLogic.address)
+        assert.equal(await coo.assetProducingRegistry(), AssetProducingRegistryLogic.address)
         assert.equal(await coo.certificateRegistry(), CertificateLogic.address)
 
     })
 
     it("should not allow other users to call the update-function", async function () {
         assert.equal(await userDb.owner(), UserLogic.address, 'userDB has wrong owner')
-        assert.equal(await assetRegistryDb.owner(), AssetRegistryLogic.address, 'assetDB has wrong owner')
+        assert.equal(await assetProducingRegistryDB.owner(), AssetProducingRegistryLogic.address, 'assetDB has wrong owner')
         assert.equal(await certificateDb.owner(), CertificateLogic.address, 'certificateDB has wrong owner')
         let failed = false
         try {
-            let tx = await coo.update('0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000001', { from: accounts[1] })
+            let tx = await coo.update('0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000001', { from: accounts[1] })
             if (tx.receipt.status == '0x00') failed = true
         }
         catch (ex) {
@@ -67,11 +67,11 @@ contract('CoO update one logic', function (accounts) {
         assert.isTrue(failed)
         assert.equal(await coo.userRegistry(), UserLogic.address)
         //   assert.equal(await coo.userDB(), UserDB.address)
-        assert.equal(await coo.assetRegistry(), AssetRegistryLogic.address)
+        assert.equal(await coo.assetProducingRegistry(), AssetProducingRegistryLogic.address)
         assert.equal(await coo.certificateRegistry(), CertificateLogic.address)
 
         assert.equal(await userDb.owner(), UserLogic.address, 'userDB has wrong owner')
-        assert.equal(await assetRegistryDb.owner(), AssetRegistryLogic.address, 'assetDB has wrong owner')
+        assert.equal(await assetProducingRegistryDB.owner(), AssetProducingRegistryLogic.address, 'assetDB has wrong owner')
         assert.equal(await certificateDb.owner(), CertificateLogic.address, 'certificateDB has wrong owner')
     })
 
@@ -92,18 +92,18 @@ contract('CoO update one logic', function (accounts) {
 
     it("should update userlogic correctly", async function () {
         assert.equal(await userDb.owner(), UserLogic.address, 'userDB has wrong owner')
-        assert.equal(await assetRegistryDb.owner(), AssetRegistryLogic.address, 'assetDB has wrong owner')
+        assert.equal(await assetProducingRegistryDB.owner(), AssetProducingRegistryLogic.address, 'assetDB has wrong owner')
         assert.equal(await certificateDb.owner(), CertificateLogic.address, 'certificateDB has wrong owner')
 
-        await coo.update('0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000')
+        await coo.update('0x0000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000')
 
         assert.equal(await coo.userRegistry(), '0x0000000000000000000000000000000000000001')
         //     assert.equal(await coo.userDB(), UserDB.address)
-        assert.equal(await coo.assetRegistry(), AssetRegistryLogic.address)
+        assert.equal(await coo.assetProducingRegistry(), AssetProducingRegistryLogic.address)
         assert.equal(await coo.certificateRegistry(), CertificateLogic.address)
 
         assert.equal(await userDb.owner(), '0x0000000000000000000000000000000000000001', 'userDB has wrong owner')
-        assert.equal(await assetRegistryDb.owner(), AssetRegistryLogic.address, 'assetDB has wrong owner')
+        assert.equal(await assetProducingRegistryDB.owner(), AssetProducingRegistryLogic.address, 'assetDB has wrong owner')
         assert.equal(await certificateDb.owner(), CertificateLogic.address, 'certificateDB has wrong owner')
 
 

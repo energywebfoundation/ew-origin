@@ -29,26 +29,30 @@ contract DemandDB is Owned {
 
     /// @notice struct for all the data belonging to the matcher
     struct MatcherProperties {
+        // how many Wh per Period
         uint targetWhPerperiod;
+        // already 
         uint currentWhPerperiod;
         uint certInCurrentperiod;
-        uint consumptionLastSetInperiod;
+        uint productionLastSetInPeriod;
         // simple address of privateKey-keypair
         address matcher; 
     }
 
     /// @notice struct for all the information belonging to the coupling, can be 0
     struct Coupling {
-        int producingAssets;
-        int consumingAssets;
+        uint producingAssets;
+        uint consumingAssets;
     }
 
     /// @notice struct for all the information that can affect a price
     struct PriceDriving {
         LocationDefinition.Location location;
+        int registryCompliance;
         uint assettype;
         // 	proportion between CO2 and wh in percent (100 * CO2 / Wh)
         uint minCO2Offset; 
+        bool isInitialized;
     }
 
     /// @notice struct for all the general information about a demand
@@ -60,8 +64,6 @@ contract DemandDB is Owned {
         uint timeframe;
         uint pricePerCertifiedKWh;
         uint currency;
-        bool coupled;
-
     }
     
     /// @notice struct for gather all information
@@ -72,6 +74,7 @@ contract DemandDB is Owned {
         MatcherProperties matchProp; 
         bool enabled;
         uint created;
+        uint demandMask;
     }
 
     /// @notice list with all currenty active Demands
@@ -107,8 +110,8 @@ contract DemandDB is Owned {
     /// @param _consAssets array with assets that are allowed to consume energy for this agreement
     function createCoupling(
         uint _index,
-        int _prodAssets,
-        int _consAssets
+        uint _prodAssets,
+        uint _consAssets
     )
         external 
         onlyOwner
@@ -122,7 +125,7 @@ contract DemandDB is Owned {
 
     /// @notice function to create an empty demand
     /// @return the index and thus the identifier of a demand
-    function createEmptyDemand()
+    function createEmptyDemand(uint _mask)
         external
         onlyOwner
         returns (uint)
@@ -133,7 +136,8 @@ contract DemandDB is Owned {
             priceDriving: priceDrivingEmpty,
             matchProp: matchPropEmpty,
             enabled: false,
-            created : 0
+            created : 0,
+            demandMask: _mask
         })) -1);
     }
 
@@ -145,7 +149,6 @@ contract DemandDB is Owned {
     /// @param _endTime latest accepted certificates
     /// @param _pricePerCertifiedKWh price per certified kWh
     /// @param _currency currency the originator wants to be paid with
-    /// @param _coupled flag if there is a coupling with consumption
     function createGeneralDemand(
         uint _index,
         address _originator,
@@ -154,8 +157,7 @@ contract DemandDB is Owned {
         uint _endTime,
         uint _timeframe,
         uint _pricePerCertifiedKWh,
-        uint _currency,
-        bool _coupled
+        uint _currency
     )
         external
         onlyOwner 
@@ -171,7 +173,6 @@ contract DemandDB is Owned {
         g.timeframe = _timeframe;
         g.pricePerCertifiedKWh = _pricePerCertifiedKWh;
         g.currency = _currency;
-        g.coupled = _coupled;
         
     }
 
@@ -180,14 +181,14 @@ contract DemandDB is Owned {
     /// @param _WhAmountPerperiod the desired amount of Wh per period
     /// @param _currentWhPerperiod the current amount of Wh
     /// @param _certInCurrentperiod the amount of certificates created in the current period
-    /// @param _consumptionLastSetInperiod the last period where the consumption was set
+    /// @param _productionLastSetInPeriod the last period where the consumption was set
     /// @param _matcher account of the javaScript-matcher
     function createMatchProperties(
         uint _index,
         uint _WhAmountPerperiod,
         uint _currentWhPerperiod,
         uint _certInCurrentperiod,
-        uint _consumptionLastSetInperiod,
+        uint _productionLastSetInPeriod,
         address _matcher
     )
         external
@@ -200,7 +201,7 @@ contract DemandDB is Owned {
         m.targetWhPerperiod = _WhAmountPerperiod;
         m.currentWhPerperiod = _currentWhPerperiod;
         m.certInCurrentperiod = _certInCurrentperiod;
-        m.consumptionLastSetInperiod = _consumptionLastSetInperiod;
+        m.productionLastSetInPeriod = _productionLastSetInPeriod;
         m.matcher = _matcher;
     }
 
@@ -220,7 +221,8 @@ contract DemandDB is Owned {
         bytes32 _gpsLatitude,
         bytes32 _gpsLongitude,
         uint _type,
-        uint _minCO2Offset 
+        uint _minCO2Offset,
+        int _registryCompliance
     )
         external
         onlyOwner
@@ -232,6 +234,7 @@ contract DemandDB is Owned {
         p.location = locationEmpty;
         p.assettype = _type;
         p.minCO2Offset = _minCO2Offset;
+        p.registryCompliance = _registryCompliance;
 
         LocationDefinition.Location storage location = p.location;
             location.country = _country;
@@ -243,6 +246,7 @@ contract DemandDB is Owned {
             location.gpsLatitude = _gpsLatitude;
             location.gpsLongitude = _gpsLongitude;
             location.exists = true;
+        p.isInitialized = true;
     }
 
     /// @notice function to remove an entry in the activeDemands-array
@@ -271,6 +275,13 @@ contract DemandDB is Owned {
         allDemands[_index].created = _time;
     }
 
+    function setDemandMask(uint _id, uint _mask) 
+        external
+        onlyOwner
+    {
+        allDemands[_id].demandMask = _mask;
+    }
+
     /// @notice function to en- or disable a demand
     /// @param _index identifier
     /// @param _enabled flag if the demand should be enabled
@@ -286,12 +297,12 @@ contract DemandDB is Owned {
     /// @param _index identifier
     /// @param _currentWhPerperiod the current amount of Wh
     /// @param _certInCurrentperiod the amount of certificates created in the current period
-    /// @param _consumptionLastSetInperiod the last period where the consumption was set
+    /// @param _productionLastSetInPeriod the last period where the consumption was set
     function updateMatchProperties(
         uint _index,
         uint _currentWhPerperiod,
         uint _certInCurrentperiod,
-        uint _consumptionLastSetInperiod
+        uint _productionLastSetInPeriod
     )
         external
         onlyOwner
@@ -301,7 +312,7 @@ contract DemandDB is Owned {
         MatcherProperties storage m = d.matchProp;
         m.currentWhPerperiod = _currentWhPerperiod;
         m.certInCurrentperiod = _certInCurrentperiod;
-        m.consumptionLastSetInperiod = _consumptionLastSetInperiod;
+        m.productionLastSetInPeriod = _productionLastSetInPeriod;
     }
 
     /// @notice function that returns if a demands exists
@@ -358,8 +369,8 @@ contract DemandDB is Owned {
         view 
         onlyOwner
         returns(
-            int producingAssets,
-            int consumingAssets
+            uint producingAssets,
+            uint consumingAssets
         ) 
     {
         Demand storage d = allDemands[_index];
@@ -383,12 +394,12 @@ contract DemandDB is Owned {
             uint timeframe,
             uint pricePerCertifiedKWh,
             uint currency,
-            bool coupled
+            uint demandMask
         ) 
     {
         Demand storage d = allDemands[_index];
         GeneralInfo storage g = d.general;
-        return (g.originator, g.buyer, g.startTime, g.endTime, g.timeframe, g.pricePerCertifiedKWh, g.currency, g.coupled);
+        return (g.originator, g.buyer, g.startTime, g.endTime, g.timeframe, g.pricePerCertifiedKWh, g.currency, d.demandMask);
     }
 
     /// @notice function to get the matcher-properties of a demand
@@ -402,13 +413,13 @@ contract DemandDB is Owned {
             uint wHAmountPerperiod,
             uint currentWhPerperiod,
             uint certInCurrentperiod,
-            uint consumptionLastSetInperiod,
+            uint productionLastSetInPeriod,
             address matcher
         ) 
     {
         Demand storage d = allDemands[_index];
         MatcherProperties storage m = d.matchProp;
-        return (m.targetWhPerperiod, m.currentWhPerperiod, m.certInCurrentperiod, m.consumptionLastSetInperiod, m.matcher);
+        return (m.targetWhPerperiod, m.currentWhPerperiod, m.certInCurrentperiod, m.productionLastSetInPeriod, m.matcher);
     }
 
 
@@ -423,12 +434,22 @@ contract DemandDB is Owned {
             bytes32 locationCountry,
             bytes32 locationRegion,
             uint assettype,
-            uint minCO2Offset
+            uint minCO2Offset,
+            int registryCompliance,
+            bool isInitialized
         ) 
     {
         Demand storage d = allDemands[_index];
         PriceDriving storage p = d.priceDriving;
-        return (p.location.country, p.location.region, p.assettype, p.minCO2Offset);
+        return (p.location.country, p.location.region, p.assettype, p.minCO2Offset, p.registryCompliance, p.isInitialized);
+    }
+
+    function getDemandMask(uint _id)
+        external
+        view 
+        returns (uint)
+    {
+        return allDemands[_id].demandMask;
     }
 
     /// @notice function to return the creationtime of the demand
@@ -447,7 +468,7 @@ contract DemandDB is Owned {
     /// @dev will return an unsigned integer, that has to be converted to a timeframe in the logic-contract
     /// @return the chosen timeframe for a demand
     function getTimeFrame(uint _index)
-        external
+        public
         onlyOwner
         view
         returns (uint)

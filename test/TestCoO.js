@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
 
 var CoO = artifacts.require("CoO");
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic")
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic")
 var CertificateLogic = artifacts.require("CertificateLogic");
 var UserDB = artifacts.require("UserDB");
 var UserLogic = artifacts.require("UserLogic");
@@ -36,11 +36,21 @@ contract('CoO', function (accounts) {
   })
 
   it("ashould have initialized ussetRegistry successfully", async function () {
-    assert.equal(await coo.assetRegistry(), AssetRegistryLogic.address)
+    assert.equal(await coo.assetProducingRegistry(), AssetProducingRegistryLogic.address)
   })
 
   it("should have initialized u certificateRegistry successfully", async function () {
     assert.equal(await coo.certificateRegistry(), CertificateLogic.address)
+  })
+
+  it("should not be possible to change owner to 0x0", async function () {
+    let ownerBefore = await coo.owner()
+    try {
+      await coo.changeOwner("0x0000000000000000000000000000000000000000")
+    } catch (ex) {
+
+    }
+    assert.equal(ownerBefore, await coo.owner())
   })
 
 })

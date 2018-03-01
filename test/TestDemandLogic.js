@@ -19,23 +19,27 @@ var CoO = artifacts.require("CoO");
 
 var DemandDB = artifacts.require("DemandDB")
 
-var AssetRegistryLogic = artifacts.require("AssetRegistryLogic");
+var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
 var CertificateLogic = artifacts.require("CertificateLogic");
+
+var ConsumingLogic = artifacts.require("AssetConsumingRegistryLogic");
 
 var UserLogic = artifacts.require("UserLogic");
 
 
 contract('DemandLogic', function (accounts) {
 
-    var demandLogic, demandDb, assetLogic, certificateLogic, startTime, endTime, agreementDate, userLogic
+    var demandLogic, demandDb, assetLogic, certificateLogic, startTime, endTime, agreementDate, userLogic, consumingLogic
 
     it("should get the instances", async function () {
         demandLogic = await DemandLogic.deployed();
         coo = await CoO.deployed()
         demandDb = await DemandDB.deployed()
-        assetLogic = await AssetRegistryLogic.deployed()
+        assetLogic = await AssetProducingRegistryLogic.deployed()
         certificateLogic = await CertificateLogic.deployed()
         userLogic = await UserLogic.deployed()
+        consumingLogic = await ConsumingLogic.deployed();
+
 
         assert.isNotNull(demandLogic)
         assert.isNotNull(coo)
@@ -46,6 +50,7 @@ contract('DemandLogic', function (accounts) {
         await assetLogic.initGeneral(0,
             accounts[9],
             accounts[0],
+            0,
             0,
             1234567890,
             100000,
@@ -74,18 +79,43 @@ contract('DemandLogic', function (accounts) {
     })
 
     it("should create an empty demand", async function () {
-        await demandLogic.createDemand()
+        await demandLogic.createDemand([false, false, false, false, false, false, false, false])
     })
+
     it("should have 1 elements in the allDemands-List", async function () {
         assert.equal((await demandLogic.getAllDemandListLength()).toNumber(), 1)
     })
 
-    it("should create a new GeneralDemand", async function () {
+    it("should throw an error when trying to create a demand with a non existing producing asset", async function () {
 
         agreementDate = (await web3.eth.getBlock('latest')).timestamp
-        // agreementDate = Math.round(new Date().getTime() / 1000)
         startTime = agreementDate - 120
         endTime = agreementDate + 1200
+        let failed = false
+        try {
+            await demandLogic.initGeneralAndCoupling(
+                0,
+                0,// accounts[4],
+                accounts[3],
+                startTime,
+                endTime,
+                0,
+                0,
+                0,
+                false,
+                2,
+                -1
+            )
+        }
+        catch (ex) {
+            failed = true
+        }
+
+        assert.isTrue(failed)
+    })
+
+
+    it("should create a new GeneralDemand", async function () {
 
         await demandLogic.initGeneralAndCoupling(
             0,
@@ -96,9 +126,8 @@ contract('DemandLogic', function (accounts) {
             0,
             0,
             0,
-            false,
-            -1,
-            -1
+            0,
+            0
         )
     })
 
@@ -112,7 +141,7 @@ contract('DemandLogic', function (accounts) {
         assert.equal(demand[4], 0)
         assert.equal(demand[5], 0)
         assert.equal(demand[6], 0)
-        assert.isFalse(demand[7])
+        assert.equal(demand[7], 0)
 
     })
 
@@ -127,8 +156,8 @@ contract('DemandLogic', function (accounts) {
     it("should return the couplinh correctly", async function () {
         let demand = await demandLogic.getDemandCoupling(0)
 
-        assert.equal(demand[0].toNumber(), -1)
-        assert.equal(demand[1].toNumber(), -1)
+        assert.equal(demand[0].toNumber(), 0)
+        assert.equal(demand[1].toNumber(), 0)
     })
 
     it("should have 0 elements in the actvieDemands-List", async function () {
@@ -144,7 +173,8 @@ contract('DemandLogic', function (accounts) {
             web3.fromAscii("Germany"),
             web3.fromAscii("Saxony"),
             0,
-            10
+            10,
+            -1
         )
     })
 
@@ -155,7 +185,7 @@ contract('DemandLogic', function (accounts) {
         assert.equal(web3.toAscii(demand[1]).replace(/\0/g, ''), 'Saxony')
         assert.equal(demand[2].toNumber(), 0)
         assert.equal(demand[3].toNumber(), 10)
-
+        assert.equal(demand[4].toNumber(), -1)
     })
 
 
@@ -222,7 +252,7 @@ contract('DemandLogic', function (accounts) {
 
     })
 
-    it("should produce 20000 watt ", async function () {
+    it("should produce 100000 watt ", async function () {
         await assetLogic.saveSmartMeterRead(0, 100000, web3.fromAscii('newFileHash'), 10000, false, { from: accounts[9] })
     })
 
@@ -249,6 +279,12 @@ contract('DemandLogic', function (accounts) {
         assert.equal(checkResult[2], 0)
         assert.isTrue(checkResult[3])
 
+    })
+
+    it("should have 0 certificates in the list", async function () {
+        let cert = await certificateLogic.getCertificateListLength()
+
+        assert.equal(cert.toNumber(), 0)
     })
 
     it("should be possible to fullfill a demand", async function () {
@@ -278,11 +314,34 @@ contract('DemandLogic', function (accounts) {
 
     })
 
+    it("should get the right amount of  Co2 Used for certificate", async function () {
+        assert.equal((await assetLogic.getCo2UsedForCertificate(0)).toNumber(), 1000)
+    })
+
+    it("should have 1 certificates in the list", async function () {
+        let cert = await certificateLogic.getCertificateListLength()
+
+        assert.equal(cert.toNumber(), 1)
+    })
+
+    it("should have created certificate correctly", async function () {
+        let cert = await certificateLogic.getCertificate(0)
+
+        assert.equal(cert[0].toNumber(), 0)
+        assert.equal(cert[1], accounts[3])
+        assert.equal(cert[2].toNumber(), 10000)
+        assert.isFalse(cert[3])
+        assert.equal(web3.toAscii(cert[4]).replace(/\0/g, ''), 'newFileHash')
+        assert.equal(cert[5].toNumber(), 1000)
+
+
+    })
+
     it("should not be possible to fullfill a demand again", async function () {
 
         let failed = false
         try {
-            let tx = await demandLogic.matchDemand(0, 10000, 0, { from: accounts[8] })
+            let tx = await demandLogic.matchDemand(0, 10000, 0, 0, { from: accounts[8] })
             if (tx.receipt.status == '0x00') failed = true
 
         } catch (ex) {
@@ -293,7 +352,7 @@ contract('DemandLogic', function (accounts) {
     })
 
     it("should create a 2nd demand", async function () {
-        await demandLogic.createDemand()
+        await demandLogic.createDemand([false, false, false, false, false, false, false, false])
         await demandLogic.initGeneralAndCoupling(
             1,
             0,// accounts[4],
@@ -303,15 +362,15 @@ contract('DemandLogic', function (accounts) {
             0,
             00,
             0,
-            false,
-            -1,
-            -1
+            0,
+            0
         )
         await demandLogic.initPriceDriving(1,
             web3.fromAscii("Germany"),
             web3.fromAscii("Saxony"),
             0,
-            10
+            0,
+            0
         )
         await demandLogic.initMatchProperties(1,
             10000,
@@ -339,6 +398,7 @@ contract('DemandLogic', function (accounts) {
 
     it("should be possible to nearly fullfill 2nd demand", async function () {
 
+
         let lengthBefore = await certificateLogic.getCertificateListLength()
 
         let matchPropBefore = await demandLogic.getDemandMatcherProperties(1)
@@ -361,6 +421,27 @@ contract('DemandLogic', function (accounts) {
 
         assert.equal(matchPropBefore[3].toNumber(), 0)
         assert.equal(matchPropAfter[3].toNumber(), 0)
+
+
+
+    })
+
+    it("should have 1 certificates in the list", async function () {
+        let cert = await certificateLogic.getCertificateListLength()
+
+        assert.equal(cert.toNumber(), 2)
+    })
+
+    it("should have created certificate correctly", async function () {
+        let cert = await certificateLogic.getCertificate(1)
+
+        assert.equal(cert[0].toNumber(), 0)
+        assert.equal(cert[1], accounts[3])
+        assert.equal(cert[2].toNumber(), 8000)
+        assert.isFalse(cert[3])
+        assert.equal(web3.toAscii(cert[4]).replace(/\0/g, ''), 'newFileHash')
+        assert.closeTo(cert[5].toNumber(), 800, 1)
+
 
     })
 
@@ -388,6 +469,26 @@ contract('DemandLogic', function (accounts) {
 
         assert.equal(matchPropBefore[3].toNumber(), 0)
         assert.equal(matchPropAfter[3].toNumber(), 0)
+
+    })
+
+    it("should have 3 certificates in the list", async function () {
+        let cert = await certificateLogic.getCertificateListLength()
+
+        assert.equal(cert.toNumber(), 3)
+    })
+
+    it("should have created certificate correctly", async function () {
+        let cert = await certificateLogic.getCertificate(2)
+
+        assert.equal(cert[0].toNumber(), 0)
+        assert.equal(cert[1], accounts[3])
+        assert.equal(cert[2].toNumber(), 2000)
+        assert.isFalse(cert[3])
+        assert.equal(web3.toAscii(cert[4]).replace(/\0/g, ''), 'newFileHash')
+        assert.equal(cert[5].toNumber(), 200)
+
+
     })
 
     it("should not be possible to remove active demands when their endtime is not yet finished", async function () {
@@ -432,7 +533,7 @@ contract('DemandLogic', function (accounts) {
     })
 
     it("should create a 3rd demand", async function () {
-        await demandLogic.createDemand()
+        await demandLogic.createDemand([false, false, false, false, false, false, true, false])
         await demandLogic.initGeneralAndCoupling(
             2,
             0,
@@ -442,17 +543,46 @@ contract('DemandLogic', function (accounts) {
             0,
             1,
             0,
-            false,
-            1,
-            -1
+            0,
+            0
         )
         await demandLogic.initPriceDriving(2,
             web3.fromAscii("Germany"),
             web3.fromAscii("Berlin"),
             0,
-            10
+            10,
+            0
         )
         await demandLogic.initMatchProperties(2,
+            10000,
+            0,
+            accounts[8]
+        )
+    })
+
+    it("should create a 4th demand", async function () {
+        await demandLogic.createDemand([false, false, false, true, true, false, true, false])
+        await demandLogic.initGeneralAndCoupling(
+            3,
+            accounts[3],
+            accounts[3],
+            startTime,
+            endTime,
+            0,
+            1,
+            0,
+            0,
+            0
+        )
+        await demandLogic.initPriceDriving(
+            3,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            0,
+            10,
+            1
+        )
+        let tx = await demandLogic.initMatchProperties(3,
             10000,
             0,
             accounts[8]
@@ -465,6 +595,7 @@ contract('DemandLogic', function (accounts) {
             accounts[9],
             accounts[0],
             1,
+            0,
             1234567890,
             100000,
             true,
@@ -486,6 +617,7 @@ contract('DemandLogic', function (accounts) {
         await assetLogic.initGeneral(2,
             accounts[9],
             accounts[0],
+            0,
             0,
             1234567890,
             100000,
@@ -509,6 +641,7 @@ contract('DemandLogic', function (accounts) {
             accounts[9],
             accounts[0],
             0,
+            1,
             1234567890,
             100000,
             true,
@@ -525,6 +658,31 @@ contract('DemandLogic', function (accounts) {
             web3.fromAscii("0.1232423423"),
             web3.fromAscii("0.2342342445")
         )
+
+        await assetLogic.createAsset()
+        await assetLogic.initGeneral(4,
+            accounts[9],
+            accounts[0],
+            0,
+            0,
+            1234567890,
+            100000,
+            true,
+            { from: accounts[2] }
+        )
+        await assetLogic.initLocation(
+            4,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            web3.fromAscii("123412"),
+            web3.fromAscii("Mittweida"),
+            web3.fromAscii("Markt"),
+            web3.fromAscii("16"),
+            web3.fromAscii("0.1232423423"),
+            web3.fromAscii("0.2342342445")
+        )
+
+
     })
 
 
@@ -539,35 +697,295 @@ contract('DemandLogic', function (accounts) {
 
     it("should return false when the assetType is not matching", async function () {
         let demand = await demandLogic.checkPriceDriving(2, 1, 100)
-        console.log(demand)
+        //   console.log(demand)
         assert.isFalse(demand[0])
 
     })
 
     it("should return false when the country is not matching", async function () {
         let demand = await demandLogic.checkPriceDriving(2, 3, 100)
-        console.log(demand)
+        //   console.log(demand)
         assert.isFalse(demand[0])
 
     })
 
-    /*
     it("should return false when the region is not matching", async function () {
-        let demand
-        try {
-            demand = await demandLogic.checkPriceDriving(2, 2, 100)
-        } catch (ex) { }
-        console.log(demand)
+        let demand = await demandLogic.checkPriceDriving(1, 2, 100)
         assert.isFalse(demand[0])
 
     })
+
+    it("should return false when the compliance is not matching", async function () {
+        let demand = await demandLogic.checkPriceDriving(3, 4, 10)
+        assert.isFalse(demand[0])
+
+    })
+
+    it("should return false when the no energy is given", async function () {
+        let demand = await demandLogic.checkPriceDriving(3, 4, 0)
+        assert.isFalse(demand[0])
+
+    })
+
+    it("should initiaie a 5th demand with coupling", async function () {
+        await demandLogic.createDemand([false, false, false, true, true, false, true, true])
+
+        await demandLogic.initPriceDriving(4,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            0,
+            10,
+            0
+        )
+        await demandLogic.initMatchProperties(4,
+            10000,
+            0,
+            accounts[8]
+        )
+    })
+
+    it("should throw an error when trying to create a demand with a non existing consuming asset", async function () {
+
+        agreementDate = (await web3.eth.getBlock('latest')).timestamp
+        startTime = agreementDate - 120
+        endTime = agreementDate + 1200
+        let failed = false
+        try {
+            await demandLogic.initGeneralAndCoupling(
+                4,
+                0,// accounts[4],
+                accounts[3],
+                startTime,
+                endTime,
+                0,
+                0,
+                0,
+                0,
+                0
+            )
+        }
+        catch (ex) {
+            failed = true
+        }
+
+        assert.isTrue(failed)
+    })
+
+    it("should create an consuming asset", async function () {
+        let tx = await consumingLogic.createAsset()
+
+        await consumingLogic.initGeneral(0,
+            accounts[9], accounts[0],
+            1234567890,
+            0,
+            false, true)
+        await consumingLogic.initLocation(
+            0,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Saxony"),
+            web3.fromAscii("123412"),
+            web3.fromAscii("Mittweida"),
+            web3.fromAscii("Markt"),
+            web3.fromAscii("16a"),
+            web3.fromAscii("0.1232423423"),
+            web3.fromAscii("0.2342342445")
+        )
+
+    })
+
+    it("should be possible to create coupled demand now", async function () {
+        await demandLogic.initGeneralAndCoupling(
+            4,
+            0,// accounts[4],
+            accounts[3],
+            startTime,
+            endTime,
+            0,
+            0,
+            0,
+            0,
+            0
+        )
+
+    })
     /*
-        it("should return false when the region is not matching", async function () {
-            let demand = await demandLogic.checkPriceDriving(2, 2, 100)
-    
-            assert.isFalse(demand[0])
+        it("should return false when trying to couple right wrong consumingAsset", async function () {
+            let demand = await demandLogic.checkDemandGeneral(4, 0)
+            assert.isFalse(demand[1])
     
         })
     */
+    it("should return false when trying to couple right wrong producingAsset", async function () {
+        let demandMask = (await demandDb.getDemandMask(4)).toNumber()
+        let demand = await demandLogic.checkDemandGeneral(4, 1)
+        assert.isFalse(demand[1])
+
+    })
+
+    it("should return false when trying to couple right right consumingAsset", async function () {
+        let demand = await demandLogic.checkDemandGeneral(4, 0)
+        assert.isTrue(demand[1])
+
+    })
+
+    it("should return false the originator is wrong", async function () {
+
+        let demand = await demandLogic.checkDemandGeneral(3, 0)
+        assert.isFalse(demand[1])
+
+    })
+
+    it("should return false when matching too much energy ", async function () {
+        let checkResult = await demandLogic.checkMatcher(4, 100000, { from: accounts[8] })
+        assert.isFalse(checkResult[3])
+    })
+
+    it("should create a monthly demand", async function () {
+        await demandLogic.createDemand([false, false, false, false, false, false, false, false])
+        await demandLogic.initGeneralAndCoupling(
+            5,
+            0,
+            accounts[3],
+            startTime,
+            endTime,
+            1,
+            1,
+            0,
+            0,
+            0
+        )
+        await demandLogic.initPriceDriving(
+            5,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            0,
+            10,
+            1
+        )
+        let tx = await demandLogic.initMatchProperties(5,
+            10000,
+            0,
+            accounts[8]
+        )
+    })
+
+
+    it("should create a daily demand", async function () {
+        await demandLogic.createDemand([false, false, false, false, false, false, false, false])
+        await demandLogic.initGeneralAndCoupling(
+            6,
+            0,
+            accounts[3],
+            startTime,
+            endTime,
+            2,
+            1,
+            0,
+            0,
+            0
+        )
+        await demandLogic.initPriceDriving(
+            6,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            0,
+            10,
+            1
+        )
+        let tx = await demandLogic.initMatchProperties(6,
+            10000,
+            0,
+            accounts[8]
+        )
+    })
+
+    it("should create an hourly demand", async function () {
+        await demandLogic.createDemand([false, false, false, false, false, false, false, false])
+        await demandLogic.initGeneralAndCoupling(
+            7,
+            0,
+            accounts[3],
+            startTime,
+            endTime,
+            3,
+            1,
+            0,
+            0,
+            0
+        )
+        await demandLogic.initPriceDriving(
+            7,
+            web3.fromAscii("Germany"),
+            web3.fromAscii("Berlin"),
+            0,
+            10,
+            1
+        )
+        let tx = await demandLogic.initMatchProperties(7,
+            10000,
+            0,
+            accounts[8]
+        )
+    })
+
+    it("should increase blocktime by 1 year", async function () {
+
+        await web3.currentProvider.send(
+            {
+                jsonrpc: '2.0',
+                method: 'evm_increaseTime',
+                params: [86400 * 365],
+                id: 0
+            })
+        await web3.currentProvider.send(
+            {
+                jsonrpc: '2.0',
+                method: 'evm_mine',
+                params: [],
+                id: 0
+            })
+    })
+
+    it("should return the right yearly period", async function () {
+
+
+        assert.equal((await demandLogic.getCurrentPeriod(4)).toNumber(), 1)
+
+    })
+
+
+    it("should return the right monthly period", async function () {
+
+        assert.equal((await demandLogic.getCurrentPeriod(5)).toNumber(), 12)
+
+    })
+
+
+    it("should return the right daily period", async function () {
+
+        assert.equal((await demandLogic.getCurrentPeriod(6)).toNumber(), 365)
+
+    })
+
+
+    it("should return the right hourly period", async function () {
+
+        assert.equal((await demandLogic.getCurrentPeriod(7)).toNumber(), 365 * 24)
+
+    })
+
+
+    it("should return false when matching too much energy ", async function () {
+        let checkResult = await demandLogic.checkMatcher(4, 100000, { from: accounts[8] })
+        assert.isFalse(checkResult[3])
+    })
+
+    it("should return true when matchingis right in later period ", async function () {
+        let checkResult = await demandLogic.checkMatcher(4, 100, { from: accounts[8] })
+        assert.equal(checkResult[0].toNumber(), 100)
+        assert.equal(checkResult[1].toNumber(), 1)
+        assert.equal(checkResult[2].toNumber(), 1)
+        assert.isTrue(checkResult[3])
+    })
 
 })
