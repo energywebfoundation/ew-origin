@@ -1,10 +1,10 @@
-import { MatchingManager } from '../matching/MatchingManager';
 import { expect } from 'chai';
 import 'mocha';
 import Web3Type from '../types/web3';
 import * as fs from 'fs';
 import { BlockchainProperties } from '../blockchain-facade/BlockchainProperties'
 import { Asset, AssetProperties, AssetType, Compliance } from '../blockchain-facade/Asset'
+import { ProducingAsset } from '../blockchain-facade/ProducingAsset'
 import { PrivateKeys } from '../test-accounts'
 
 const Web3 = require('web3')
@@ -27,7 +27,7 @@ describe('Asset', () => {
     topAdminAccount = await web3.eth.accounts.wallet.add(PrivateKeys[0])
     blockchainProperties= {
       web3: web3,
-      assetLogicInstance: await getInstanceFromTruffleBuild(AssetProducingLogicTruffleBuild, web3),
+      producingAssetLogicInstance: await getInstanceFromTruffleBuild(AssetProducingLogicTruffleBuild, web3),
       assetAdminAccount: assetAdminAccount.address,
       topAdminAccount: topAdminAccount.address
     }
@@ -65,7 +65,7 @@ describe('Asset', () => {
         gpsLongitude: '0'
     }
 
-    const asset = await Asset.CREATE_ASSET(assetProps, blockchainProperties)
+    const asset = await ProducingAsset.CREATE_ASSET(assetProps, blockchainProperties)
     expect(asset.id).to.equal(0);
   });
 

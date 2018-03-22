@@ -24,7 +24,7 @@ import "./AssetDbInterface.sol";
 contract AssetLogic is RoleManagement, Updatable {
 
     event LogAssetCreated(address sender, uint id);
-    event LogAssetFullyInitialized(uint id);
+    event LogAssetFullyInitialized(uint indexed id);
     event LogAssetSetActive(uint indexed _assetId);
     event LogAssetSetInactive(uint indexed _assetId);
 
@@ -44,7 +44,8 @@ contract AssetLogic is RoleManagement, Updatable {
         LogAssetCreated(msg.sender, assetId);
     }
 
-    
+    /// @notice function toinizialize the database, can only be called once
+    /// @param _dbAddress address of the database contract
     function init(address _dbAddress) 
         public
         onlyRole(RoleManagement.Role.TopAdmin)
@@ -54,7 +55,7 @@ contract AssetLogic is RoleManagement, Updatable {
     }
 
     /// @notice Sets the location information of an asset in the database
-    /// @param _index the The index / identifier of an asset
+    /// @param _assetId the The index / identifier of an asset
     /// @param _country The country where the asset is located
     /// @param _region The region where the asset is located
     /// @param _zip The zip coe where the asset is located
@@ -64,7 +65,7 @@ contract AssetLogic is RoleManagement, Updatable {
     /// @param _gpsLatitude The gps-latitude of the asset
     /// @param _gpsLongitude The gps-longitude of the asset 
     function initLocation (
-        uint _index,
+        uint _assetId,
         bytes32 _country,
         bytes32 _region,
         bytes32 _zip,
@@ -78,12 +79,13 @@ contract AssetLogic is RoleManagement, Updatable {
         isInitialized
         onlyRole(RoleManagement.Role.AssetAdmin)
     {
-        db.initLocation(_index, _country, _region, _zip, _city, _street, _houseNumber, _gpsLatitude, _gpsLongitude);
-         checkForFullAsset(_index);
+        db.initLocation(_assetId, _country, _region, _zip, _city, _street, _houseNumber, _gpsLatitude, _gpsLongitude);
+         checkForFullAsset(_assetId);
     }
 
     /// @notice Sets active to false
     /// @param _assetId The id belonging to an entry in the asset registry
+    /// @param _active flag if the asset is asset or not
     function setActive(uint _assetId, bool _active)
         external
         isInitialized
@@ -107,24 +109,29 @@ contract AssetLogic is RoleManagement, Updatable {
         Owned(db).changeOwner(_newLogic);
     }
 
+    /// @notice gets the active flag on an asset
+    /// @param _assetId the assetId
+    /// @return the active flag
     function getActive(uint _assetId)
         external
-        constant
+        view
         returns (bool)
     {
         return db.getActive(_assetId);
     }
 
     /// @notice Gets the last filehash of the smart reader
+    /// @param _assetId the assetId
+    /// @return the alst smartmeterread-filehash
     function getAssetDataLog(uint _assetId)
         external
-        constant
+        view
         returns (bytes32 datalog)
     {
         return db.getLastSmartMeterReadFileHash(_assetId);
     }
 
-     /// @notice Function to get the amount of all assets
+    /// @notice Function to get the amount of all assets
     /// @dev needed to iterate though all the asset
     /// @return the amount of all assets
     function getAssetListLength()
@@ -157,16 +164,16 @@ contract AssetLogic is RoleManagement, Updatable {
 
     /// @notice Checks if a fully Asset-struct is created, enabled if asset all information are there
     /// @dev only for internal use
-    /// @param _index the The index / identifier of an asset
-    function checkForFullAsset(uint _index)
+    /// @param _assetId the The index / identifier of an asset
+    function checkForFullAsset(uint _assetId)
         internal
     {
-        var (general, location, asset) = db.getExistStatus(_index);
+        var (general, location, asset) = db.getExistStatus(_assetId);
 
         if(general && location && !asset) {
-            db.setAssetExistStatus(_index,true);
-            LogAssetFullyInitialized(_index);
-            
+            db.setAssetExistStatus(_assetId,true);
+            LogAssetFullyInitialized(_assetId);
+            db.setLastSmartMeterReadDate(_assetId, now);
         }
     }
 

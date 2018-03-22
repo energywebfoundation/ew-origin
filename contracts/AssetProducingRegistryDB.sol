@@ -32,6 +32,8 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         uint lastSmartMeterCO2OffsetRead;
         uint cO2UsedForCertificate;
         uint registryCompliance;
+        bytes32 otherGreenAttributes;
+        bytes32 typeOfPublicSupport;
     }
 
     struct Asset {
@@ -59,7 +61,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
 
     } 
 
-    /// @notice functin to create a new empty asset
+    /// @notice function to create a new empty asset
     /// @return returns the array-position and thus the index / identifier of this new asset
     function createAsset() 
         external
@@ -74,52 +76,68 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         })) - 1;
     }
 
-    /// @notice Sets the general information for an asset
-    /// @param _index The index / identifier for that asset
-    /// @param _smartMeter The address of the smart meter
-    /// @param _owner The address of the asset owner
-    /// @param _assetType The type of asset used to create energy
-    /// @param _operationalSince The timestamp since the asset is operational
-    /// @param _capacityWh The capacity in Wh of the asset
-    /// @param _lastSmartMeterReadWh The smart meter read in Wh
-    /// @param _certificatesCreatedForWh The amount of Wh used to issue certificates
-    /// @param _active true if active
-    /// @param _lastSmartMeterReadFileHash The last meter read file hash
-    /// @param _lastSmartMeterCO2OffsetRead The last reading of the CO2 offset
-    /// @param _cO2UsedForCertificate the amount of CO2-offset already used to create certificates
+    /// @notice function to set the general information for an asset
+    /// @param _assetId the ID belonging to the asset
+    /// @param _smartMeter the smart-meter address
+    /// @param _owner the owner of the asset
+    /// @param _operationalSince timestamp of when the asset started producing energy
+    /// @param _lastSmartMeterReadWh the last reading of the smartmeter
+    /// @param _active active-flag
+    /// @param _lastSmartMeterReadFileHash the last filehash of the smartmeter-readings
     function initGeneral(       
-            uint _index, 
+            uint _assetId, 
             address _smartMeter,
             address _owner,
-            uint _assetType,
-            uint _registryCompliance,
             uint _operationalSince,
-            uint _capacityWh,
             uint _lastSmartMeterReadWh,
-            uint _certificatesCreatedForWh,
             bool _active,
-            bytes32 _lastSmartMeterReadFileHash,
-            uint _lastSmartMeterCO2OffsetRead,
-            uint _cO2UsedForCertificate
+            bytes32 _lastSmartMeterReadFileHash
         ) 
         onlyOwner
         external
     {
-        Asset storage a = assets[_index];
+        Asset storage a = assets[_assetId];
 
         setGeneralInformationInternal(a.general, _smartMeter, _owner, _operationalSince,_lastSmartMeterReadWh, _active, _lastSmartMeterReadFileHash);
 
+    }
+
+    /// @notice function to set the producing-properties of an asset
+    /// @param _assetId the ID belonging to the asset
+    /// @param _assetType the assetType of the asset 
+    /// @param _lastSmartMeterCO2OffsetRead the last CO2-Offsetreading of the smartmeter
+    /// @param _capacityWh the capacity of the asset in Wh
+    /// @param _certificatesCreatedForWh the amount of Wh already certificated
+    /// @param _registryCompliance the registry-compliance
+    /// @param _otherGreenAttributes other green attributes
+    /// @param _typeOfPublicSupport type of public support
+    function initProducing(
+        uint _assetId,
+        uint _assetType, 
+        uint _lastSmartMeterCO2OffsetRead,
+        uint _cO2UsedForCertificate,
+        uint _capacityWh,
+        uint _certificatesCreatedForWh,
+        uint _registryCompliance,
+        bytes32 _otherGreenAttributes,
+        bytes32 _typeOfPublicSupport
+        )
+    onlyOwner
+    external
+    {
+        Asset storage a = assets[_assetId];
         a.producingProps.assetType = _assetType;
         a.producingProps.lastSmartMeterCO2OffsetRead = _lastSmartMeterCO2OffsetRead;
         a.producingProps.cO2UsedForCertificate = _cO2UsedForCertificate;
         a.producingProps.certificatesCreatedForWh = _certificatesCreatedForWh;
         a.producingProps.capacityWh = _capacityWh;
-        a.producingProps.registryCompliance = _registryCompliance;
-
+        a.producingProps.registryCompliance = _registryCompliance;       
+        a.producingProps.otherGreenAttributes = _otherGreenAttributes;
+        a.producingProps.typeOfPublicSupport = _typeOfPublicSupport; 
     }
 
     /// @notice function to set all the location Informations for an asset
-    /// @param _index The identifier / index of an asset
+    /// @param _assetId The identifier / index of an asset
     /// @param _country The country where the asset is located
     /// @param _region The region / state where the asset is located
     /// @param _zip The zip-code of the region where the asset is located
@@ -129,7 +147,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @param _gpsLatitude The gps-latitude
     /// @param _gpsLongitude The gps-longitude
     function initLocation(
-        uint _index,
+        uint _assetId,
         bytes32 _country,
         bytes32 _region,
         bytes32 _zip,
@@ -142,7 +160,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         onlyOwner
         external
     {
-       LocationDefinition.Location storage loc = assets[_index].location;
+        LocationDefinition.Location storage loc = assets[_assetId].location;
         initLocationInternal(loc,_country,_region,_zip,_city,_street,_houseNumber,_gpsLatitude,_gpsLongitude);
     }
 
@@ -157,13 +175,13 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     }
 
     /// @notice function to set the existing status of an asset
-    /// @param _index The index position / identifier of an asset
+    /// @param _assetId The index position / identifier of an asset
     /// @param _exist flag if the asset should exist
-    function setAssetExistStatus(uint _index, bool _exist)
+    function setAssetExistStatus(uint _assetId, bool _exist)
         external
         onlyOwner
     {
-        Asset storage a = assets[_index];
+        Asset storage a = assets[_assetId];
         a.exists = _exist;
     }
 
@@ -215,6 +233,16 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         external
     {
         assets[_assetId].producingProps.lastSmartMeterCO2OffsetRead = _lastCO2OffsetReading;
+    }
+
+    /// @notice Sets the timestamp of the last smartmeter-reading
+    /// @param _assetId the id belonging to the asset 
+    /// @param _timestamp the new timestamp of reading
+    function setLastSmartMeterReadDate(uint _assetId, uint _timestamp)
+        onlyOwner
+        external
+    {
+        assets[_assetId].general.lastMeterReadReceived = _timestamp;
     }
 
     /// @notice Sets last meter read file hash
@@ -299,41 +327,30 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         return assets[_assetId].general.active;
     }
 
- /// @notice Gets the general information of an asset
-    /// @param _assetId The id belonging to an entry in the asset registry
-    /// @return general information of an asset
-    function getAssetGeneral(uint _assetId) 
+    /// @notice Returns the general information of an asset
+    /// @param _assetId the id belonging to an entry in the asset registry
+    /// @return smartmeter-address, owner-address, operationalSince, lastSmartMeterReading in Wh, active flag and the filehash of the last reading
+    function getAssetGeneral(uint _assetId)
         onlyOwner
         external
-        view
-        returns(
+        view 
+        returns
+        (
             address _smartMeter,
             address _owner,
-            uint _assetType,
-            uint _complianceRegistry,
             uint _operationalSince,
-            uint _capacityWh,
             uint _lastSmartMeterReadWh,
-            uint _certificatesCreatedForWh,
             bool _active,
-            bytes32 _lastSmartMeterReadFileHash,
-            uint _lastCO2OffsetReading,
-            uint _cO2UsedForCertificate
-            )
+            bytes32 _lastSmartMeterReadFileHash
+        )
     {
-        Asset storage asset = assets[_assetId];
-        _smartMeter = asset.general.smartMeter;
+       Asset storage asset = assets[_assetId];
+         _smartMeter = asset.general.smartMeter;
         _owner = asset.general.owner;
-        _assetType = asset.producingProps.assetType;
-        _complianceRegistry = asset.producingProps.registryCompliance;
         _operationalSince = asset.general.operationalSince;
-        _capacityWh = asset.producingProps.capacityWh;
         _lastSmartMeterReadWh = asset.general.lastSmartMeterReadWh;
-        _certificatesCreatedForWh = asset.producingProps.certificatesCreatedForWh;
         _active = asset.general.active;
         _lastSmartMeterReadFileHash = asset.general.lastSmartMeterReadFileHash;
-        _lastCO2OffsetReading = asset.producingProps.lastSmartMeterCO2OffsetRead;
-        _cO2UsedForCertificate = asset.producingProps.cO2UsedForCertificate;
     }
 
     /// @notice function to get the amount of assets
@@ -368,6 +385,37 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         LocationDefinition.Location storage loc = assets[_assetId].location;
         return getAssetLocationInternal(loc);
 
+    }
+
+    /// @notice function to get the producing-properties of an asset
+    /// @param _assetId the id belonging to the asset
+    /// @return returns the producing-properties of an asset
+    function getAssetProducingProperties(uint _assetId)
+        onlyOwner
+        external
+        view
+        returns (
+            uint assetType,
+            uint capacityWh,
+            uint certificatesCreatedForWh,
+            uint lastSmartMeterCO2OffsetRead,
+            uint cO2UsedForCertificate,
+            uint registryCompliance,
+            bytes32 otherGreenAttributes,
+            bytes32 typeOfPublicSupport
+        )
+    {
+        Asset storage a = assets[_assetId];
+        ProducingProperties storage pp = a.producingProps;
+
+        assetType = pp.assetType;
+        capacityWh = pp.capacityWh;
+        certificatesCreatedForWh = pp.certificatesCreatedForWh;
+        lastSmartMeterCO2OffsetRead = pp.lastSmartMeterCO2OffsetRead;
+        cO2UsedForCertificate = pp.cO2UsedForCertificate;
+        registryCompliance = pp.registryCompliance;
+        otherGreenAttributes = pp.otherGreenAttributes;
+        typeOfPublicSupport = pp.typeOfPublicSupport;
     }
 
 
@@ -421,21 +469,32 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     }
 
     /// @notice function the retrieve the existing status of the general information, the location information and the asset itself
-    /// @param _index The index position / identifier of the asset
+    /// @param _assetId The index position / identifier of the asset
     /// @return existing status of the general informaiton, existing status of the location informaiton and where the asset-structs exists
-    function getExistStatus(uint _index)
+    function getExistStatus(uint _assetId)
         onlyOwner
         external 
         view
         returns (bool general, bool location, bool asset)
     {
-        Asset storage a = assets[_index];
-        return(a.general.exists, a.location.exists, a.exists);
+        Asset storage a = assets[_assetId];
+        return(a.general.exists && a.producingProps.capacityWh > 0, a.location.exists, a.exists);
+    }
+
+    /// @notice function to get the last smartmeter-reading of an asset
+    /// @param _assetId the id belonging to the asset
+    /// @return the last smartmeter-reading
+    function getLastSmartMeterRead(uint _assetId) 
+        onlyOwner
+        external 
+        returns (uint)
+    {
+        return assets[_assetId].general.lastSmartMeterReadWh;
     }
 
     /// @notice Gets the last CO2-offset read of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
-    /// @return the last loged CO2-offset read tru
+    /// @return the last logged CO2-offset read tru
     function getlastSmartMeterCO2OffsetRead(uint _assetId)
         onlyOwner
         external 
@@ -445,6 +504,17 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         return assets[_assetId].producingProps.lastSmartMeterCO2OffsetRead;
     }
     
+    /// @notice gets the timestamp of the last reading
+    /// @param _assetId the Id belonging to an entry in the asset registry
+    /// @return the timestamp of the last reading
+    function getLastSmartMeterReadDate(uint _assetId)
+        onlyOwner
+        external
+        returns(uint)
+    {
+        return assets[_assetId].general.lastMeterReadReceived;
+    }
+
     /// @notice Gets last smart merter read file hash
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return last smart merter read file hash

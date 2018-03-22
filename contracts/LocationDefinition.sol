@@ -15,6 +15,7 @@
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
 pragma solidity ^0.4.19;
 
+/// @title the locationDefinition for the contracts
 contract LocationDefinition {
 
     struct Location {

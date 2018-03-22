@@ -16,19 +16,22 @@
 
 pragma solidity ^0.4.17;
 
-/// @title this interface defines the required update-function that every updatable-contract has to implement
+/// @title this interface defines the functions that both consuming and producing assets are sharing
 interface AssetDbInterface {
    
     function getActive(uint _assetId) external view returns(bool);
-    function getExistStatus(uint _index) external view returns (bool general, bool location, bool asset);
+    function getExistStatus(uint _assetId) external view returns (bool general, bool location, bool asset);
     function createAsset() external returns (uint);
-    function initLocation(uint _index, bytes32 _country, bytes32 _region, bytes32 _zip, bytes32 _city, bytes32 _street, bytes32 _houseNumber, bytes32 _gpsLatitude, bytes32 _gpsLongitude) external;
+    function initLocation(uint _assetId, bytes32 _country, bytes32 _region, bytes32 _zip, bytes32 _city, bytes32 _street, bytes32 _houseNumber, bytes32 _gpsLatitude, bytes32 _gpsLongitude) external;
     function setActive(uint _assetId, bool _active) external;
-    function setAssetExistStatus(uint _index, bool _exist) external;
+    function setAssetExistStatus(uint _assetId, bool _exist) external;
     function setCapacityWh(uint _assetId, uint _capacityWh) external;
+    function setLastSmartMeterReadDate(uint _assetId, uint _timestamp) external;
     function setLastSmartMeterReadFileHash(uint _assetId, bytes32 _lastSmartMeterReadFileHash) external;
     function setSmartMeter(uint _assetId, address _smartMeter) external;
     function getAssetListLength() external view returns (uint);
     function getAssetLocation(uint _assetId) external view returns(bytes32 country, bytes32 region, bytes32 zip, bytes32 city, bytes32 street, bytes32 houseNumber, bytes32 gpsLatitude, bytes32 gpsLongitude);
+    function getLastSmartMeterRead(uint _assetId) external returns (uint);
+    function getLastSmartMeterReadDate(uint _assetId) external returns(uint);
     function getLastSmartMeterReadFileHash(uint _assetId) external view returns(bytes32);
     }

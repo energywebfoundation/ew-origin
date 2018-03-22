@@ -73,7 +73,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     }
 
     /// @notice Sets the general information for an asset
-    /// @param _index The index / identifier for that asset
+    /// @param _assetId The index / identifier for that asset
     /// @param _smartMeter The address of the smart meter
     /// @param _owner The address of the asset owner
     /// @param _operationalSince The timestamp since the asset is operational
@@ -83,7 +83,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     /// @param _active true if active
     /// @param _lastSmartMeterReadFileHash The last meter read file hash
     function initGeneral (       
-            uint _index, 
+            uint _assetId, 
             address _smartMeter,
             address _owner,
             uint _operationalSince,
@@ -97,7 +97,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         onlyOwner
         external
     {
-        Asset storage a = assets[_index];
+        Asset storage a = assets[_assetId];
 
         GeneralInformation storage gi = a.general; 
         ConsumingProperties storage cp = a.consumingProps;
@@ -109,8 +109,8 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
 
     }
  
-     /// @notice function to set all the location Informations for an asset
-    /// @param _index The identifier / index of an asset
+    /// @notice function to set all the location Informations for an asset
+    /// @param _assetId The identifier / index of an asset
     /// @param _country The country where the asset is located
     /// @param _region The region / state where the asset is located
     /// @param _zip The zip-code of the region where the asset is located
@@ -120,7 +120,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     /// @param _gpsLatitude The gps-latitude
     /// @param _gpsLongitude The gps-longitude
     function initLocation(
-        uint _index,
+        uint _assetId,
         bytes32 _country,
         bytes32 _region,
         bytes32 _zip,
@@ -133,7 +133,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         onlyOwner
         external
     {
-        LocationDefinition.Location storage loc = assets[_index].location;
+        LocationDefinition.Location storage loc = assets[_assetId].location;
         initLocationInternal(loc,_country,_region,_zip,_city,_street,_houseNumber,_gpsLatitude,_gpsLongitude);
     } 
  
@@ -148,13 +148,13 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     }
 
     /// @notice function to set the existing status of an asset
-    /// @param _index The index position / identifier of an asset
+    /// @param _assetId The index position / identifier of an asset
     /// @param _exist flag if the asset should exist
-    function setAssetExistStatus(uint _index, bool _exist)
+    function setAssetExistStatus(uint _assetId, bool _exist)
         external
         onlyOwner
     {
-        Asset storage a = assets[_index];
+        Asset storage a = assets[_assetId];
         a.exists = _exist;
     }
 
@@ -177,6 +177,13 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         external
     {
         assets[_assetId].consumingProps.certificatesUsedForWh = _certificatesUsedForWh;
+    }
+
+    function setLastSmartMeterReadDate(uint _assetId, uint _timestamp)
+        onlyOwner
+        external
+    {
+        assets[_assetId].general.lastMeterReadReceived = _timestamp;
     }
 
     /// @notice Sets last meter read file hash
@@ -352,17 +359,58 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         return assets[_assetId].consumingProps.certificatesUsedForWh;
     }
 
+    /// @notice gets the consuming properties of an asset
+    /// @param _assetId the id belonging to an entry in the asset registry
+    /// @return the consuming properteis
+    function getConsumingProperies(uint _assetId) 
+        onlyOwner
+        external
+        view
+        returns (
+            uint _capacityWh,
+            bool _maxCapacitySet,
+            uint _certificatesUsedForWh
+        )
+    {
+        ConsumingProperties storage c = assets[_assetId].consumingProps;
+        _capacityWh = c.capacityWh;
+        _maxCapacitySet = c.maxCapacitySet;
+        _certificatesUsedForWh = c.certificatesUsedForWh;
+    }
+
     /// @notice function the retrieve the existing status of the general information, the location information and the asset itself
-    /// @param _index The index position / identifier of the asset
+    /// @param _assetId The index position / identifier of the asset
     /// @return existing status of the general informaiton, existing status of the location informaiton and where the asset-structs exists
-    function getExistStatus(uint _index)
+    function getExistStatus(uint _assetId)
         onlyOwner
         external 
         view
         returns (bool general, bool location, bool asset)
     {
-        Asset storage a = assets[_index];
+        Asset storage a = assets[_assetId];
         return(a.general.exists, a.location.exists, a.exists);
+    }
+
+    /// @notice function to retrieve the last smartmeter-reading of an asset
+    /// @param _assetId the asset-id
+    /// @return the last smartmeter-reading
+    function getLastSmartMeterRead(uint _assetId) 
+        onlyOwner
+        external 
+        returns (uint)
+    {
+        return assets[_assetId].general.lastSmartMeterReadWh;
+    }
+
+    /// @notice function to retrieve the timestamp of the last smartmeter-reading
+    /// @param _assetId the asset-id
+    /// @return the timestamp of the last smartmeter-reading
+    function getLastSmartMeterReadDate(uint _assetId)
+        onlyOwner
+        external
+        returns(uint)
+    {
+        return assets[_assetId].general.lastMeterReadReceived;
     }
     
     /// @notice Gets last smart merter read file hash

@@ -19,7 +19,7 @@ var CertificateDB = artifacts.require("CertificateDB");
 var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
 var CoO = artifacts.require("CoO")
 
-contract('CertificateLogic', function(accounts) {
+contract('CertificateLogic', function (accounts) {
 
   var certLog,
     certDb,
@@ -43,21 +43,22 @@ contract('CertificateLogic', function(accounts) {
   it("should create a certificate and change the owner owner", async function () {
     //called by asset admin
     //new owner needs to be a user
-
-    //asset anlegen
     await assetLogic.createAsset()
-    await assetLogic.initGeneral(0,
+    await assetLogic.initGeneral(
+      0,
       accounts[9],
       accounts[0],
-      0,
-      0,
       1234567890,
-      100000,
       true,
-      {
-        from: accounts[2]
-      }
-    )
+      { from: accounts[2] })
+
+    await assetLogic.initProducingProperties(0,
+      1,
+      1000,
+      1,
+      web3.fromAscii("N.A."),
+      web3.fromAscii("N.A."))
+
     await assetLogic.initLocation(
       0,
       web3.fromAscii("Germany"),
@@ -70,8 +71,9 @@ contract('CertificateLogic', function(accounts) {
       web3.fromAscii("0.2342342445")
     )
 
+
     //log some data and create wh
-    await assetLogic.saveSmartMeterRead(0, 10000, 0, 10000, false, {
+    await assetLogic.saveSmartMeterRead(0, 10000, false, 0, 10000, false, {
       from: accounts[9]
     })
     //certificate erstellen
@@ -83,7 +85,6 @@ contract('CertificateLogic', function(accounts) {
 
     let owner = await certLog.getCertificateOwner(0);
     await certLog.changeCertificateOwner(0, accounts[1], {
-      from: accounts[2]
     });
 
     let owner2 = await certLog.getCertificateOwner(0);
@@ -91,7 +92,7 @@ contract('CertificateLogic', function(accounts) {
     assert.notEqual(owner, owner2, "should have changed the owner successfully")
 
     await certLog.changeCertificateOwner(0, owner, {
-      from: accounts[2]
+      from: accounts[1]
     });
 
     owner2 = await certLog.getCertificateOwner(0);
@@ -112,7 +113,7 @@ contract('CertificateLogic', function(accounts) {
     assert.isTrue(retiredStatusNew, "should have retired the certificate")
   })
 
-  it("should throw if it is already initialised", async function() {
+  it("should throw if it is already initialised", async function () {
     var res = false
     try {
       await certLog.init('0x0')
@@ -122,7 +123,7 @@ contract('CertificateLogic', function(accounts) {
     assert.isTrue(res, "should have thrown an exception because already initialized")
   })
 
-  it("should throw the retirement if it is not the certificate owner who is calling", async function() {
+  it("should throw the retirement if it is not the certificate owner who is calling", async function () {
     var res = false
     try {
       await certLog.retireCertificate(0, {
@@ -135,6 +136,6 @@ contract('CertificateLogic', function(accounts) {
   })
 
   /// @dev done by asset
-  it.skip("should set the asset contract correctly", async function () {})
+  it.skip("should set the asset contract correctly", async function () { })
 
 })

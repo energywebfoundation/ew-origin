@@ -31,7 +31,7 @@ contract DemandDB is Owned {
     struct MatcherProperties {
         // how many Wh per Period
         uint targetWhPerperiod;
-        // already 
+        // amount of Wh the demand has already received
         uint currentWhPerperiod;
         uint certInCurrentperiod;
         uint productionLastSetInPeriod;
@@ -48,10 +48,12 @@ contract DemandDB is Owned {
     /// @notice struct for all the information that can affect a price
     struct PriceDriving {
         LocationDefinition.Location location;
-        int registryCompliance;
+        uint registryCompliance;
         uint assettype;
         // 	proportion between CO2 and wh in percent (100 * CO2 / Wh)
         uint minCO2Offset; 
+        bytes32 otherGreenAttributes;
+        bytes32 typeOfPublicSupport;
         bool isInitialized;
     }
 
@@ -96,27 +98,27 @@ contract DemandDB is Owned {
     } 
 
     /// @notice function to add a demand to the activeDemands-array
-    /// @param _index hash-identifier of a demand
-    function addActiveDemand(uint _index)
+    /// @param _demandId hash-identifier of a demand
+    function addActiveDemand(uint _demandId)
         external 
         onlyOwner
     {
-        activeDemands.push(_index);
+        activeDemands.push(_demandId);
     }
 
     /// @notice function to create a coupling
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _prodAssets array with assets that are allowed to produce energy for this agreement
     /// @param _consAssets array with assets that are allowed to consume energy for this agreement
     function createCoupling(
-        uint _index,
+        uint _demandId,
         uint _prodAssets,
         uint _consAssets
     )
         external 
         onlyOwner
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
 
         Coupling storage c = d.couple;
         c.producingAssets = _prodAssets;
@@ -124,6 +126,7 @@ contract DemandDB is Owned {
     }
 
     /// @notice function to create an empty demand
+    /// @param _mask bitmask with the demand properties
     /// @return the index and thus the identifier of a demand
     function createEmptyDemand(uint _mask)
         external
@@ -142,7 +145,7 @@ contract DemandDB is Owned {
     }
 
     /// @notice function to create the general informations of a demand
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _originator producer of energy
     /// @param _buyer buyer of a certiface, can be 0x0
     /// @param _startTime eariest accepted certificates
@@ -150,7 +153,7 @@ contract DemandDB is Owned {
     /// @param _pricePerCertifiedKWh price per certified kWh
     /// @param _currency currency the originator wants to be paid with
     function createGeneralDemand(
-        uint _index,
+        uint _demandId,
         address _originator,
         address _buyer,
         uint _startTime,
@@ -163,7 +166,7 @@ contract DemandDB is Owned {
         onlyOwner 
     {
 
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
 
         GeneralInfo storage g = d.general;
         g.originator = _originator;
@@ -177,14 +180,14 @@ contract DemandDB is Owned {
     }
 
     /// @notice function to create the matching-properties
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _WhAmountPerperiod the desired amount of Wh per period
     /// @param _currentWhPerperiod the current amount of Wh
     /// @param _certInCurrentperiod the amount of certificates created in the current period
     /// @param _productionLastSetInPeriod the last period where the consumption was set
     /// @param _matcher account of the javaScript-matcher
     function createMatchProperties(
-        uint _index,
+        uint _demandId,
         uint _WhAmountPerperiod,
         uint _currentWhPerperiod,
         uint _certInCurrentperiod,
@@ -195,7 +198,7 @@ contract DemandDB is Owned {
         onlyOwner
     {
 
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
 
         MatcherProperties storage m = d.matchProp;
         m.targetWhPerperiod = _WhAmountPerperiod;
@@ -206,12 +209,20 @@ contract DemandDB is Owned {
     }
 
     /// @notice function to create the pricedriving-factors of a demand
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _country country the engery has to come from
+    /// @param _region region the energy has to come from
+    /// @param _zip zip code the energy has to come from
+    /// @param _street the streetname
+    /// @param _gpsLatitude latitude of coordinates
+    /// @param _gpsLongitude longitude of coordinates
     /// @param _type fuel-tyoe 
     /// @param _minCO2Offset CO2-offset
+    /// @param _registryCompliance compliance
+    /// @param _otherGreenAttributes other green attributes 
+    /// @param _typeOfPublicSupport type of public support
     function createPriceDriving(
-        uint _index,
+        uint _demandId,
         bytes32 _country,
         bytes32 _region,
         bytes32 _zip,
@@ -222,43 +233,35 @@ contract DemandDB is Owned {
         bytes32 _gpsLongitude,
         uint _type,
         uint _minCO2Offset,
-        int _registryCompliance
+        uint _registryCompliance,
+        bytes32 _otherGreenAttributes,
+        bytes32 _typeOfPublicSupport
     )
         external
         onlyOwner
     {
-        Demand storage d = allDemands[_index];
 
-        PriceDriving storage p = d.priceDriving;
+        allDemands[_demandId].priceDriving.location = locationEmpty;
+        allDemands[_demandId].priceDriving.assettype = _type;
+        allDemands[_demandId].priceDriving.minCO2Offset = _minCO2Offset;
+        allDemands[_demandId].priceDriving.registryCompliance = _registryCompliance;
+        allDemands[_demandId].priceDriving.otherGreenAttributes = _otherGreenAttributes;
+        allDemands[_demandId].priceDriving.typeOfPublicSupport = _typeOfPublicSupport;
 
-        p.location = locationEmpty;
-        p.assettype = _type;
-        p.minCO2Offset = _minCO2Offset;
-        p.registryCompliance = _registryCompliance;
-
-        LocationDefinition.Location storage location = p.location;
-            location.country = _country;
-            location.region = _region;
-            location.zip = _zip;
-            location.city = _city;
-            location.street = _street;
-            location.houseNumber = _houseNumber;
-            location.gpsLatitude = _gpsLatitude;
-            location.gpsLongitude = _gpsLongitude;
-            location.exists = true;
-        p.isInitialized = true;
+        setDemandLocation(_demandId,_country,_region,_zip,_city,_street, _houseNumber, _gpsLatitude, _gpsLongitude);
+        allDemands[_demandId].priceDriving.isInitialized = true;    
     }
 
     /// @notice function to remove an entry in the activeDemands-array
-    /// @param _index the index position of the full demand in the allDemands-array
+    /// @param _demandId the index position of the full demand in the allDemands-array
     /// @dev due to the design the order of elements in the array will change when removing an element!
     /// @dev we're using a for-loop here. Due to the fact that there could be multiple thousands an error could cause problems
-    function removeActiveDemand(uint _index)
+    function removeActiveDemand(uint _demandId)
         external
         onlyOwner
     {
         for (uint i = 0; i < activeDemands.length; i++) {
-            if ( activeDemands[i] == _index) {
+            if ( activeDemands[i] == _demandId) {
                 activeDemands[i] = activeDemands[activeDemands.length-1];
                 activeDemands.length--;
             }
@@ -266,40 +269,33 @@ contract DemandDB is Owned {
     }
 
     /// @notice function to set the creation-time of a demand
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _time creation-time
-    function setDemandCreationTime(uint _index, uint _time)
+    function setDemandCreationTime(uint _demandId, uint _time)
         external 
         onlyOwner
     {
-        allDemands[_index].created = _time;
-    }
-
-    function setDemandMask(uint _id, uint _mask) 
-        external
-        onlyOwner
-    {
-        allDemands[_id].demandMask = _mask;
+        allDemands[_demandId].created = _time;
     }
 
     /// @notice function to en- or disable a demand
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _enabled flag if the demand should be enabled
-    function setEnabled(uint _index, bool _enabled)
+    function setEnabled(uint _demandId, bool _enabled)
         external 
         onlyOwner
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
         d.enabled = _enabled;
     }
 
     /// @notice function to update some matching parameters
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @param _currentWhPerperiod the current amount of Wh
     /// @param _certInCurrentperiod the amount of certificates created in the current period
     /// @param _productionLastSetInPeriod the last period where the consumption was set
     function updateMatchProperties(
-        uint _index,
+        uint _demandId,
         uint _currentWhPerperiod,
         uint _certInCurrentperiod,
         uint _productionLastSetInPeriod
@@ -307,7 +303,7 @@ contract DemandDB is Owned {
         external
         onlyOwner
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
 
         MatcherProperties storage m = d.matchProp;
         m.currentWhPerperiod = _currentWhPerperiod;
@@ -316,26 +312,26 @@ contract DemandDB is Owned {
     }
 
     /// @notice function that returns if a demands exists
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @return true if demand exists
-    function demandExists(uint _index)
+    function demandExists(uint _demandId)
         external
         view 
         returns (bool)
     {
-        return allDemands[_index].enabled;
+        return allDemands[_demandId].enabled;
     }
 
     /// @notice function to get the hash-identifier of an active demand in the activeDemands-array
-    /// @param _index index of the element in the array
+    /// @param _demandId index of the element in the array
     /// @return hash-identifier of an active demand
-    function getActiveDemandIdAt(uint _index)
+    function getActiveDemandIdAt(uint _demandId)
         external 
         view 
         onlyOwner
         returns (uint)
     {
-        return activeDemands[_index];
+        return activeDemands[_demandId];
     }
 
     /// @notice function to retrieve the length of the activeDemands-array
@@ -362,9 +358,9 @@ contract DemandDB is Owned {
     
     /// @notice function to get the information if the coupling-struct
     /// @dev at the moment arrays can't be accessed in other contracts due to their dynamic length
-    /// @param _index identifier
+    /// @param _demandId identifier
     /// @return used timeFrame, arrays of producing and consuming assets
-    function getDemandCoupling(uint _index)
+    function getDemandCoupling(uint _demandId)
         external
         view 
         onlyOwner
@@ -373,16 +369,16 @@ contract DemandDB is Owned {
             uint consumingAssets
         ) 
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_demandId];
         Coupling storage s = d.couple;
         return (s.producingAssets,s.consumingAssets);
     }
 
     
     /// @notice function to retrieve the general informations of a demand
-    /// @param _index identifier of the demand
+    /// @param _assetId identifier of the demand
     /// @return the originator, buyer, startTime, endTime, currency, coupled
-    function getDemandGeneral(uint _index)
+    function getDemandGeneral(uint _assetId)
         external
         view 
         onlyOwner 
@@ -397,15 +393,15 @@ contract DemandDB is Owned {
             uint demandMask
         ) 
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_assetId];
         GeneralInfo storage g = d.general;
         return (g.originator, g.buyer, g.startTime, g.endTime, g.timeframe, g.pricePerCertifiedKWh, g.currency, d.demandMask);
     }
 
     /// @notice function to get the matcher-properties of a demand
-    /// @param _index identifier
+    /// @param _assetId identifier
     /// @return amount of Wh per period, current Wh per period, certificates in current period, last period where a consumption was set and the matcher-address
-    function getDemandMatcherProperties(uint _index)
+    function getDemandMatcherProperties(uint _assetId)
         external
         view 
         onlyOwner
@@ -417,16 +413,16 @@ contract DemandDB is Owned {
             address matcher
         ) 
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_assetId];
         MatcherProperties storage m = d.matchProp;
         return (m.targetWhPerperiod, m.currentWhPerperiod, m.certInCurrentperiod, m.productionLastSetInPeriod, m.matcher);
     }
 
 
     /// @notice function to get the price-driving informations
-    /// @param _index identifier
+    /// @param _assetId identifier
     /// @return location country and region, fueltype and CO2-offset
-    function getDemandPriceDriving(uint _index)
+    function getDemandPriceDriving(uint _assetId)
         external
         view 
         onlyOwner
@@ -435,46 +431,85 @@ contract DemandDB is Owned {
             bytes32 locationRegion,
             uint assettype,
             uint minCO2Offset,
-            int registryCompliance,
+            uint registryCompliance,
+            bytes32 _otherGreenAttributes,
+            bytes32 _typeOfPublicSupport,
             bool isInitialized
         ) 
     {
-        Demand storage d = allDemands[_index];
+        Demand storage d = allDemands[_assetId];
         PriceDriving storage p = d.priceDriving;
-        return (p.location.country, p.location.region, p.assettype, p.minCO2Offset, p.registryCompliance, p.isInitialized);
+        return (p.location.country, p.location.region, p.assettype, p.minCO2Offset, p.registryCompliance, p.otherGreenAttributes, p.typeOfPublicSupport, p.isInitialized);
     }
 
-    function getDemandMask(uint _id)
+    /// @notice gets the bitmask of a demand
+    /// @param _demandId the demand-id
+    /// @return bitmask with the set properties of a demand
+    function getDemandMask(uint _demandId)
         external
         view 
         returns (uint)
     {
-        return allDemands[_id].demandMask;
+        return allDemands[_demandId].demandMask;
     }
 
     /// @notice function to return the creationtime of the demand
-    /// @param _id identifier
+    /// @param _demandId identifier
     /// @return blocktime of the creation of the demand
-    function getStartEpoche(uint _id)
+    function getStartEpoche(uint _demandId)
         external
         view 
         onlyOwner 
         returns (uint)
     {    
-        return allDemands[_id].created;
+        return allDemands[_demandId].created;
     }
 
     /// @notice Funtion to get the used timeframe for an demand
     /// @dev will return an unsigned integer, that has to be converted to a timeframe in the logic-contract
     /// @return the chosen timeframe for a demand
-    function getTimeFrame(uint _index)
+    function getTimeFrame(uint _assetId)
         public
         onlyOwner
         view
         returns (uint)
     {
-            return allDemands[_index].general.timeframe;
+            return allDemands[_assetId].general.timeframe;
     }
+
+      /// @notice sets the demand Location
+    /// @dev internal helper function
+    /// @param _assetId identifier
+    /// @param _country country the engery has to come from
+    /// @param _region region the energy has to come from
+    /// @param _zip zip code the energy has to come from
+    /// @param _street the streetname
+    /// @param _gpsLatitude latitude of coordinates
+    /// @param _gpsLongitude longitude of coordinates
+    function setDemandLocation(
+        uint _assetId,
+        bytes32 _country,
+        bytes32 _region,
+        bytes32 _zip,
+        bytes32 _city,
+        bytes32 _street,
+        bytes32 _houseNumber,
+        bytes32 _gpsLatitude,
+        bytes32 _gpsLongitude
+    )
+        internal
+    {
+            allDemands[_assetId].priceDriving.location.country = _country;
+            allDemands[_assetId].priceDriving.location.region = _region;
+            allDemands[_assetId].priceDriving.location.zip = _zip;
+            allDemands[_assetId].priceDriving.location.city = _city;
+            allDemands[_assetId].priceDriving.location.street = _street;
+            allDemands[_assetId].priceDriving.location.houseNumber = _houseNumber;
+            allDemands[_assetId].priceDriving.location.gpsLatitude = _gpsLatitude;
+            allDemands[_assetId].priceDriving.location.gpsLongitude = _gpsLongitude;
+            allDemands[_assetId].priceDriving.location.exists = true;
+    }
+
 }
 
 

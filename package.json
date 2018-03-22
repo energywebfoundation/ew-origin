@@ -2,17 +2,17 @@
   "name": "ewf-coo",
   "version": "1.0.0",
   "description": "",
-  "main": "truffle-config.js",
+  "main": "build/ts/index.js",
+  "types": "build/ts/index.d.ts",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test-matcher": "rm -rf build && truffle migrate && node_modules/typescript/bin/tsc && mocha build/ts/test",
-    "build-ts": "rm -rf build/ts && node_modules/typescript/bin/tsc",
-    "start-matcher": "rm -rf build/ts && node build/ts/matcher-main.js",
-    "compile": "rm -rf build && truffle compile",
-    "migrate": "rm -rf build && truffle migrate",
-    "deploy": "rm -rf build && truffle deploy",
+    "test-facade": "rm -rf build && truffle migrate && node_modules/typescript/bin/tsc && mocha build/ts/test",
+    "build-ts": "rm -rf build/ts && node_modules/typescript/bin/tsc && cp src/types/*.d.ts build/ts/types/",
+    "compile": "rm -rf build/contracts && truffle compile",
+    "migrate": "rm -rf build/contracts && truffle migrate",
+    "deploy": "rm -rf build/contracts && truffle deploy",
     "test": "rm -rf build && truffle compile && truffle test",
     "startSim": "truffle exec contract-scripts/simulation.js",
     "coverage": "./node_modules/.bin/solidity-coverage",
@@ -21,7 +21,7 @@
     "windeploy": "rmdir build /s && truffle deploy",
     "wintest": "rmdir build /s && truffle compile && truffle test",
     "remixd": "open https://remix.ethereum.org/#version=soljson-v0.4.17+commit.bdeb9e52.js; remixd -S $(pwd)/contracts",
-    "start-ganache": "ganache-cli -m 'outer moment twin salmon shuffle amused twice evil rapid hotel burst stand' -g 0 -l 80000000 -e 1000000"
+    "start-ganache": "ganache-cli -m 'outer moment twin salmon shuffle amused twice evil rapid hotel burst stand' -g 0 -l 80000000 -e 1000000 -a 20"
   },
   "repository": {
     "type": "git",
@@ -37,8 +37,10 @@
   },
   "homepage": "https://github.com/slockit/ewf-coo#readme",
   "dependencies": {
+    "ganache-cli": "^6.1.0",
     "remixd": "^0.1.2",
     "solidity-coverage": "^0.4.9",
+    "truffle": "^4.1.0",
     "typescript": "^2.7.1",
     "web3": "^1.0.0-beta.30"
   },

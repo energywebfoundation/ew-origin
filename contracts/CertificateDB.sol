@@ -57,6 +57,9 @@ contract CertificateDB is Owned {
         
     }
 
+    /// @notice sets the escrow-address of a certificate
+    /// @param _certificateId certificateId
+    /// @param _escrow new escrow-address
     function setCertificateEscrow(uint _certificateId, address _escrow)
         public
         onlyOwner
@@ -70,7 +73,6 @@ contract CertificateDB is Owned {
     function setCertificateOwner(uint _certificateId, address _owner) public onlyOwner {
         certificateList[_certificateId].owner = _owner;
     }
-
 
     /// @notice Sets a certificate to retired
     /// @param _certificateId The array position in which the certificate is stored
@@ -121,10 +123,15 @@ contract CertificateDB is Owned {
         return certificateList[_certificateId].retired;
     }
 
+    /// @notice function to get the amount of all certificates
+    /// @return the amount of all certificates
     function getCertificateListLength() public onlyOwner view returns (uint) {
         return certificateList.length;
     }
 
+    /// @notice function to get the escrow-address of a certificate
+    /// @param _certificateId certificate-ID
+    /// @return escrow-address
     function getCertificateEscrow(uint _certificateId) 
         public
         onlyOwner

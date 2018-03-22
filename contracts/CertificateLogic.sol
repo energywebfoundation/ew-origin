@@ -38,8 +38,14 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @notice Logs the request of an retirement of a certificate
     event LogRetireRequest(uint _id, bool _retire);
 
-    event LogCertificateOwnerChanged(uint _id, address _newOwner, address _escrow);
-
+    event LogCertificateOwnerChanged(uint _id, address _oldOwner, address _newOwner, address _oldEscrow, address _newEscrow);
+    
+    /// @notice Checks if the contract is initialized
+    modifier isInitialized() {
+        require(certificateDb != CertificateDB(0x0));
+        _;
+    }
+    
     /// @notice Constructor
     /// @param _coo The Master contract
     function CertificateLogic(CoO _coo) RoleManagement(_coo) public {
@@ -63,7 +69,6 @@ contract CertificateLogic is RoleManagement, Updatable {
         onlyAccount(address(cooContract.demandRegistry()) )  
         returns (uint) 
     {
-
         return createCertificateIntern(_assetId, _owner, _powerInW, 0x0);
     }
 
@@ -79,13 +84,14 @@ contract CertificateLogic is RoleManagement, Updatable {
         uint co = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getCoSaved(_assetId, _powerInW);
         require(AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).useWhForCertificate(_assetId, _powerInW));
         bytes32 dataLog = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetDataLog(_assetId);
-        uint ret = certificateDb.createCertificate(_assetId, _owner, _powerInW, dataLog, co, _escrow);
-        LogCreatedCertificate(ret, _powerInW, _owner, _escrow);
+        uint certId = certificateDb.createCertificate(_assetId, _owner, _powerInW, dataLog, co, _escrow);
+        LogCreatedCertificate(certId, _powerInW, _owner, _escrow);
         AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).setCO2UsedForCertificate(_assetId,co);
-        return ret;
+        return certId;
     }
 
-    /// @notice Creates a certificate of origin for the asset owner. Checks in the AssetRegistry if requested wh are available.
+    /// @notice Creates a certificate of origin for the asset owner. Checks in the AssetRegistry if requested wh are available. 
+    /// @dev the msg.sender (a matcher) will become the escrow-of that certificate and is allowed to change the change the ownership
     /// @param _assetId The id of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
     function createCertificateForAssetOwner(uint _assetId, uint _powerInW) 
@@ -94,9 +100,7 @@ contract CertificateLogic is RoleManagement, Updatable {
         isInitialized  
         returns (uint) 
     {
-
-        var (, ownerAddress, , , , , , , , , ,) = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetGeneral(_assetId);
-
+        var ( , ownerAddress, , , , ) = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetGeneral(_assetId);
         return createCertificateIntern(_assetId, ownerAddress, _powerInW, msg.sender);
     }
 
@@ -106,28 +110,49 @@ contract CertificateLogic is RoleManagement, Updatable {
        var (, owner, , retired,, ,,) = certificateDb.getCertificate(_id);
         require(owner == msg.sender);
         if (!retired) {
+            certificateDb.setCertificateEscrow(_id, 0x0);
             certificateDb.retireCertificate(_id);
             LogRetireRequest(_id, true);
         }
     }
 
+    /// @notice function to allow an escrow-address to change the ownership of a certificate
+    /// @dev this function can only be called by the demandLogic
+    /// @param _id the certificate-id
+    /// @param _newOwner the new owner of the certificate
     function transferOwnershipByEscrow(uint _id, address _newOwner) 
         public 
         isInitialized 
         onlyAccount(address(cooContract.demandRegistry()) )  
-    {
+    {   
+           
+        address oldOwner;
+        bool retired;
+        address oldEscrow; 
+        
+        ( ,oldOwner,,retired,,,oldEscrow,) = certificateDb.getCertificate(_id); 
+
+        require(!retired);
         certificateDb.setCertificateOwner(_id, _newOwner);
         certificateDb.setCertificateEscrow(_id, 0x0);
-        LogCertificateOwnerChanged(_id, _newOwner,0x0);
+        LogCertificateOwnerChanged(_id, oldOwner, _newOwner, oldEscrow, 0x0);
     }
 
     /// @notice Sets a new owner for the certificate
     /// @param _id The id of the certificate
     /// @param _newOwner The address of the new owner of the certificate
-    function changeCertificateOwner(uint _id, address _newOwner) public isInitialized() onlyRole(RoleManagement.Role.AssetAdmin) userExists(_newOwner) {
+    function changeCertificateOwner(uint _id, address _newOwner) 
+        public 
+        isInitialized() 
+        userExists(_newOwner) 
+    {
+        require(msg.sender == certificateDb.getCertificateOwner(_id) && !(certificateDb.isRetired(_id)));
         certificateDb.setCertificateOwner(_id, _newOwner);
         
-        LogCertificateOwnerChanged(_id, _newOwner, certificateDb.getCertificateEscrow(_id));
+        address oldOwner = certificateDb.getCertificateOwner(_id); 
+        address oldEscrow = certificateDb.getCertificateEscrow(_id);
+
+        LogCertificateOwnerChanged(_id, oldOwner, _newOwner, oldEscrow, oldEscrow);
 
     }
 
@@ -165,13 +190,6 @@ contract CertificateLogic is RoleManagement, Updatable {
     function getCertificateListLength() public view returns (uint) {
         return certificateDb.getCertificateListLength();
     }
-
-    /// @notice Checks if the contract is initialized
-    modifier isInitialized() {
-        require(certificateDb != CertificateDB(0x0));
-        _;
-    }
-
 
     /// @notice Updates the logic contract
     /// @param _newLogic Address of the new logic contract

@@ -132,7 +132,7 @@ contract('AssetConsumingLogic', function (accounts) {
     })
 
     it("should be possible to log a meterreading", async function () {
-        await consumingLogic.saveSmartMeterRead(0, 10000, web3.fromAscii("newMeterRead"), { from: accounts[9] })
+        await consumingLogic.saveSmartMeterRead(0, 10000, web3.fromAscii("newMeterRead"), false, { from: accounts[9] })
     })
 
     it("should return the right filehash", async function () {

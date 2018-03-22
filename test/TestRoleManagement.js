@@ -592,16 +592,21 @@ contract('RoleManagement', async function (accounts) {
   it("should be able as assetAdmin to register new assets", async function () {
 
     await AssetLog.createAsset({ from: accounts[2] })
-    await AssetLog.initGeneral(0,
+    await AssetLog.initGeneral(
+      0,
       accounts[9],
       accounts[0],
-      0,
-      0,
       1234567890,
-      100000,
       true,
-      { from: accounts[2] }
-    )
+      { from: accounts[2] })
+
+    await AssetLog.initProducingProperties(0,
+      1,
+      1000,
+      1,
+      web3.fromAscii("N.A."),
+      web3.fromAscii("N.A."), { from: accounts[2] })
+
     await AssetLog.initLocation(
       0,
       web3.fromAscii("Germany"),

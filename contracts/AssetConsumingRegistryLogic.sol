@@ -26,12 +26,11 @@ import "./AssetLogic.sol";
 
 /// @title The logic contract for the asset registration
 /// @notice This contract provides the logic that determines how the data is stored
-/// @dev Needs a valid AssetProducingRegistryDB contract to function correctly
+/// @dev Needs a valid AssetProducingRegistryDB contract to function correctly 
 contract AssetConsumingRegistryLogic is AssetLogic {
 
-    ///@notice The AssetProducingRegistryDB contract
 
-    event LogNewMeterRead(uint indexed _assetId, uint _oldMeterRead, uint _newMeterRead, uint _certificatesUsedForWh);
+    event LogNewMeterRead(uint indexed _assetId, uint _oldMeterRead, uint _newMeterRead, uint _certificatesUsedForWh, bool _smartMeterDown);
 
     /// @notice Constructor
     /// @param _cooContract The address of the coo contract
@@ -43,14 +42,14 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     }
 
     /// @notice Sets the general information of an asset in the database
-    /// @param _index the The index / identifier of an asset
+    /// @param _assetId the The index / identifier of an asset
     /// @param _smartMeter The address of the smart meter
     /// @param _owner The address of the asset owner
     /// @param _operationalSince The timestamp since the asset is operational
     /// @param _capacityWh The capacity in Wh of the asset
     /// @param _active true if active
     function initGeneral (
-        uint _index,
+        uint _assetId,
         address _smartMeter,
         address _owner,
         uint _operationalSince,
@@ -63,8 +62,8 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         userHasRole(RoleManagement.Role.AssetManager, _owner)
         onlyRole(RoleManagement.Role.AssetAdmin)
     {  
-       AssetConsumingRegistryDB(db).initGeneral(_index, _smartMeter, _owner, _operationalSince, _capacityWh,maxCapacitySet, 0, 0, _active, 0x0);
-        checkForFullAsset(_index);
+       AssetConsumingRegistryDB(db).initGeneral(_assetId, _smartMeter, _owner, _operationalSince, _capacityWh,maxCapacitySet, 0, 0, _active, 0x0);
+        checkForFullAsset(_assetId);
     }
     
     /// @notice Logs meter read
@@ -72,16 +71,19 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     /// @param _newMeterRead The current meter read of the asset
     /// @param _lastSmartMeterReadFileHash Last meter read file hash
     /// @dev The client needs to check if the blockgas limit could be reached and if so the log should be splitted 
-    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, bytes32 _lastSmartMeterReadFileHash) 
+    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, bytes32 _lastSmartMeterReadFileHash, bool _smartMeterDown) 
         external
         isInitialized
-        onlyAccount(AssetConsumingRegistryDB(address(db)).getSmartMeter(_assetId))
+        onlyAccount(AssetConsumingRegistryDB((db)).getSmartMeter(_assetId))
     {
         require(db.getActive(_assetId));
-        LogNewMeterRead(_assetId, AssetConsumingRegistryDB(address(db)).getLastSmartMeterReadWh(_assetId), _newMeterRead, AssetConsumingRegistryDB(address(db)).getCertificatesUsedForWh(_assetId));
+        uint oldMeterRead = AssetConsumingRegistryDB((db)).getLastSmartMeterReadWh(_assetId);
+        LogNewMeterRead(_assetId, oldMeterRead, _newMeterRead, AssetConsumingRegistryDB((db)).getCertificatesUsedForWh(_assetId), _smartMeterDown);
         /// @dev need to check if new meter read is higher then the old one
         db.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
-        AssetConsumingRegistryDB(address(db)).setLastSmartMeterReadWh(_assetId, _newMeterRead);
+        AssetConsumingRegistryDB((db)).setLastSmartMeterReadWh(_assetId, _newMeterRead);
+        db.setLastSmartMeterReadDate(_assetId,now);
+
     }
 
     /// @notice Gets an asset
@@ -113,5 +115,28 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         return AssetConsumingRegistryDB(address(db)).getAssetGeneral(_assetId);
     }
 
-   
+    /// @notice gets the consuming properties of an asset
+    /// @param _id the assetId
+    /// @return retuns capacity, maxCapacitySet-falg and certificatesUsedForWh
+    function getConsumingProperies(uint _id) 
+        external
+        view
+        returns (
+            uint capacityWh,
+            bool maxCapacitySet,
+            uint certificatesUsedForWh
+        )
+    {
+       (capacityWh, maxCapacitySet, certificatesUsedForWh) = AssetConsumingRegistryDB(address(db)).getConsumingProperies(_id);
+    }
+
+    /// @notice sets the consumption for a period (in Wh)
+    /// @param _assetId assetId
+    /// @param _consumed the amount of energy consumed
+    function setConsumptionForPeriode(uint _assetId, uint _consumed)
+        external
+        onlyAccount(address(cooContract.demandRegistry()))
+    {
+        AssetConsumingRegistryDB(db).setCertificatesUsedForWh(_assetId, _consumed);
+    }
 }

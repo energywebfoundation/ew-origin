@@ -18,7 +18,7 @@ pragma solidity ^0.4.19;
 import "./Owned.sol";
 import "./LocationDefinition.sol";
 
-
+/// @title this contracts provides those functions that both consuming and producing assets share
 contract AssetGeneralDefinition is Owned {
 
    struct GeneralInformation {
@@ -28,10 +28,12 @@ contract AssetGeneralDefinition is Owned {
         uint lastSmartMeterReadWh;
         bool active;
         bytes32 lastSmartMeterReadFileHash;
+        uint lastMeterReadReceived;
         bool exists;
     }
 
-     /// @notice function to set all the location Informations for an asset
+    /// @notice function to set all the location Informations for an asset, gets called internally
+    /// @param _loc the storage location of the location informations
     /// @param _country The country where the asset is located
     /// @param _region The region / state where the asset is located
     /// @param _zip The zip-code of the region where the asset is located
@@ -41,7 +43,7 @@ contract AssetGeneralDefinition is Owned {
     /// @param _gpsLatitude The gps-latitude
     /// @param _gpsLongitude The gps-longitude
     function initLocationInternal(
-        LocationDefinition.Location storage loc,
+        LocationDefinition.Location storage _loc,
         bytes32 _country,
         bytes32 _region,
         bytes32 _zip,
@@ -53,19 +55,27 @@ contract AssetGeneralDefinition is Owned {
     )
         internal
     {
-        loc.country = _country;
-        loc.region = _region;
-        loc.zip = _zip;
-        loc.city = _city;
-        loc.street = _street;
-        loc.houseNumber = _houseNumber;
-        loc.gpsLatitude = _gpsLatitude;
-        loc.gpsLongitude = _gpsLongitude;
-        loc.exists = true;
+        _loc.country = _country;
+        _loc.region = _region;
+        _loc.zip = _zip;
+        _loc.city = _city;
+        _loc.street = _street;
+        _loc.houseNumber = _houseNumber;
+        _loc.gpsLatitude = _gpsLatitude;
+        _loc.gpsLongitude = _gpsLongitude;
+        _loc.exists = true;
     }
 
+    /// @notice internal function to set the general information
+    /// @param _gi storage location of the general information
+    /// @param _smartMeter smartMeter-address
+    /// @param _owner owner-of the asset
+    /// @param _operationalSince operatinal since that timestamp
+    /// @param _lastSmartMeterReadWh the last meterreading in Wh
+    /// @param _active flag if the asset is active
+    /// @param _lastSmartMeterReadFileHash the last filehash 
     function setGeneralInformationInternal(
-        GeneralInformation storage gi,
+        GeneralInformation storage _gi,
         address _smartMeter,
         address _owner,
         uint _operationalSince,
@@ -75,18 +85,20 @@ contract AssetGeneralDefinition is Owned {
     )
     internal 
     {
-        gi.smartMeter = _smartMeter;
-        gi.owner = _owner;
-        gi.operationalSince = _operationalSince;
-        gi.lastSmartMeterReadWh = _lastSmartMeterReadWh;
-        gi.active = _active;
-        gi.lastSmartMeterReadFileHash = _lastSmartMeterReadFileHash;
-        gi.exists = true;
+        _gi.smartMeter = _smartMeter;
+        _gi.owner = _owner;
+        _gi.operationalSince = _operationalSince;
+        _gi.lastSmartMeterReadWh = _lastSmartMeterReadWh;
+        _gi.active = _active;
+        _gi.lastSmartMeterReadFileHash = _lastSmartMeterReadFileHash;
+        _gi.lastMeterReadReceived = 0;
+        _gi.exists = true;
     }
 
     /// @notice function to get the informations about the location of a struct
+    /// @param _loc storage location of the locationInformations
     /// @return country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude
-    function getAssetLocationInternal(LocationDefinition.Location storage loc)
+    function getAssetLocationInternal(LocationDefinition.Location storage _loc)
         internal
         view
         returns(
@@ -100,14 +112,14 @@ contract AssetGeneralDefinition is Owned {
             bytes32 gpsLongitude
         )
     {
-        country = loc.country;
-        region = loc.region;
-        zip = loc.zip;
-        city = loc.city;
-        street = loc.street;
-        houseNumber = loc.houseNumber;
-        gpsLatitude = loc.gpsLatitude;
-        gpsLongitude = loc.gpsLongitude;
+        country = _loc.country;
+        region = _loc.region;
+        zip = _loc.zip;
+        city = _loc.city;
+        street = _loc.street;
+        houseNumber = _loc.houseNumber;
+        gpsLatitude = _loc.gpsLatitude;
+        gpsLongitude = _loc.gpsLongitude;
 
         return (country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude);
     }

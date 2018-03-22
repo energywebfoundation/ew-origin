@@ -28,13 +28,13 @@ contract RoleManagement {
 
     /// @notice all possible available roles
     /*
-    no role:    0x0...ß00000
-    TopAdmin:   0x0...-----1
-    UserAdmin:  0x0...----1-
-    AssetAdmin: 0x0...---1--
+    no role:        0x0...000000
+    TopAdmin:       0x0...-----1
+    UserAdmin:      0x0...----1-
+    AssetAdmin:     0x0...---1--
     AgreementAdmin: 0x0...--1---
-    AssetManager: 0x0...-1----
-    Tader:      0x0...1-----
+    AssetManager:   0x0...-1----
+    Tader:          0x0...1-----
     */
     enum Role{
         TopAdmin,
