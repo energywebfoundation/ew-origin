@@ -46,6 +46,8 @@ module.exports = async function (callback) {
 
     let i = 0;
 
+
+    console.log('demand creation done')
     while (true) {
 
         console.log('\n# ' + i)
@@ -93,15 +95,15 @@ module.exports = async function (callback) {
             await sleep(sleepTime);
 
         }
-
-        await web3.currentProvider.send(
-            {
-                jsonrpc: '2.0',
-                method: 'evm_increaseTime',
-                params: [86400],
-                id: 0
-            })
-
+        /*
+                await web3.currentProvider.send(
+                    {
+                        jsonrpc: '2.0',
+                        method: 'evm_increaseTime',
+                        params: [86400],
+                        id: 0
+                    })
+        */
         const time = new Date((await web3.eth.getBlock('latest').timestamp + 86400) * 1000)
         console.log('# New time: ' + time)
         i++;
@@ -122,7 +124,9 @@ async function createDemand(region, coupled, coupledAsset, endTimeOffset, timlyC
     const startTime = agreementDate - 12000000
     const endTime = agreementDate + endTimeOffset
 
-    const id = createTx.logs.find((log) => log.event === 'createdEmptyDemand').args.id.toNumber();
+    const id = createTx.logs.find((log) => log.event === 'createdEmptyDemand').args._demandId.toNumber();
+    console.log('found demandID:' + id + " consumingasset: " + consumingAsset)
+
     const generalAndCouplingTx = await demandLogic.initGeneralAndCoupling(
         id,
         0, // originator 
@@ -136,8 +140,6 @@ async function createDemand(region, coupled, coupledAsset, endTimeOffset, timlyC
         consumingAsset,
         { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
-
-
     const txPd = await demandLogic.initPriceDriving(
         id,
         web3.fromAscii('Germany'),
@@ -158,6 +160,7 @@ async function createDemand(region, coupled, coupledAsset, endTimeOffset, timlyC
         { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
 
+
     console.log('- Demand created id: ' + id)
     return id;
 }
@@ -166,7 +169,7 @@ async function createAsset(assetLogic, region, owner) {
 
     const createTx = await assetLogic.createAsset({ from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 })
 
-    const id = createTx.logs.find((log) => log.event === 'LogAssetCreated').args.id.toNumber();
+    const id = createTx.logs.find((log) => log.event === 'LogAssetCreated').args._assetId.toNumber();
 
     await assetLogic.initGeneral(
         id,
@@ -208,7 +211,7 @@ async function createConsumingAsset(assetLogic, region) {
 
     const createTx = await assetLogic.createAsset({ from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 })
 
-    const id = createTx.logs.find((log) => log.event === 'LogAssetCreated').args.id.toNumber();
+    const id = createTx.logs.find((log) => log.event === 'LogAssetCreated').args._assetId.toNumber();
 
     const generalTx = await assetLogic.initGeneral(
         id,
@@ -218,7 +221,7 @@ async function createConsumingAsset(assetLogic, region) {
         100000,
         false,
         true,
-        { from: "0xcea1c413a570654fa85e78f7c17b755563fec5a5", gasPrice: 0 }
+        { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
 
     const locationTx = await assetLogic.initLocation(
@@ -231,7 +234,7 @@ async function createConsumingAsset(assetLogic, region) {
         web3.fromAscii('0'),
         web3.fromAscii('0'),
         web3.fromAscii('0'),
-        { from: "0xcea1c413a570654fa85e78f7c17b755563fec5a5", gasPrice: 0 }
+        { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
     console.log('- Consuming asset created id: ' + id)
     return id;
