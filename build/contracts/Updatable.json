@@ -1,0 +1,224 @@
+{
+  "contractName": "Updatable",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newLogic",
+          "type": "address"
+        }
+      ],
+      "name": "update",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\n\npragma solidity ^0.4.17;\n\n/// @title this interface defines the required update-function that every updatable-contract has to implement\ninterface Updatable {\n   \n   function update(address _newLogic) external;\n\n   \n}",
+  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+  "ast": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+    "exportedSymbols": {
+      "Updatable": [
+        8282
+      ]
+    },
+    "id": 8283,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8276,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".17"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "886:24:18"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title this interface defines the required update-function that every updatable-contract has to implement",
+        "fullyImplemented": false,
+        "id": 8282,
+        "linearizedBaseContracts": [
+          8282
+        ],
+        "name": "Updatable",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "id": 8281,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "update",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8279,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8278,
+                  "name": "_newLogic",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8281,
+                  "src": "1067:17:18",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8277,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1067:7:18",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1066:19:18"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8280,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1094:0:18"
+            },
+            "scope": 8282,
+            "src": "1051:44:18",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8283,
+        "src": "1022:80:18"
+      }
+    ],
+    "src": "886:216:18"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+    "exportedSymbols": {
+      "Updatable": [
+        8282
+      ]
+    },
+    "id": 8283,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8276,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".17"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "886:24:18"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title this interface defines the required update-function that every updatable-contract has to implement",
+        "fullyImplemented": false,
+        "id": 8282,
+        "linearizedBaseContracts": [
+          8282
+        ],
+        "name": "Updatable",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "id": 8281,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "update",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8279,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8278,
+                  "name": "_newLogic",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8281,
+                  "src": "1067:17:18",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8277,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1067:7:18",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1066:19:18"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8280,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1094:0:18"
+            },
+            "scope": 8282,
+            "src": "1051:44:18",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8283,
+        "src": "1022:80:18"
+      }
+    ],
+    "src": "886:216:18"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-04-03T09:59:51.026Z"
+}

@@ -31,6 +31,59 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
     certificatesUsedForWh: number
     maxCapacitySet: boolean
 
+    static async CREATE_ASSET(assetProperties: ConsumingProperties, blockchainProperties: BlockchainProperties): Promise<Asset> {
+
+        const gasCreate = await blockchainProperties.consumingAssetLogicInstance.methods
+            .createAsset()
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+        const txCreate = await blockchainProperties.consumingAssetLogicInstance.methods
+            .createAsset()
+            .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasCreate * 1.1) })
+
+        const assetId = parseInt(txCreate.events.LogAssetCreated.returnValues._assetId, 10)
+
+        const initGeneralParams = [
+            assetId,
+            assetProperties.smartMeter,
+            assetProperties.owner,
+            assetProperties.operationalSince,
+            assetProperties.capacityWh,
+            assetProperties.maxCapacitySet,
+            assetProperties.active
+        ]
+
+        const gasInitGeneral = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitGeneral = blockchainProperties.consumingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) })
+
+        const initLocationParams = [
+            assetId,
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+        ]
+
+        const gasInitLocation = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitLocation = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitLocation * 1.1) })
+
+        return (new ConsumingAsset(assetId, blockchainProperties)).syncWithBlockchain()
+
+    }
+
     static async GET_ASSET_LIST_LENGTH(blockchainProperties: BlockchainProperties) {
 
         return parseInt(await blockchainProperties.consumingAssetLogicInstance.methods.getAssetListLength().call(), 10)

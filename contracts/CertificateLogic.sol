@@ -34,11 +34,11 @@ contract CertificateLogic is RoleManagement, Updatable {
     CertificateDB public certificateDb;
 
     /// @notice Logs the creation of an event
-    event LogCreatedCertificate(uint _certificateId, uint powerInW, address owner, address escrow);
+    event LogCreatedCertificate(uint indexed _certificateId, uint powerInW, address owner, address escrow);
     /// @notice Logs the request of an retirement of a certificate
-    event LogRetireRequest(uint _id, bool _retire);
+    event LogRetireRequest(uint indexed _certificateId, bool _retire);
 
-    event LogCertificateOwnerChanged(uint _id, address _oldOwner, address _newOwner, address _oldEscrow, address _newEscrow);
+    event LogCertificateOwnerChanged(uint indexed _certificateId, address _oldOwner, address _newOwner, address _oldEscrow, address _newEscrow);
     
     /// @notice Checks if the contract is initialized
     modifier isInitialized() {

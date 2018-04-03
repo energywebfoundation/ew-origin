@@ -30,10 +30,10 @@ contract DemandLogic is RoleManagement, Updatable {
     /// @notice database contract
     DemandDB public db;
 
-    event createdEmptyDemand(address sender, uint id);
-    event LogDemandFullyCreated(uint id);
-    event LogDemandExpired(uint id);
-    event LogMatcherPropertiesUpdate(uint index, uint currentWhPerPeriod, uint certInCurrentPeriod, uint currentPeriod, uint certID);
+    event createdEmptyDemand(address sender, uint indexed _demandId);
+    event LogDemandFullyCreated(uint indexed _demandId);
+    event LogDemandExpired(uint indexed _demandId);
+    event LogMatcherPropertiesUpdate(uint indexed _demandId, uint currentWhPerPeriod, uint certInCurrentPeriod, uint currentPeriod, uint certID);
 
     enum TimeFrame{
         yearly,

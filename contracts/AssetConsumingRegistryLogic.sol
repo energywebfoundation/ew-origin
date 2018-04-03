@@ -116,9 +116,9 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     }
 
     /// @notice gets the consuming properties of an asset
-    /// @param _id the assetId
+    /// @param _assetId the assetId
     /// @return retuns capacity, maxCapacitySet-falg and certificatesUsedForWh
-    function getConsumingProperies(uint _id) 
+    function getConsumingProperies(uint _assetId) 
         external
         view
         returns (
@@ -127,7 +127,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
             uint certificatesUsedForWh
         )
     {
-       (capacityWh, maxCapacitySet, certificatesUsedForWh) = AssetConsumingRegistryDB(address(db)).getConsumingProperies(_id);
+       (capacityWh, maxCapacitySet, certificatesUsedForWh) = AssetConsumingRegistryDB(address(db)).getConsumingProperies(_assetId);
     }
 
     /// @notice sets the consumption for a period (in Wh)

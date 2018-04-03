@@ -1,0 +1,466 @@
+{
+  "contractName": "RolesInterface",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "getRolesRights",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "doesUserExist",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\n\npragma solidity ^0.4.17;\n\n/// @title this interface defines functions for defining functions of the user-logic in order to call them in different contracts\ninterface RolesInterface {\n   \n    /// @notice function to retrieve the rights of an user\n    /// @dev if the user does not exist in the mapping it will return 0x0 thus preventing them from accidently getting any rights\n    /// @param _user user someone wants to know its rights\n    /// @return bitmask with the rights of the user\n    function getRolesRights(address _user) external view returns (uint);\n\n    /// @notice function that checks if there is an user for the provided ethereum-address\n    /// @param _user ethereum-address of that user\n    /// @return bool if the user exists\n    function doesUserExist(address _user) external  view returns (bool);\n}",
+  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
+  "ast": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
+    "exportedSymbols": {
+      "RolesInterface": [
+        8274
+      ]
+    },
+    "id": 8275,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8259,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".17"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "886:24:17"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title this interface defines functions for defining functions of the user-logic in order to call them in different contracts",
+        "fullyImplemented": false,
+        "id": 8274,
+        "linearizedBaseContracts": [
+          8274
+        ],
+        "name": "RolesInterface",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "id": 8266,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRolesRights",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8262,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8261,
+                  "name": "_user",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8266,
+                  "src": "1401:13:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8260,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1401:7:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1400:15:17"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8265,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8264,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8266,
+                  "src": "1439:4:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 8263,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1439:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1438:6:17"
+            },
+            "scope": 8274,
+            "src": "1377:68:17",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "id": 8273,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "doesUserExist",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8269,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8268,
+                  "name": "_user",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8273,
+                  "src": "1656:13:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8267,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1656:7:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1655:15:17"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8272,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8271,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8273,
+                  "src": "1695:4:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8270,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1695:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1694:6:17"
+            },
+            "scope": 8274,
+            "src": "1633:68:17",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8275,
+        "src": "1042:661:17"
+      }
+    ],
+    "src": "886:817:17"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
+    "exportedSymbols": {
+      "RolesInterface": [
+        8274
+      ]
+    },
+    "id": 8275,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8259,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".17"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "886:24:17"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title this interface defines functions for defining functions of the user-logic in order to call them in different contracts",
+        "fullyImplemented": false,
+        "id": 8274,
+        "linearizedBaseContracts": [
+          8274
+        ],
+        "name": "RolesInterface",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "id": 8266,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRolesRights",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8262,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8261,
+                  "name": "_user",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8266,
+                  "src": "1401:13:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8260,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1401:7:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1400:15:17"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8265,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8264,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8266,
+                  "src": "1439:4:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 8263,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1439:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1438:6:17"
+            },
+            "scope": 8274,
+            "src": "1377:68:17",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "id": 8273,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "doesUserExist",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8269,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8268,
+                  "name": "_user",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8273,
+                  "src": "1656:13:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8267,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1656:7:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1655:15:17"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 8272,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8271,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8273,
+                  "src": "1695:4:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8270,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1695:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1694:6:17"
+            },
+            "scope": 8274,
+            "src": "1633:68:17",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8275,
+        "src": "1042:661:17"
+      }
+    ],
+    "src": "886:817:17"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-04-03T09:59:51.026Z"
+}

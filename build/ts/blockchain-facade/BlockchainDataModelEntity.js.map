@@ -1,0 +1,1 @@
+{"version":3,"file":"BlockchainDataModelEntity.js","sourceRoot":"","sources":["../../../src/blockchain-facade/BlockchainDataModelEntity.ts"],"names":[],"mappings":";;AAEA;IAKI,YAAY,EAAU,EAAE,oBAA0C;QAE9D,IAAI,CAAC,EAAE,GAAG,EAAE,CAAA;QACZ,IAAI,CAAC,oBAAoB,GAAG,oBAAoB,CAAA;IAEpD,CAAC;CAKJ;AAfD,8DAeC"}

@@ -109,7 +109,7 @@ export class Demand extends BlockchainDataModelEntity implements FullDemandPrope
             .createDemand(demandProperties.enabledProperties)
             .send({ from: account, gas: Math.round(gasCreate * 1.1) })
 
-        const demandId = parseInt(txCreate.events.createdEmptyDemand.returnValues.id, 10)
+        const demandId = parseInt(txCreate.events.createdEmptyDemand.returnValues._demandId, 10)
 
         const initGeneralParams = [
             demandId,
@@ -124,11 +124,11 @@ export class Demand extends BlockchainDataModelEntity implements FullDemandPrope
             demandProperties.consumingAsset
         ]
 
-        const gasInitGeneral = blockchainProperties.demandLogicInstance.methods
+        const gasInitGeneral = await blockchainProperties.demandLogicInstance.methods
             .initGeneralAndCoupling(...initGeneralParams)
             .estimateGas({ from: account })
 
-        const txInitGeneral = blockchainProperties.demandLogicInstance.methods
+        const txInitGeneral = await blockchainProperties.demandLogicInstance.methods
             .initGeneralAndCoupling(...initGeneralParams)
             .send({ from: account, gas: Math.round(gasInitGeneral * 1.1) })
 
@@ -139,11 +139,11 @@ export class Demand extends BlockchainDataModelEntity implements FullDemandPrope
             demandProperties.matcher
         ]
 
-        const gasInitMatcher = blockchainProperties.demandLogicInstance.methods
+        const gasInitMatcher = await blockchainProperties.demandLogicInstance.methods
             .initMatchProperties(...initMatchPropertiesParams)
             .estimateGas({ from: account })
 
-        const txInitMatcher = blockchainProperties.demandLogicInstance.methods
+        const txInitMatcher = await blockchainProperties.demandLogicInstance.methods
             .initMatchProperties(...initMatchPropertiesParams)
             .send({ from: account, gas: Math.round(gasInitMatcher * 1.1) })
 
@@ -158,11 +158,11 @@ export class Demand extends BlockchainDataModelEntity implements FullDemandPrope
             blockchainProperties.web3.utils.fromUtf8(demandProperties.typeOfPublicSupport)
         ]
 
-        const gasInitPriceDriving = blockchainProperties.demandLogicInstance.methods
+        const gasInitPriceDriving = await blockchainProperties.demandLogicInstance.methods
             .initPriceDriving(...initPriceDrivingPropertiesParams)
             .estimateGas({ from: account })
 
-        const txInitPriceDriving = blockchainProperties.demandLogicInstance.methods
+        const txInitPriceDriving = await blockchainProperties.demandLogicInstance.methods
             .initPriceDriving(...initPriceDrivingPropertiesParams)
             .send({ from: account, gas: Math.round(gasInitPriceDriving * 1.1) })
 

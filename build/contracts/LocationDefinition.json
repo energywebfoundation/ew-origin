@@ -1,0 +1,589 @@
+{
+  "contractName": "LocationDefinition",
+  "abi": [],
+  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820b30de69906c4f32f5ba83297993981ad45cbb32c1dff3d4989ad569aac2da8380029",
+  "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820b30de69906c4f32f5ba83297993981ad45cbb32c1dff3d4989ad569aac2da8380029",
+  "sourceMap": "963:287:13:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "963:287:13:-;;;;;",
+  "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\npragma solidity ^0.4.19;\n\n/// @title the locationDefinition for the contracts\ncontract LocationDefinition {\n\n    struct Location {\n        bytes32 country;\n        bytes32 region;\n        bytes32 city;\n        bytes32 street;\n        bytes32 zip;\n        bytes32 houseNumber;\n        bytes32 gpsLatitude;\n        bytes32 gpsLongitude;\n        bool exists;\n    }\n\n\n}",
+  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+  "ast": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+    "exportedSymbols": {
+      "LocationDefinition": [
+        8015
+      ]
+    },
+    "id": 8016,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7995,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".19"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "885:24:13"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title the locationDefinition for the contracts",
+        "fullyImplemented": true,
+        "id": 8015,
+        "linearizedBaseContracts": [
+          8015
+        ],
+        "name": "LocationDefinition",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "LocationDefinition.Location",
+            "id": 8014,
+            "members": [
+              {
+                "constant": false,
+                "id": 7997,
+                "name": "country",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1024:15:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 7996,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1024:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 7999,
+                "name": "region",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1049:14:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 7998,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1049:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8001,
+                "name": "city",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1073:12:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8000,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1073:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8003,
+                "name": "street",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1095:14:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8002,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1095:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8005,
+                "name": "zip",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1119:11:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8004,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1119:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8007,
+                "name": "houseNumber",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1140:19:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8006,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1140:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8009,
+                "name": "gpsLatitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1169:19:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8008,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1169:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8011,
+                "name": "gpsLongitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1198:20:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8010,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1198:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8013,
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1228:11:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 8012,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1228:4:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Location",
+            "nodeType": "StructDefinition",
+            "scope": 8015,
+            "src": "998:248:13",
+            "visibility": "public"
+          }
+        ],
+        "scope": 8016,
+        "src": "963:287:13"
+      }
+    ],
+    "src": "885:365:13"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+    "exportedSymbols": {
+      "LocationDefinition": [
+        8015
+      ]
+    },
+    "id": 8016,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7995,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".19"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "885:24:13"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title the locationDefinition for the contracts",
+        "fullyImplemented": true,
+        "id": 8015,
+        "linearizedBaseContracts": [
+          8015
+        ],
+        "name": "LocationDefinition",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "LocationDefinition.Location",
+            "id": 8014,
+            "members": [
+              {
+                "constant": false,
+                "id": 7997,
+                "name": "country",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1024:15:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 7996,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1024:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 7999,
+                "name": "region",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1049:14:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 7998,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1049:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8001,
+                "name": "city",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1073:12:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8000,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1073:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8003,
+                "name": "street",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1095:14:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8002,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1095:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8005,
+                "name": "zip",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1119:11:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8004,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1119:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8007,
+                "name": "houseNumber",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1140:19:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8006,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1140:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8009,
+                "name": "gpsLatitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1169:19:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8008,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1169:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8011,
+                "name": "gpsLongitude",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1198:20:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 8010,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1198:7:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 8013,
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "scope": 8014,
+                "src": "1228:11:13",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 8012,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1228:4:13",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Location",
+            "nodeType": "StructDefinition",
+            "scope": 8015,
+            "src": "998:248:13",
+            "visibility": "public"
+          }
+        ],
+        "scope": 8016,
+        "src": "963:287:13"
+      }
+    ],
+    "src": "885:365:13"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-04-03T09:59:51.024Z"
+}

@@ -71,7 +71,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .createAsset()
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasCreate * 1.1) })
 
-        const assetId = parseInt(txCreate.events.LogAssetCreated.returnValues.id, 10)
+        const assetId = parseInt(txCreate.events.LogAssetCreated.returnValues._assetId, 10)
 
         const initGeneralParams = [
             assetId,
@@ -86,7 +86,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .initGeneral(...initGeneralParams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
 
-        const txInitGeneral = await blockchainProperties.producingAssetLogicInstance.methods
+        const txInitGeneral = blockchainProperties.producingAssetLogicInstance.methods
             .initGeneral(...initGeneralParams)
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) })
 
@@ -103,7 +103,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .initProducingProperties(...initProducingPrams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
 
-        const txInitProducing = await blockchainProperties.producingAssetLogicInstance.methods
+        const txInitProducing = blockchainProperties.producingAssetLogicInstance.methods
             .initProducingProperties(...initProducingPrams)
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitProducing * 1.1) })
 
@@ -151,7 +151,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             this.assetType = parseInt(demandData[1].assetType, 10)
             this.capacityWh = parseInt(demandData[1].capacityWh, 10)
             this.certificatesCreatedForWh = parseInt(demandData[1].certificatesCreatedForWh, 10)
-            this.lastSmartMeterCO2OffsetRead = parseInt(demandData[1].lastCO2OffsetReading, 10)
+            this.lastSmartMeterCO2OffsetRead = parseInt(demandData[1].lastSmartMeterCO2OffsetRead, 10)
             this.cO2UsedForCertificate = parseInt(demandData[1].cO2UsedForCertificate, 10)
             this.complianceRegistry = parseInt(demandData[1].registryCompliance, 10)
             this.otherGreenAttributes = this.blockchainProperties.web3.utils.hexToUtf8(demandData[1].otherGreenAttributes)

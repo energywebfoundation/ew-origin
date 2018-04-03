@@ -23,8 +23,8 @@ import "./AssetDbInterface.sol";
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract AssetLogic is RoleManagement, Updatable {
 
-    event LogAssetCreated(address sender, uint id);
-    event LogAssetFullyInitialized(uint indexed id);
+    event LogAssetCreated(address sender, uint indexed _assetId);
+    event LogAssetFullyInitialized(uint indexed _assetId);
     event LogAssetSetActive(uint indexed _assetId);
     event LogAssetSetInactive(uint indexed _assetId);
 
