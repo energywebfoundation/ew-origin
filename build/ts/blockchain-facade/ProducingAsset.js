@@ -62,7 +62,7 @@ class ProducingAsset extends Asset_1.Asset {
             const gasInitGeneral = yield blockchainProperties.producingAssetLogicInstance.methods
                 .initGeneral(...initGeneralParams)
                 .estimateGas({ from: blockchainProperties.assetAdminAccount });
-            const txInitGeneral = blockchainProperties.producingAssetLogicInstance.methods
+            const txInitGeneral = yield blockchainProperties.producingAssetLogicInstance.methods
                 .initGeneral(...initGeneralParams)
                 .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) });
             const initProducingPrams = [
@@ -76,7 +76,7 @@ class ProducingAsset extends Asset_1.Asset {
             const gasInitProducing = yield blockchainProperties.producingAssetLogicInstance.methods
                 .initProducingProperties(...initProducingPrams)
                 .estimateGas({ from: blockchainProperties.assetAdminAccount });
-            const txInitProducing = blockchainProperties.producingAssetLogicInstance.methods
+            const txInitProducing = yield blockchainProperties.producingAssetLogicInstance.methods
                 .initProducingProperties(...initProducingPrams)
                 .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitProducing * 1.1) });
             const initLocationParams = [

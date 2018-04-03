@@ -86,7 +86,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .initGeneral(...initGeneralParams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
 
-        const txInitGeneral = blockchainProperties.producingAssetLogicInstance.methods
+        const txInitGeneral = await blockchainProperties.producingAssetLogicInstance.methods
             .initGeneral(...initGeneralParams)
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) })
 
@@ -103,7 +103,7 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .initProducingProperties(...initProducingPrams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
 
-        const txInitProducing = blockchainProperties.producingAssetLogicInstance.methods
+        const txInitProducing = await blockchainProperties.producingAssetLogicInstance.methods
             .initProducingProperties(...initProducingPrams)
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitProducing * 1.1) })
 
