@@ -30,7 +30,7 @@ import "./AssetLogic.sol";
 /// @dev Needs a valid AssetProducingRegistryDB contract to function correctly
 contract AssetProducingRegistryLogic is AssetLogic {
 
-    event LogNewMeterRead(uint indexed _assetId, uint _oldMeterRead, uint _newMeterRead, bool _smartMeterDown, uint _certificatesCreatedForWh, uint _oldCO2OffsetReading, uint _newCO2OffsetReading, bool _serviceDown);
+    event LogNewMeterRead(uint indexed _assetId, bytes32 indexed _fileHash, uint _oldMeterRead, uint _newMeterRead, bool _smartMeterDown, uint _certificatesCreatedForWh, uint _oldCO2OffsetReading, uint _newCO2OffsetReading, bool _serviceDown);
     
     enum AssetType {
         Wind,
@@ -123,7 +123,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
         require(db.getActive(_assetId));
 
      
-        LogNewMeterRead(_assetId, AssetProducingRegistryDB(db).getLastSmartMeterReadWh(_assetId), _newMeterRead, _smartMeterDown, AssetProducingRegistryDB(db).getCertificatesCreatedForWh(_assetId), AssetProducingRegistryDB(db).getlastSmartMeterCO2OffsetRead(_assetId), _CO2OffsetMeterRead, _CO2OffsetServiceDown);
+        LogNewMeterRead(_assetId, _lastSmartMeterReadFileHash, AssetProducingRegistryDB(db).getLastSmartMeterReadWh(_assetId), _newMeterRead, _smartMeterDown, AssetProducingRegistryDB(db).getCertificatesCreatedForWh(_assetId), AssetProducingRegistryDB(db).getlastSmartMeterCO2OffsetRead(_assetId), _CO2OffsetMeterRead, _CO2OffsetServiceDown);
         /// @dev need to check if new meter read is higher then the old one
         AssetProducingRegistryDB(db).setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
         AssetProducingRegistryDB(db).setLastSmartMeterReadWh(_assetId, _newMeterRead);

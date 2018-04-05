@@ -30,7 +30,7 @@ import "./AssetLogic.sol";
 contract AssetConsumingRegistryLogic is AssetLogic {
 
 
-    event LogNewMeterRead(uint indexed _assetId, uint _oldMeterRead, uint _newMeterRead, uint _certificatesUsedForWh, bool _smartMeterDown);
+    event LogNewMeterRead(uint indexed _assetId, bytes32 indexed _fileHash, uint _oldMeterRead, uint _newMeterRead, uint _certificatesUsedForWh, bool _smartMeterDown);
 
     /// @notice Constructor
     /// @param _cooContract The address of the coo contract
@@ -62,7 +62,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         userHasRole(RoleManagement.Role.AssetManager, _owner)
         onlyRole(RoleManagement.Role.AssetAdmin)
     {  
-       AssetConsumingRegistryDB(db).initGeneral(_assetId, _smartMeter, _owner, _operationalSince, _capacityWh,maxCapacitySet, 0, 0, _active, 0x0);
+        AssetConsumingRegistryDB(db).initGeneral(_assetId, _smartMeter, _owner, _operationalSince, _capacityWh,maxCapacitySet, 0, 0, _active, 0x0);
         checkForFullAsset(_assetId);
     }
     
@@ -78,7 +78,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     {
         require(db.getActive(_assetId));
         uint oldMeterRead = AssetConsumingRegistryDB((db)).getLastSmartMeterReadWh(_assetId);
-        LogNewMeterRead(_assetId, oldMeterRead, _newMeterRead, AssetConsumingRegistryDB((db)).getCertificatesUsedForWh(_assetId), _smartMeterDown);
+        LogNewMeterRead(_assetId, _lastSmartMeterReadFileHash, oldMeterRead, _newMeterRead, AssetConsumingRegistryDB((db)).getCertificatesUsedForWh(_assetId), _smartMeterDown);
         /// @dev need to check if new meter read is higher then the old one
         db.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
         AssetConsumingRegistryDB((db)).setLastSmartMeterReadWh(_assetId, _newMeterRead);

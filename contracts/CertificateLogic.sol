@@ -83,7 +83,7 @@ contract CertificateLogic is RoleManagement, Updatable {
     {
         uint co = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getCoSaved(_assetId, _powerInW);
         require(AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).useWhForCertificate(_assetId, _powerInW));
-        bytes32 dataLog = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetDataLog(_assetId);
+        bytes32 dataLog = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getLastSmartMeterReadFileHash(_assetId);
         uint certId = certificateDb.createCertificate(_assetId, _owner, _powerInW, dataLog, co, _escrow);
         LogCreatedCertificate(certId, _powerInW, _owner, _escrow);
         AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).setCO2UsedForCertificate(_assetId,co);

@@ -131,9 +131,9 @@ contract DemandDB is Owned {
     function createEmptyDemand(uint _mask)
         external
         onlyOwner
-        returns (uint)
+        returns (uint _demandId)
     {
-    return (allDemands.push(Demand({
+     allDemands.push(Demand({
             general: generalEmpty,
             couple: coupleEmpty,
             priceDriving: priceDrivingEmpty,
@@ -141,7 +141,9 @@ contract DemandDB is Owned {
             enabled: false,
             created : 0,
             demandMask: _mask
-        })) -1);
+        }));
+        _demandId = allDemands.length>0?allDemands.length-1:0;        
+
     }
 
     /// @notice function to create the general informations of a demand

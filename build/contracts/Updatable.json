@@ -26,14 +26,14 @@
     "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
     "exportedSymbols": {
       "Updatable": [
-        8282
+        8346
       ]
     },
-    "id": 8283,
+    "id": 8347,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8276,
+        "id": 8340,
         "literals": [
           "solidity",
           "^",
@@ -49,16 +49,16 @@
         "contractKind": "interface",
         "documentation": "@title this interface defines the required update-function that every updatable-contract has to implement",
         "fullyImplemented": false,
-        "id": 8282,
+        "id": 8346,
         "linearizedBaseContracts": [
-          8282
+          8346
         ],
         "name": "Updatable",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "id": 8281,
+            "id": 8345,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -66,15 +66,15 @@
             "name": "update",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8279,
+              "id": 8343,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8278,
+                  "id": 8342,
                   "name": "_newLogic",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8281,
+                  "scope": 8345,
                   "src": "1067:17:18",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -83,7 +83,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8277,
+                    "id": 8341,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1067:7:18",
@@ -100,19 +100,19 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8280,
+              "id": 8344,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1094:0:18"
             },
-            "scope": 8282,
+            "scope": 8346,
             "src": "1051:44:18",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 8283,
+        "scope": 8347,
         "src": "1022:80:18"
       }
     ],
@@ -122,14 +122,14 @@
     "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
     "exportedSymbols": {
       "Updatable": [
-        8282
+        8346
       ]
     },
-    "id": 8283,
+    "id": 8347,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8276,
+        "id": 8340,
         "literals": [
           "solidity",
           "^",
@@ -145,16 +145,16 @@
         "contractKind": "interface",
         "documentation": "@title this interface defines the required update-function that every updatable-contract has to implement",
         "fullyImplemented": false,
-        "id": 8282,
+        "id": 8346,
         "linearizedBaseContracts": [
-          8282
+          8346
         ],
         "name": "Updatable",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "id": 8281,
+            "id": 8345,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -162,15 +162,15 @@
             "name": "update",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8279,
+              "id": 8343,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8278,
+                  "id": 8342,
                   "name": "_newLogic",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8281,
+                  "scope": 8345,
                   "src": "1067:17:18",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -179,7 +179,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8277,
+                    "id": 8341,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1067:7:18",
@@ -196,19 +196,19 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8280,
+              "id": 8344,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1094:0:18"
             },
-            "scope": 8282,
+            "scope": 8346,
             "src": "1051:44:18",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 8283,
+        "scope": 8347,
         "src": "1022:80:18"
       }
     ],
@@ -220,5 +220,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-03T11:52:02.051Z"
+  "updatedAt": "2018-04-05T14:15:23.077Z"
 }

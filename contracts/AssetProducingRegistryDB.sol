@@ -66,14 +66,15 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     function createAsset() 
         external
         onlyOwner
-        returns (uint)
+        returns (uint _assetId)
     {
-        return assets.push(AssetProducingRegistryDB.Asset({
+        assets.push(AssetProducingRegistryDB.Asset({
             general: generalEmpty,
             producingProps: producingEmpty,
             location: locationEmpty,
             exists: false
-        })) - 1;
+        }));
+       _assetId = assets.length>0?assets.length-1:0;        
     }
 
     /// @notice function to set the general information for an asset

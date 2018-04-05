@@ -62,14 +62,16 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     function createAsset() 
         external
         onlyOwner
-        returns (uint)
+        returns (uint _assetId)
     {
-        return assets.push(AssetConsumingRegistryDB.Asset({
+        assets.push(AssetConsumingRegistryDB.Asset({
             general: generalEmpty,
             consumingProps: consumingEmpty,
             location: locationEmpty,
             exists: false
-        })) - 1;
+        }));
+        _assetId = assets.length>0?assets.length-1:0;        
+
     }
 
     /// @notice Sets the general information for an asset
@@ -165,7 +167,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     function setCapacityWh(uint _assetId, uint _capacityWh) 
         onlyOwner
         external
-    {
+    {        
         assets[_assetId].consumingProps.capacityWh = _capacityWh;
     }
 

@@ -50,14 +50,14 @@
     "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
     "exportedSymbols": {
       "RolesInterface": [
-        8274
+        8338
       ]
     },
-    "id": 8275,
+    "id": 8339,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8259,
+        "id": 8323,
         "literals": [
           "solidity",
           "^",
@@ -73,16 +73,16 @@
         "contractKind": "interface",
         "documentation": "@title this interface defines functions for defining functions of the user-logic in order to call them in different contracts",
         "fullyImplemented": false,
-        "id": 8274,
+        "id": 8338,
         "linearizedBaseContracts": [
-          8274
+          8338
         ],
         "name": "RolesInterface",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "id": 8266,
+            "id": 8330,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -90,15 +90,15 @@
             "name": "getRolesRights",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8262,
+              "id": 8326,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8261,
+                  "id": 8325,
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8266,
+                  "scope": 8330,
                   "src": "1401:13:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -107,7 +107,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8260,
+                    "id": 8324,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1401:7:17",
@@ -124,15 +124,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8265,
+              "id": 8329,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8264,
+                  "id": 8328,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8266,
+                  "scope": 8330,
                   "src": "1439:4:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -141,7 +141,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 8263,
+                    "id": 8327,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1439:4:17",
@@ -156,7 +156,7 @@
               ],
               "src": "1438:6:17"
             },
-            "scope": 8274,
+            "scope": 8338,
             "src": "1377:68:17",
             "stateMutability": "view",
             "superFunction": null,
@@ -164,7 +164,7 @@
           },
           {
             "body": null,
-            "id": 8273,
+            "id": 8337,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -172,15 +172,15 @@
             "name": "doesUserExist",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8269,
+              "id": 8333,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8268,
+                  "id": 8332,
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8273,
+                  "scope": 8337,
                   "src": "1656:13:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -189,7 +189,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8267,
+                    "id": 8331,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1656:7:17",
@@ -206,15 +206,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8272,
+              "id": 8336,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8271,
+                  "id": 8335,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8273,
+                  "scope": 8337,
                   "src": "1695:4:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -223,7 +223,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 8270,
+                    "id": 8334,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1695:4:17",
@@ -238,14 +238,14 @@
               ],
               "src": "1694:6:17"
             },
-            "scope": 8274,
+            "scope": 8338,
             "src": "1633:68:17",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 8275,
+        "scope": 8339,
         "src": "1042:661:17"
       }
     ],
@@ -255,14 +255,14 @@
     "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
     "exportedSymbols": {
       "RolesInterface": [
-        8274
+        8338
       ]
     },
-    "id": 8275,
+    "id": 8339,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8259,
+        "id": 8323,
         "literals": [
           "solidity",
           "^",
@@ -278,16 +278,16 @@
         "contractKind": "interface",
         "documentation": "@title this interface defines functions for defining functions of the user-logic in order to call them in different contracts",
         "fullyImplemented": false,
-        "id": 8274,
+        "id": 8338,
         "linearizedBaseContracts": [
-          8274
+          8338
         ],
         "name": "RolesInterface",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "id": 8266,
+            "id": 8330,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -295,15 +295,15 @@
             "name": "getRolesRights",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8262,
+              "id": 8326,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8261,
+                  "id": 8325,
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8266,
+                  "scope": 8330,
                   "src": "1401:13:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -312,7 +312,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8260,
+                    "id": 8324,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1401:7:17",
@@ -329,15 +329,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8265,
+              "id": 8329,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8264,
+                  "id": 8328,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8266,
+                  "scope": 8330,
                   "src": "1439:4:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -346,7 +346,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 8263,
+                    "id": 8327,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1439:4:17",
@@ -361,7 +361,7 @@
               ],
               "src": "1438:6:17"
             },
-            "scope": 8274,
+            "scope": 8338,
             "src": "1377:68:17",
             "stateMutability": "view",
             "superFunction": null,
@@ -369,7 +369,7 @@
           },
           {
             "body": null,
-            "id": 8273,
+            "id": 8337,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -377,15 +377,15 @@
             "name": "doesUserExist",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8269,
+              "id": 8333,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8268,
+                  "id": 8332,
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8273,
+                  "scope": 8337,
                   "src": "1656:13:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -394,7 +394,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8267,
+                    "id": 8331,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1656:7:17",
@@ -411,15 +411,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 8272,
+              "id": 8336,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8271,
+                  "id": 8335,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8273,
+                  "scope": 8337,
                   "src": "1695:4:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -428,7 +428,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 8270,
+                    "id": 8334,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1695:4:17",
@@ -443,14 +443,14 @@
               ],
               "src": "1694:6:17"
             },
-            "scope": 8274,
+            "scope": 8338,
             "src": "1633:68:17",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 8275,
+        "scope": 8339,
         "src": "1042:661:17"
       }
     ],
@@ -462,5 +462,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-03T11:52:02.051Z"
+  "updatedAt": "2018-04-05T14:15:23.076Z"
 }

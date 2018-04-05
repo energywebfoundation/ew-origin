@@ -123,7 +123,7 @@ contract AssetLogic is RoleManagement, Updatable {
     /// @notice Gets the last filehash of the smart reader
     /// @param _assetId the assetId
     /// @return the alst smartmeterread-filehash
-    function getAssetDataLog(uint _assetId)
+    function getLastSmartMeterReadFileHash(uint _assetId)
         external
         view
         returns (bytes32 datalog)

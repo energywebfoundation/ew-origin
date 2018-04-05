@@ -52,8 +52,10 @@ contract CertificateDB is Owned {
     /// @param _owner The owner of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
     /// @return The id of the certificate
-    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved, address _escrow) public onlyOwner returns (uint) {
-        return certificateList.push(Certificate(_assetId, _owner, _powerInW, false, _dataLog, _coSaved, _escrow, now)) - 1;
+    function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved, address _escrow) public onlyOwner returns (uint _certId) {
+         certificateList.push(Certificate(_assetId, _owner, _powerInW, false, _dataLog, _coSaved, _escrow, now));
+                _certId = certificateList.length>0?certificateList.length-1:0;        
+
         
     }
 
