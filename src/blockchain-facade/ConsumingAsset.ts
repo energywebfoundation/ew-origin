@@ -56,7 +56,7 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
             .initGeneral(...initGeneralParams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
 
-        const txInitGeneral = blockchainProperties.consumingAssetLogicInstance.methods
+        const txInitGeneral = await blockchainProperties.consumingAssetLogicInstance.methods
             .initGeneral(...initGeneralParams)
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) })
 
@@ -101,7 +101,7 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
 
     static async GET_ALL_ASSET_OWNED_BY(owner: string, blockchainProperties: BlockchainProperties) {
         return (await ConsumingAsset.GET_ALL_ASSETS(blockchainProperties))
-            .filter((asset: ConsumingAsset) => asset.owner === owner)
+            .filter((asset: ConsumingAsset) => asset.owner.toLowerCase() === owner.toLowerCase())
     }
 
 
@@ -148,5 +148,15 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
             toBlock: 'latest',
             topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0')]
         }))
+    }
+
+    async getEventWithFileHash(fileHash) {
+
+        return (await this.blockchainProperties.producingAssetLogicInstance.getPastEvents('allEvents', {
+            fromBlock: 0,
+            toBlock: 'latest',
+            topics: [null, null, fileHash]
+        }))
+
     }
 }

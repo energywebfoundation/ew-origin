@@ -58,11 +58,11 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
 
     static async GET_ALL_ASSET_OWNED_BY(owner: string, blockchainProperties: BlockchainProperties) {
         return (await ProducingAsset.GET_ALL_ASSETS(blockchainProperties))
-            .filter((asset: ProducingAsset) => asset.owner === owner)
+            .filter((asset: ProducingAsset) => asset.owner.toLowerCase() === owner.toLowerCase())
     }
 
 
-    static async CREATE_ASSET(assetProperties: ProducingAssetProperties, blockchainProperties: BlockchainProperties): Promise<Asset> {
+    static async CREATE_ASSET(assetProperties: ProducingAssetProperties, blockchainProperties: BlockchainProperties): Promise<ProducingAsset> {
 
         const gasCreate = await blockchainProperties.producingAssetLogicInstance.methods
             .createAsset()
@@ -98,7 +98,6 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             blockchainProperties.web3.utils.fromUtf8(assetProperties.otherGreenAttributes),
             blockchainProperties.web3.utils.fromUtf8(assetProperties.typeOfPublicSupport)
         ]
-
         const gasInitProducing = await blockchainProperties.producingAssetLogicInstance.methods
             .initProducingProperties(...initProducingPrams)
             .estimateGas({ from: blockchainProperties.assetAdminAccount })
@@ -196,7 +195,17 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
         return (await this.blockchainProperties.producingAssetLogicInstance.getPastEvents('allEvents', {
             fromBlock: 0,
             toBlock: 'latest',
+            //     topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0'), null]
             topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0')]
+        }))
+    }
+
+    async getEventWithFileHash(fileHash) {
+
+        return (await this.blockchainProperties.producingAssetLogicInstance.getPastEvents('allEvents', {
+            fromBlock: 0,
+            toBlock: 'latest',
+            topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0'), fileHash]
         }))
     }
 }

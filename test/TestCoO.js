@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 
 var CoO = artifacts.require("CoO");
 var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic")

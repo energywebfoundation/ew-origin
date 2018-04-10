@@ -45,7 +45,7 @@ class ConsumingAsset extends Asset_1.Asset {
             const gasInitGeneral = yield blockchainProperties.consumingAssetLogicInstance.methods
                 .initGeneral(...initGeneralParams)
                 .estimateGas({ from: blockchainProperties.assetAdminAccount });
-            const txInitGeneral = blockchainProperties.consumingAssetLogicInstance.methods
+            const txInitGeneral = yield blockchainProperties.consumingAssetLogicInstance.methods
                 .initGeneral(...initGeneralParams)
                 .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitGeneral * 1.1) });
             const initLocationParams = [
@@ -84,7 +84,7 @@ class ConsumingAsset extends Asset_1.Asset {
     static GET_ALL_ASSET_OWNED_BY(owner, blockchainProperties) {
         return __awaiter(this, void 0, void 0, function* () {
             return (yield ConsumingAsset.GET_ALL_ASSETS(blockchainProperties))
-                .filter((asset) => asset.owner === owner);
+                .filter((asset) => asset.owner.toLowerCase() === owner.toLowerCase());
         });
     }
     syncWithBlockchain() {
@@ -123,6 +123,15 @@ class ConsumingAsset extends Asset_1.Asset {
                 fromBlock: 0,
                 toBlock: 'latest',
                 topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0')]
+            }));
+        });
+    }
+    getEventWithFileHash(fileHash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield this.blockchainProperties.producingAssetLogicInstance.getPastEvents('allEvents', {
+                fromBlock: 0,
+                toBlock: 'latest',
+                topics: [null, null, fileHash]
             }));
         });
     }

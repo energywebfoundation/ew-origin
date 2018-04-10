@@ -13,7 +13,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
-pragma solidity 0.4.19;
+pragma solidity ^0.4.19;
 
 import "./DemandDb.sol";
 import "./RoleManagement.sol";

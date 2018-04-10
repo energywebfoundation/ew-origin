@@ -50,14 +50,14 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6040516020806102a98339810160405280805160008054600160a060020a03909216600160a060020a03199092169190911790555050610255806100546000396000f3006060604052600436106100325763ffffffff60e060020a600035041663b1f2cc9d8114610037578063bb5a389e14610066575b600080fd5b341561004257600080fd5b61004a61009f565b604051600160a060020a03909116815260200160405180910390f35b341561007157600080fd5b61008b60ff60043516600160a060020a03602435166100ae565b604051901515815260200160405180910390f35b600054600160a060020a031681565b6000805481908190600160a060020a038086169116638da5cb5b83604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b15156100fe57600080fd5b6102c65a03f1151561010f57600080fd5b50505060405180519050600160a060020a031614156101315760019250610221565b60008054600160a060020a031690635c7460d690604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b151561017a57600080fd5b6102c65a03f1151561018b57600080fd5b50505060405180519050600160a060020a031663265209f28560006040516020015260405160e060020a63ffffffff8416028152600160a060020a039091166004820152602401602060405180830381600087803b15156101eb57600080fd5b6102c65a03f115156101fc57600080fd5b50505060405180519050915084600681111561021457fe5b60020a8281161515935090505b5050929150505600a165627a7a72305820d341e13f99cee19310070cdfab14172321221b08a7dcd3d3b92a65ef27e62d9f0029",
-  "deployedBytecode": "0x6060604052600436106100325763ffffffff60e060020a600035041663b1f2cc9d8114610037578063bb5a389e14610066575b600080fd5b341561004257600080fd5b61004a61009f565b604051600160a060020a03909116815260200160405180910390f35b341561007157600080fd5b61008b60ff60043516600160a060020a03602435166100ae565b604051901515815260200160405180910390f35b600054600160a060020a031681565b6000805481908190600160a060020a038086169116638da5cb5b83604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b15156100fe57600080fd5b6102c65a03f1151561010f57600080fd5b50505060405180519050600160a060020a031614156101315760019250610221565b60008054600160a060020a031690635c7460d690604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b151561017a57600080fd5b6102c65a03f1151561018b57600080fd5b50505060405180519050600160a060020a031663265209f28560006040516020015260405160e060020a63ffffffff8416028152600160a060020a039091166004820152602401602060405180830381600087803b15156101eb57600080fd5b6102c65a03f115156101fc57600080fd5b50505060405180519050915084600681111561021457fe5b60020a8281161515935090505b5050929150505600a165627a7a72305820d341e13f99cee19310070cdfab14172321221b08a7dcd3d3b92a65ef27e62d9f0029",
+  "bytecode": "0x6060604052341561000f57600080fd5b6040516020806102a98339810160405280805160008054600160a060020a03909216600160a060020a03199092169190911790555050610255806100546000396000f3006060604052600436106100325763ffffffff60e060020a600035041663b1f2cc9d8114610037578063bb5a389e14610066575b600080fd5b341561004257600080fd5b61004a61009f565b604051600160a060020a03909116815260200160405180910390f35b341561007157600080fd5b61008b60ff60043516600160a060020a03602435166100ae565b604051901515815260200160405180910390f35b600054600160a060020a031681565b6000805481908190600160a060020a038086169116638da5cb5b83604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b15156100fe57600080fd5b6102c65a03f1151561010f57600080fd5b50505060405180519050600160a060020a031614156101315760019250610221565b60008054600160a060020a031690635c7460d690604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b151561017a57600080fd5b6102c65a03f1151561018b57600080fd5b50505060405180519050600160a060020a031663265209f28560006040516020015260405160e060020a63ffffffff8416028152600160a060020a039091166004820152602401602060405180830381600087803b15156101eb57600080fd5b6102c65a03f115156101fc57600080fd5b50505060405180519050915084600681111561021457fe5b60020a8281161515935090505b5050929150505600a165627a7a72305820b445fe91e7e0bbb8ab9d8e5d30e4fbffe04e99195cc4a99731b4e59e519cad400029",
+  "deployedBytecode": "0x6060604052600436106100325763ffffffff60e060020a600035041663b1f2cc9d8114610037578063bb5a389e14610066575b600080fd5b341561004257600080fd5b61004a61009f565b604051600160a060020a03909116815260200160405180910390f35b341561007157600080fd5b61008b60ff60043516600160a060020a03602435166100ae565b604051901515815260200160405180910390f35b600054600160a060020a031681565b6000805481908190600160a060020a038086169116638da5cb5b83604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b15156100fe57600080fd5b6102c65a03f1151561010f57600080fd5b50505060405180519050600160a060020a031614156101315760019250610221565b60008054600160a060020a031690635c7460d690604051602001526040518163ffffffff1660e060020a028152600401602060405180830381600087803b151561017a57600080fd5b6102c65a03f1151561018b57600080fd5b50505060405180519050600160a060020a031663265209f28560006040516020015260405160e060020a63ffffffff8416028152600160a060020a039091166004820152602401602060405180830381600087803b15156101eb57600080fd5b6102c65a03f115156101fc57600080fd5b50505060405180519050915084600681111561021457fe5b60020a8281161515935090505b5050929150505600a165627a7a72305820b445fe91e7e0bbb8ab9d8e5d30e4fbffe04e99195cc4a99731b4e59e519cad400029",
   "sourceMap": "1020:2277:16:-;;;2247:93;;;;;;;;;;;;;;;;;;;;;;2307:11;:26;;-1:-1:-1;;;;;2307:26:16;;;-1:-1:-1;;;;;;2307:26:16;;;;;;;;;-1:-1:-1;;1020:2277:16;;;;;;",
   "deployedSourceMap": "1020:2277:16:-;;;;;;;;;-1:-1:-1;;;1020:2277:16;;;;;;;;;;;;;;;;;;1094:22;;;;;;;;;;;;;;;-1:-1:-1;;;;;1094:22:16;;;;;;;;;;;;;;2549:746;;;;;;;;;;;;;;-1:-1:-1;;;;;2549:746:16;;;;;;;;;;;;;;;;;;;;;;1094:22;;;-1:-1:-1;;;;;1094:22:16;;:::o;2549:746::-;2634:4;2656:11;;2634:4;;;;-1:-1:-1;;;;;2656:30:16;;;;:11;:17;2634:4;2656:19;;;;;;;;;;-1:-1:-1;;;2656:19:16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;2656:30:16;;2652:72;;;2709:4;2702:11;;;;2652:72;2836:11;;;-1:-1:-1;;;;;2836:11:16;;:24;;:26;;;;;;;;;;-1:-1:-1;;;2836:26:16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;2821:57:16;;2879:7;2821:66;;;;;;;;-1:-1:-1;;;2821:66:16;;;;;;-1:-1:-1;;;;;2821:66:16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2807:80;;2997:5;2992:11;;;;;;;;2986:1;2981:22;3269:13;;;:18;;;-1:-1:-1;2981:22:16;-1:-1:-1;2549:746:16;;;;;;;:::o",
   "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\n\n\npragma solidity ^0.4.17;\n\nimport \"./CoO.sol\";\nimport \"./RolesInterface.sol\";\n\n/// @notice contract for managing the rights and roles\ncontract RoleManagement {\n\n    /// @notice central registry contract \n    CoO public cooContract;\n\n    /// @notice all possible available roles\n    /*\n    no role:        0x0...000000\n    TopAdmin:       0x0...-----1\n    UserAdmin:      0x0...----1-\n    AssetAdmin:     0x0...---1--\n    AgreementAdmin: 0x0...--1---\n    AssetManager:   0x0...-1----\n    Tader:          0x0...1-----\n    */\n    enum Role{\n        TopAdmin,\n        UserAdmin,\n        AssetAdmin,\n        AgreementAdmin,\n        AssetManager,\n        Trader,\n        Matcher\n    } \n\n    /// @notice modifier for checking if an user is allowed to execute the intended action\n    modifier onlyRole (RoleManagement.Role _role) { \n        require (isRole(_role, msg.sender)); \n        _; \n    }\n\n    modifier onlyAccount(address accountAddress) {\n        require(msg.sender == accountAddress);\n        _;\n    }\n\n    modifier userExists(address _user){\n        require(RolesInterface(cooContract.userRegistry()).doesUserExist(_user));\n        _;\n    }\n\n    modifier userHasRole(RoleManagement.Role _role, address _user){\n        require (isRole(_role, _user)); \n        _; \n    }\n\n    /// @notice constructor \n    /// @param _cooContract CoO.sol-registry contract\n    function RoleManagement (CoO _cooContract) public {\n        cooContract = _cooContract;\n    }\n\n    /// @notice funciton for comparing the role and the needed rights of an user\n    /// @param _role role of a user\n    /// @return whether the user has the corresponding rights for the intended action\n    function isRole(RoleManagement.Role _role, address _caller) public constant returns (bool) { \n\n        if (cooContract.owner() == _caller) {\n            return true;\n        }\n        /// @dev reading the rights for the user from the userDB-contract\n        uint rights = RolesInterface(cooContract.userRegistry()).getRolesRights(_caller);\n        /// @dev converting the used enum to the corresponding bitmask \n        uint role = uint(2) ** uint(_role);\n        /// @dev comparing rights and roles, if the result is not 0 the user has the right (bitwise comparison)\n        /// we also don't have to check for a potential overflow here, because the used enum will prevent using roles that do not exist\n        return (rights & role != 0);\n    }\n}",
-  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RoleManagement.sol",
+  "sourcePath": "/Users/mkuechler/ewf/CoO/contracts/RoleManagement.sol",
   "ast": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RoleManagement.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/RoleManagement.sol",
     "exportedSymbols": {
       "RoleManagement": [
         8321
@@ -78,7 +78,7 @@
         "src": "887:24:16"
       },
       {
-        "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/CoO.sol",
+        "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/CoO.sol",
         "file": "./CoO.sol",
         "id": 8193,
         "nodeType": "ImportDirective",
@@ -89,7 +89,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
+        "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/RolesInterface.sol",
         "file": "./RolesInterface.sol",
         "id": 8194,
         "nodeType": "ImportDirective",
@@ -1721,7 +1721,7 @@
     "src": "887:2410:16"
   },
   "legacyAST": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RoleManagement.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/RoleManagement.sol",
     "exportedSymbols": {
       "RoleManagement": [
         8321
@@ -1742,7 +1742,7 @@
         "src": "887:24:16"
       },
       {
-        "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/CoO.sol",
+        "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/CoO.sol",
         "file": "./CoO.sol",
         "id": 8193,
         "nodeType": "ImportDirective",
@@ -1753,7 +1753,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/RolesInterface.sol",
+        "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/RolesInterface.sol",
         "file": "./RolesInterface.sol",
         "id": 8194,
         "nodeType": "ImportDirective",
@@ -3390,5 +3390,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-05T14:15:23.076Z"
+  "updatedAt": "2018-04-09T15:13:13.265Z"
 }

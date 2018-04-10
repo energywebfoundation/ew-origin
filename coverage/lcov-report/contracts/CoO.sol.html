@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">94.12% </span>
+        <span class="strong">92.86% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>16/17</span>
+        <span class='fraction'>13/14</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">83.33% </span>
+        <span class="strong">80% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>10/12</span>
+        <span class='fraction'>8/10</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">75% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>3/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">95.45% </span>
+        <span class="strong">94.44% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>21/22</span>
+        <span class='fraction'>17/18</span>
       </div>
     </div>
   </div>
@@ -135,14 +135,7 @@
 90
 91
 92
-93
-94
-95
-96
-97
-98
-99</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+93</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,7 +184,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
@@ -226,10 +218,6 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,10 +252,9 @@ import "./Updatable.sol";
 contract CoO is Owned {
 &nbsp;
     Updatable public userRegistry;
-    Updatable public assetProducingRegistry;
+    Updatable public assetRegistry;
     Updatable public certificateRegistry;
     Updatable public demandRegistry;
-    Updatable public assetConsumingRegistry;
 &nbsp;
     /// @notice The constructor of the UserDB
     function CoO()
@@ -279,40 +266,39 @@ contract CoO is Owned {
 &nbsp;
     /// @notice function to initialize the contracts, setting the needed contract-addresses
     /// @param _userRegistry user-registry logic contract address
-    /// @param _assetProducingRegistry asset-registry logic contract address
+    /// @param _assetRegistry asset-registry logic contract address
     /// @param _certificateRegistry certificate-registry logic contract address
-    function init(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry) 
+    function init(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry) 
         onlyOwner
-        external
+        public
     {
         <span class="missing-if-branch" title="else path not taken" >E</span>require(    
-            _userRegistry != address(0) &amp;&amp; _assetProducingRegistry != address(0) &amp;&amp; _certificateRegistry != address(0) &amp;&amp; _demandRegistry != address(0) &amp;&amp; _assetConsumingRegistry != address(0)
-            &amp;&amp; userRegistry == address(0) &amp;&amp; assetProducingRegistry == address(0) &amp;&amp; certificateRegistry == address(0) &amp;&amp; demandRegistry == address(0) &amp;&amp; assetConsumingRegistry == address(0)
+            _userRegistry != address(0) &amp;&amp; _assetRegistry != address(0) &amp;&amp; _certificateRegistry != address(0) &amp;&amp; _demandRegistry != address(0)
+            &amp;&amp; userRegistry == address(0) &amp;&amp; assetRegistry == address(0) &amp;&amp; certificateRegistry == address(0) &amp;&amp; demandRegistry == address(0)
         );
         userRegistry = _userRegistry;
-        assetProducingRegistry = _assetProducingRegistry;
+        assetRegistry = _assetRegistry;
         certificateRegistry = _certificateRegistry;
         demandRegistry = _demandRegistry;
-        assetConsumingRegistry = _assetConsumingRegistry;
         
     }
 &nbsp;
     /// @notice function to update one or more logic-contracts
     /// @param _userRegistry address of the new user-registry-logic-contract
-    /// @param _assetProducingRegistry address of the new asset-registry-logic-contract
+    /// @param _assetRegistry address of the new asset-registry-logic-contract
     /// @param _certificateRegistry address of the new certificate-registry-logic-contract
-    function update(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry)
+    function update(Updatable _userRegistry, Updatable _assetRegistry, Updatable _certificateRegistry, Updatable _demandRegistry)
         onlyOwner 
-        external
+        public
     {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (_userRegistry != address(0)) {
            userRegistry.update(_userRegistry);
             userRegistry = _userRegistry;
         }
 &nbsp;
-        if (_assetProducingRegistry != address(0)) {
-            assetProducingRegistry.update(_assetProducingRegistry);
-            assetProducingRegistry = _assetProducingRegistry;
+        if (_assetRegistry != address(0)) {
+            assetRegistry.update(_assetRegistry);
+            assetRegistry = _assetRegistry;
         }
 &nbsp;
         if (_certificateRegistry != address(0)) {
@@ -324,16 +310,12 @@ contract CoO is Owned {
             demandRegistry.update(_demandRegistry);
             demandRegistry = _demandRegistry;
         }
-&nbsp;
-        if(_assetConsumingRegistry != address(0)) {
-            assetConsumingRegistry.update(_assetConsumingRegistry);
-            assetConsumingRegistry = _assetConsumingRegistry;
-        }        
+        
 &nbsp;
     }
 &nbsp;
     /// @notice Fallback, will throw when ether is send to the contract
-<span class="fstat-no" title="function not covered" >    function () externa</span>l {
+<span class="fstat-no" title="function not covered" >    function () publi</span>c {
 <span class="cstat-no" title="statement not covered" >        revert()</span>;
     }
 &nbsp;
@@ -343,7 +325,7 @@ contract CoO is Owned {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Feb 22 2018 16:35:13 GMT+0100 (CET)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 16 2018 09:52:39 GMT+0100 (CET)
 </div>
 </div>
 <script src="../prettify.js"></script>

@@ -53,14 +53,14 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6040516020806101c78339810160405280805160008054600160a060020a03909216600160a060020a03199092169190911790555050610173806100546000396000f30060606040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610050578063a6f9dae11461007f575b600080fd5b341561005b57600080fd5b6100636100a0565b604051600160a060020a03909116815260200160405180910390f35b341561008a57600080fd5b61009e600160a060020a03600435166100af565b005b600054600160a060020a031681565b60005433600160a060020a039081169116146100ca57600080fd5b600160a060020a03811615156100df57600080fd5b6000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790557f95fd54179c11867fb083dd94347ea50f144dd4cfd7612b7bca169f162824af1681604051600160a060020a03909116815260200160405180910390a1505600a165627a7a72305820313eca6ea585446873f15a0224dce0b725e8ce2bd73764f4a939700d1addd5550029",
-  "deployedBytecode": "0x60606040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610050578063a6f9dae11461007f575b600080fd5b341561005b57600080fd5b6100636100a0565b604051600160a060020a03909116815260200160405180910390f35b341561008a57600080fd5b61009e600160a060020a03600435166100af565b005b600054600160a060020a031681565b60005433600160a060020a039081169116146100ca57600080fd5b600160a060020a03811615156100df57600080fd5b6000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790557f95fd54179c11867fb083dd94347ea50f144dd4cfd7612b7bca169f162824af1681604051600160a060020a03909116815260200160405180910390a1505600a165627a7a72305820313eca6ea585446873f15a0224dce0b725e8ce2bd73764f4a939700d1addd5550029",
+  "bytecode": "0x6060604052341561000f57600080fd5b6040516020806101c78339810160405280805160008054600160a060020a03909216600160a060020a03199092169190911790555050610173806100546000396000f30060606040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610050578063a6f9dae11461007f575b600080fd5b341561005b57600080fd5b6100636100a0565b604051600160a060020a03909116815260200160405180910390f35b341561008a57600080fd5b61009e600160a060020a03600435166100af565b005b600054600160a060020a031681565b60005433600160a060020a039081169116146100ca57600080fd5b600160a060020a03811615156100df57600080fd5b6000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790557f95fd54179c11867fb083dd94347ea50f144dd4cfd7612b7bca169f162824af1681604051600160a060020a03909116815260200160405180910390a1505600a165627a7a723058207bf28f1d10a31b6441f6618ccd0046ae38dbefbeccff207081e2baa4c78aa1380029",
+  "deployedBytecode": "0x60606040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610050578063a6f9dae11461007f575b600080fd5b341561005b57600080fd5b6100636100a0565b604051600160a060020a03909116815260200160405180910390f35b341561008a57600080fd5b61009e600160a060020a03600435166100af565b005b600054600160a060020a031681565b60005433600160a060020a039081169116146100ca57600080fd5b600160a060020a03811615156100df57600080fd5b6000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790557f95fd54179c11867fb083dd94347ea50f144dd4cfd7612b7bca169f162824af1681604051600160a060020a03909116815260200160405180910390a1505600a165627a7a723058207bf28f1d10a31b6441f6618ccd0046ae38dbefbeccff207081e2baa4c78aa1380029",
   "sourceMap": "910:773:15:-;;;1215:64;;;;;;;;;;;;;;;;;;;;;;1259:5;:18;;-1:-1:-1;;;;;1259:18:15;;;-1:-1:-1;;;;;;1259:18:15;;;;;;;;;-1:-1:-1;;910:773:15;;;;;;",
   "deployedSourceMap": "910:773:15:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;1115:20;;;;;;;;;;;;;;;-1:-1:-1;;;;;1115:20:15;;;;;;;;;;;;;;1512:169;;;;;;;;;;-1:-1:-1;;;;;1512:169:15;;;;;;;1115:20;;;-1:-1:-1;;;;;1115:20:15;;:::o;1512:169::-;1051:5;;1037:10;-1:-1:-1;;;;;1037:19:15;;;1051:5;;1037:19;1028:29;;;;;;-1:-1:-1;;;;;1588:23:15;;;;1580:32;;;;;;1622:5;:17;;-1:-1:-1;;1622:17:15;-1:-1:-1;;;;;1622:17:15;;;;;1649:25;1622:17;1649:25;;-1:-1:-1;;;;;1649:25:15;;;;;;;;;;;;;;1512:169;:::o",
   "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Simon Jentzsch, simon.jentzsch@slock.it\n\npragma solidity ^0.4.4;\n\ncontract Owned {\n    /// @dev `owner` is the only address that can call a function with this\n    modifier onlyOwner { require (msg.sender == owner); _; }\n\n    event LogChangeOwner(address _newOwner);\n\n    address public owner;\n\n    /// @notice The Constructor assigns the message sender to be `owner`\n    function Owned(address _initOwner) public { owner = _initOwner;}\n\n    /// @notice `owner` can step down and assign some other address to this role\n    /// @param _newOwner The address of the new owner. 0x0 can be used to create\n    ///  an unowned neutral vault, however that cannot be undone\n    function changeOwner (address _newOwner) public onlyOwner {\n        require(_newOwner != address(0));\n        owner = _newOwner;\n        LogChangeOwner(_newOwner);\n    }\n}",
-  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Owned.sol",
+  "sourcePath": "/Users/mkuechler/ewf/CoO/contracts/Owned.sol",
   "ast": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Owned.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/Owned.sol",
     "exportedSymbols": {
       "Owned": [
         8190
@@ -712,7 +712,7 @@
     "src": "885:798:15"
   },
   "legacyAST": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Owned.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/Owned.sol",
     "exportedSymbols": {
       "Owned": [
         8190
@@ -1369,5 +1369,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-05T14:15:23.071Z"
+  "updatedAt": "2018-04-09T15:13:13.265Z"
 }

@@ -70,7 +70,7 @@ contract('UserLogic', function (accounts) {
 
     assert.equal(web3.toAscii(user[0]).replace(/\0/g, ''), 'John', 'user[0] failed after')
     assert.equal(web3.toAscii(user[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
-    assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
+    assert.equal(web3.toAscii(user[2]).replace(/\0/g, ''), 'Organization3', 'user[2] failed after')
     assert.equal(web3.toAscii(user[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
     assert.equal(web3.toAscii(user[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(user[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
@@ -436,7 +436,7 @@ contract('UserLogic', function (accounts) {
 
     assert.equal(web3.toAscii(userBefore[0]).replace(/\0/g, ''), 'John', 'user[0] failed after')
     assert.equal(web3.toAscii(userBefore[1]).replace(/\0/g, ''), 'Doe', 'user[1] failed after')
-    assert.equal(web3.toAscii(userBefore[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
+    assert.equal(web3.toAscii(userBefore[2]).replace(/\0/g, ''), 'Organization3', 'user[2] failed after')
     assert.equal(web3.toAscii(userBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
     assert.equal(web3.toAscii(userBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
@@ -448,7 +448,7 @@ contract('UserLogic', function (accounts) {
 
     assert.equal(web3.toAscii(userAfter[0]).replace(/\0/g, ''), 'John2', 'user[0] failed after')
     assert.equal(web3.toAscii(userAfter[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
-    assert.equal(web3.toAscii(userAfter[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
+    assert.equal(web3.toAscii(userAfter[2]).replace(/\0/g, ''), 'Organization3', 'user[2] failed after')
     assert.equal(web3.toAscii(userAfter[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
     assert.equal(web3.toAscii(userAfter[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(userAfter[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')
@@ -476,7 +476,7 @@ contract('UserLogic', function (accounts) {
 
     assert.equal(web3.toAscii(orgBefore[0]).replace(/\0/g, ''), 'John2', 'user[0] failed after')
     assert.equal(web3.toAscii(orgBefore[1]).replace(/\0/g, ''), 'Doe2', 'user[1] failed after')
-    assert.equal(web3.toAscii(orgBefore[2]).replace(/\0/g, ''), 'testorganization', 'user[2] failed after')
+    assert.equal(web3.toAscii(orgBefore[2]).replace(/\0/g, ''), 'Organization3', 'user[2] failed after')
     assert.equal(web3.toAscii(orgBefore[3]).replace(/\0/g, ''), 'Main St', 'user[3] failed after')
     assert.equal(web3.toAscii(orgBefore[4]).replace(/\0/g, ''), '123', 'user[3] failed after')
     assert.equal(web3.toAscii(orgBefore[5]).replace(/\0/g, ''), '01234', 'user[5] failed after')

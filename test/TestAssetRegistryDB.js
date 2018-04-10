@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuechler@slock.it
 
 
 var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
@@ -68,7 +68,7 @@ contract('AssetProducingRegistryDB', function (accounts) {
 
 
   it("should not be able to set assetType as non-Owner", async function () {
-    let assetBefore = await assetDb.getAssetGeneral(0)
+    let assetBefore = await assetDb.getAssetProducingProperties(0)
 
     try {
       await assetDb.setAssetType(0, 1, { from: accounts[1] })
@@ -76,19 +76,19 @@ contract('AssetProducingRegistryDB', function (accounts) {
 
     }
 
-    let assetAfter = await assetDb.getAssetGeneral(0)
+    let assetAfter = await assetDb.getAssetProducingProperties(0)
     assert.deepEqual(assetBefore, assetAfter)
 
   })
 
   it("should be able to set assetType as Owner", async function () {
-    let assetBefore = await assetDb.getAssetGeneral(0)
+    let assetBefore = await assetDb.getAssetProducingProperties(0)
 
-    await assetDb.setAssetType(0, 1)
+    await assetDb.setAssetType(0, 2)
 
-    let assetAfter = await assetDb.getAssetGeneral(0)
-    // assert.equal(assetBefore[2].toNumber(), 0)
-    //  assert.equal(assetAfter[2].toNumber(), 1)
+    let assetAfter = await assetDb.getAssetProducingProperties(0)
+    assert.equal(assetBefore[0].toNumber(), 1)
+    assert.equal(assetAfter[0].toNumber(), 2)
 
   })
 
@@ -102,18 +102,18 @@ contract('AssetProducingRegistryDB', function (accounts) {
     }
 
     let assetAfter = await assetDb.getAssetGeneral(0)
-    // assert.deepEqual(assetBefore, assetAfter)
+    assert.deepEqual(assetBefore, assetAfter)
 
   })
 
   it("should be able to set assetType as Owner", async function () {
-    let assetBefore = await assetDb.getAssetGeneral(0)
+    let assetBefore = await assetDb.getAssetProducingProperties(0)
 
     await assetDb.setCapacityWh(0, 99)
 
-    let assetAfter = await assetDb.getAssetGeneral(0)
-    // assert.equal(assetBefore[5].toNumber(), 100000)
-    // assert.equal(assetAfter[5].toNumber(), 99)
+    let assetAfter = await assetDb.getAssetProducingProperties(0)
+    assert.equal(assetBefore[1].toNumber(), 1000)
+    assert.equal(assetAfter[1].toNumber(), 99)
 
   })
 
@@ -190,8 +190,8 @@ contract('AssetProducingRegistryDB', function (accounts) {
     await assetDb.setOperationalSince(0, 54321)
 
     let assetAfter = await assetDb.getAssetGeneral(0)
-    //  assert.equal(assetBefore[4].toNumber(), 1234567890)
-    //   assert.equal(assetAfter[4].toNumber(), 54321)
+    assert.equal(assetBefore[2].toNumber(), 1234567890)
+    assert.equal(assetAfter[2].toNumber(), 54321)
 
   })
 
@@ -231,9 +231,8 @@ contract('AssetProducingRegistryDB', function (accounts) {
 
   })
 
-
   it("should be able to set getAssetLength as Owner", async function () {
-    assert.equal(await assetDb.getAssetListLength(), 1)
+    assert.equal((await assetDb.getAssetListLength()).toNumber(), 1)
   })
 
   it("should not be able to set getCapacityWh as non-Owner", async function () {

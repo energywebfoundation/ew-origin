@@ -339,9 +339,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\n\npragma solidity ^0.4.17;\n\n/// @title this interface defines the functions that both consuming and producing assets are sharing\ninterface AssetDbInterface {\n   \n    function getActive(uint _assetId) external view returns(bool);\n    function getExistStatus(uint _assetId) external view returns (bool general, bool location, bool asset);\n    function createAsset() external returns (uint);\n    function initLocation(uint _assetId, bytes32 _country, bytes32 _region, bytes32 _zip, bytes32 _city, bytes32 _street, bytes32 _houseNumber, bytes32 _gpsLatitude, bytes32 _gpsLongitude) external;\n    function setActive(uint _assetId, bool _active) external;\n    function setAssetExistStatus(uint _assetId, bool _exist) external;\n    function setCapacityWh(uint _assetId, uint _capacityWh) external;\n    function setLastSmartMeterReadDate(uint _assetId, uint _timestamp) external;\n    function setLastSmartMeterReadFileHash(uint _assetId, bytes32 _lastSmartMeterReadFileHash) external;\n    function setSmartMeter(uint _assetId, address _smartMeter) external;\n    function getAssetListLength() external view returns (uint);\n    function getAssetLocation(uint _assetId) external view returns(bytes32 country, bytes32 region, bytes32 zip, bytes32 city, bytes32 street, bytes32 houseNumber, bytes32 gpsLatitude, bytes32 gpsLongitude);\n    function getLastSmartMeterRead(uint _assetId) external returns (uint);\n    function getLastSmartMeterReadDate(uint _assetId) external returns(uint);\n    function getLastSmartMeterReadFileHash(uint _assetId) external view returns(bytes32);\n    }",
-  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/AssetDbInterface.sol",
+  "sourcePath": "/Users/mkuechler/ewf/CoO/contracts/AssetDbInterface.sol",
   "ast": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/AssetDbInterface.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/AssetDbInterface.sol",
     "exportedSymbols": {
       "AssetDbInterface": [
         1189
@@ -1967,7 +1967,7 @@
     "src": "886:1568:2"
   },
   "legacyAST": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/AssetDbInterface.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/AssetDbInterface.sol",
     "exportedSymbols": {
       "AssetDbInterface": [
         1189
@@ -3598,5 +3598,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-05T14:15:23.045Z"
+  "updatedAt": "2018-04-09T15:13:13.234Z"
 }

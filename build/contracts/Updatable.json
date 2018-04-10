@@ -21,9 +21,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\n\npragma solidity ^0.4.17;\n\n/// @title this interface defines the required update-function that every updatable-contract has to implement\ninterface Updatable {\n   \n   function update(address _newLogic) external;\n\n   \n}",
-  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+  "sourcePath": "/Users/mkuechler/ewf/CoO/contracts/Updatable.sol",
   "ast": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/Updatable.sol",
     "exportedSymbols": {
       "Updatable": [
         8346
@@ -119,7 +119,7 @@
     "src": "886:216:18"
   },
   "legacyAST": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/Updatable.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/Updatable.sol",
     "exportedSymbols": {
       "Updatable": [
         8346
@@ -220,5 +220,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-05T14:15:23.077Z"
+  "updatedAt": "2018-04-09T15:13:13.266Z"
 }

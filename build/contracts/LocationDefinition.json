@@ -1,14 +1,14 @@
 {
   "contractName": "LocationDefinition",
   "abi": [],
-  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820b30de69906c4f32f5ba83297993981ad45cbb32c1dff3d4989ad569aac2da8380029",
-  "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820b30de69906c4f32f5ba83297993981ad45cbb32c1dff3d4989ad569aac2da8380029",
+  "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820c204645be2258e602a30270870fc4ba255ee2003b6155a1aaea4e9af03693a570029",
+  "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820c204645be2258e602a30270870fc4ba255ee2003b6155a1aaea4e9af03693a570029",
   "sourceMap": "963:287:13:-;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "963:287:13:-;;;;;",
   "source": "// Copyright 2018 Energy Web Foundation\n// This file is part of the Origin Application brought to you by the Energy Web Foundation,\n// a global non-profit organization focused on accelerating blockchain technology across the energy sector, \n// incorporated in Zug, Switzerland.\n//\n// The Origin Application is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n// This is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY and without an implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.\n//\n// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it\npragma solidity ^0.4.19;\n\n/// @title the locationDefinition for the contracts\ncontract LocationDefinition {\n\n    struct Location {\n        bytes32 country;\n        bytes32 region;\n        bytes32 city;\n        bytes32 street;\n        bytes32 zip;\n        bytes32 houseNumber;\n        bytes32 gpsLatitude;\n        bytes32 gpsLongitude;\n        bool exists;\n    }\n\n\n}",
-  "sourcePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+  "sourcePath": "/Users/mkuechler/ewf/CoO/contracts/LocationDefinition.sol",
   "ast": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/LocationDefinition.sol",
     "exportedSymbols": {
       "LocationDefinition": [
         8079
@@ -294,7 +294,7 @@
     "src": "885:365:13"
   },
   "legacyAST": {
-    "absolutePath": "/Users/mkuechler/ewf/ewf-pushrepo/certificate_of_origin/contracts/LocationDefinition.sol",
+    "absolutePath": "/Users/mkuechler/ewf/CoO/contracts/LocationDefinition.sol",
     "exportedSymbols": {
       "LocationDefinition": [
         8079
@@ -585,5 +585,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-05T14:15:23.071Z"
+  "updatedAt": "2018-04-09T15:13:13.264Z"
 }

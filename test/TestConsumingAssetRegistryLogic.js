@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 
 var ConsumingLogic = artifacts.require("AssetConsumingRegistryLogic");
 var ConsumingDB = artifacts.require("AssetConsumingRegistryDB");
@@ -61,7 +61,7 @@ contract('AssetConsumingLogic', function (accounts) {
         let event = tx.logs[0]
 
         assert.equal(event.event, "LogAssetCreated")
-        assert.equal(event.args.id.toNumber(), 0)
+        assert.equal(event.args._assetId.toNumber(), 0)
     })
 
     it("should have 1 conuming assets yet", async function () {
@@ -136,7 +136,7 @@ contract('AssetConsumingLogic', function (accounts) {
     })
 
     it("should return the right filehash", async function () {
-        let log = await consumingLogic.getAssetDataLog(0)
+        let log = await consumingLogic.getLastSmartMeterReadFileHash(0)
 
         assert.equal(web3.toAscii(log).replace(/\0/g, ''), 'newMeterRead')
 

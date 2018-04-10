@@ -51,20 +51,23 @@ module.exports = async function (callback) {
     while (true) {
 
         console.log('\n# ' + i)
-        const tx = await assetLogic.saveSmartMeterRead(assetID, 430 * i, false, '0x0000000000000000000000000000000000000000000000000000000000000001', 300 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+
+        const filehashgenerated = assetID + i
+
+        const tx = await assetLogic.saveSmartMeterRead(assetID, 430 * i, false, 'assetID' + i, 300 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
         console.log('- Saved new meter read for asset ' + assetID + ': ' + 430 * i + ' ' + 300 * i)
         await sleep(sleepTime);
 
-        const tx6 = await assetLogic.saveSmartMeterRead(assetID6, 10 * i, false, '0x0000000000000000000000000000000000000000000000000000000000000001', 300 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+        const tx6 = await assetLogic.saveSmartMeterRead(assetID6, 10 * i, false, 'assetID6' + i, 300 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
         console.log('- Saved new meter read for asset ' + assetID6 + ': ' + 10 * i + ' ' + 2 * i)
         await sleep(sleepTime);
 
-        const tx5 = await cosumingAssetLogic.saveSmartMeterRead(assetID5, 2 * i, '0x0000000000000000000000000000000000000000000000000000000000000001', false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+        const tx5 = await cosumingAssetLogic.saveSmartMeterRead(assetID5, 2 * i, 'assetID5' + i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
         console.log('- Saved new meter read for consuming asset ' + assetID5 + ': ' + 2 * i)
         await sleep(sleepTime);
 
         if (i < 3) {
-            const tx2 = await assetLogic.saveSmartMeterRead(assetID2, 10 * i, false, '0x0000000000000000000000000000000000000000000000000000000000000001', 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+            const tx2 = await assetLogic.saveSmartMeterRead(assetID2, 10 * i, false, 'assetID2' + i, 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
             console.log('- Saved new meter read for asset ' + assetID2 + ': ' + 10 * i + ' ' + 7 * i)
             await sleep(sleepTime);
         } else if (i == 3) {
@@ -77,7 +80,7 @@ module.exports = async function (callback) {
             await sleep(sleepTime);
         }
 
-        const tx3 = await assetLogic.saveSmartMeterRead(assetID3, 10 * i, false, '0x0000000000000000000000000000000000000000000000000000000000000001', 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+        const tx3 = await assetLogic.saveSmartMeterRead(assetID3, 10 * i, false, 'assetID3' + i, 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
         console.log('- Saved new meter read for asset ' + assetID3 + ': ' + 10 * i + ' ' + 7 * i)
         await sleep(sleepTime);
 
@@ -85,7 +88,7 @@ module.exports = async function (callback) {
             assetID4 = await createAsset(assetLogic, 'Saxony', "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243")
             await sleep(sleepTime);
         } else if (i > 2) {
-            const tx4 = await assetLogic.saveSmartMeterRead(assetID4, 10 * i, false, '0x0000000000000000000000000000000000000000000000000000000000000001', 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
+            const tx4 = await assetLogic.saveSmartMeterRead(assetID4, 10 * i, false, 'assetID4' + i, 7 * i, false, { from: "0x00f4af465162c05843ea38d203d37f7aad2e2c17", gasPrice: 0 })
             console.log('- Saved new meter read for asset ' + assetID4 + ': ' + 10 * i + ' ' + 7 * i)
             await sleep(sleepTime);
         }
@@ -95,15 +98,15 @@ module.exports = async function (callback) {
             await sleep(sleepTime);
 
         }
-        /*
-                await web3.currentProvider.send(
-                    {
-                        jsonrpc: '2.0',
-                        method: 'evm_increaseTime',
-                        params: [86400],
-                        id: 0
-                    })
-        */
+
+        await web3.currentProvider.send(
+            {
+                jsonrpc: '2.0',
+                method: 'evm_increaseTime',
+                params: [86400],
+                id: 0
+            })
+
         const time = new Date((await web3.eth.getBlock('latest').timestamp + 86400) * 1000)
         console.log('# New time: ' + time)
         i++;
@@ -140,6 +143,8 @@ async function createDemand(region, coupled, coupledAsset, endTimeOffset, timlyC
         consumingAsset,
         { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
+    console.log(id + 'generalAndCoupling')
+
     const txPd = await demandLogic.initPriceDriving(
         id,
         web3.fromAscii('Germany'),
@@ -151,6 +156,7 @@ async function createDemand(region, coupled, coupledAsset, endTimeOffset, timlyC
         web3.fromAscii('none'),
         { from: "0x3b07f15efb10f29b3fc222fb7e717e9af0cc4243", gasPrice: 0 }
     )
+    console.log(id + 'priceDriving')
 
     const txMp = await demandLogic.initMatchProperties(
         id,
