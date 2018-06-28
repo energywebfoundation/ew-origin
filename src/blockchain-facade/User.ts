@@ -2,7 +2,7 @@ import Web3Type from '../types/web3'
 import { BlockchainProperties } from './BlockchainProperties'
 import { AssetType } from './Asset'
 import { Compliance } from './Asset'
-
+import { sendRawTx } from './RawTransaction'
 
 export enum Roles {
     TopAdmin,
@@ -12,9 +12,23 @@ export enum Roles {
     AssetManager,
     Trader,
     Matcher
-} 
+}
 
-export class User {
+export interface UserProperties {
+    accountAddress: string
+    firstName: string
+    surname: string
+    organization: string
+    street: string
+    number: string
+    zip: string
+    city: string
+    country: string
+    state: string
+    roles: number
+}
+
+export class User implements UserProperties {
     accountAddress: string
 
     firstName: string
@@ -37,6 +51,75 @@ export class User {
         this.blockchainProperties = blockchainProperties
     }
 
+    static async CREATE_USER(userProperties: UserProperties, blockchainProperties: BlockchainProperties): Promise<User> {
+
+        const userData = [
+            userProperties.accountAddress,
+            blockchainProperties.web3.utils.fromUtf8(userProperties.firstName),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.surname),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.organization),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.number),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.state)
+        ]
+
+        const gasCreate = await blockchainProperties.userLogicInstance.methods
+            .setUser(...userData)
+            .estimateGas({ from: blockchainProperties.userAdmin })
+
+        console.log(gasCreate)
+        const txUserCreate = await blockchainProperties.userLogicInstance.methods
+            .setUser(...userData)
+            .send({ from: blockchainProperties.userAdmin, gas: Math.round(gasCreate * 3.1) })
+
+        const gasSetRole = await blockchainProperties.userLogicInstance.methods
+            .setRoles(userProperties.accountAddress, userProperties.roles)
+            .estimateGas({ from: blockchainProperties.userAdmin })
+        console.log(gasSetRole)
+
+        const txSetRole = await blockchainProperties.userLogicInstance.methods
+            .setRoles(userProperties.accountAddress, userProperties.roles)
+            .send({ from: blockchainProperties.userAdmin, gas: Math.round(gasCreate * 3.1) })
+        return (new User(userProperties.accountAddress, blockchainProperties)).syncWithBlockchain()
+    }
+
+    static async CREATE_USER_RAW(userProperties: UserProperties, blockchainProperties: BlockchainProperties): Promise<User> {
+
+        const userData = [
+            userProperties.accountAddress,
+            blockchainProperties.web3.utils.fromUtf8(userProperties.firstName),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.surname),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.organization),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.number),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(userProperties.state)
+        ]
+
+
+        const gasCreate = await blockchainProperties.userLogicInstance.methods
+            .setUser(...userData)
+            .estimateGas({ from: blockchainProperties.userAdmin })
+
+        const txUserCreate = await blockchainProperties.userLogicInstance.methods
+            .setUser(...userData)
+            .encodeABI()
+
+        const txSetRole = await blockchainProperties.userLogicInstance.methods
+            .setRoles(userProperties.accountAddress, userProperties.roles)
+            .encodeABI()
+
+        let txCount = await blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.userAdmin)
+        await sendRawTx(blockchainProperties.userAdmin, txCount, Math.round(gasCreate * 1.5), txUserCreate, blockchainProperties, blockchainProperties.userLogicInstance._address)
+        await sendRawTx(blockchainProperties.userAdmin, txCount + 1, 200000, txSetRole, blockchainProperties, blockchainProperties.userLogicInstance._address)
+        return (new User(userProperties.accountAddress, blockchainProperties)).syncWithBlockchain()
+
+    }
 
     async syncWithBlockchain(): Promise<User> {
         if (this.accountAddress) {

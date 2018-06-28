@@ -289,9 +289,9 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
             bytes32 _lastSmartMeterReadFileHash
             )
     {
-        Asset storage asset = assets[_assetId];
-        GeneralInformation storage gi = asset.general;
-        ConsumingProperties storage cp = asset.consumingProps;
+        Asset memory asset = assets[_assetId];
+        GeneralInformation memory gi = asset.general;
+        ConsumingProperties memory cp = asset.consumingProps;
 
         _smartMeter = gi.smartMeter;
         _owner = gi.owner;
@@ -333,7 +333,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
             bytes32 gpsLongitude
         )
     {
-        LocationDefinition.Location storage loc = assets[_assetId].location;
+        LocationDefinition.Location memory loc = assets[_assetId].location;
         return getAssetLocationInternal(loc);
     } 
 
@@ -374,7 +374,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
             uint _certificatesUsedForWh
         )
     {
-        ConsumingProperties storage c = assets[_assetId].consumingProps;
+        ConsumingProperties memory c = assets[_assetId].consumingProps;
         _capacityWh = c.capacityWh;
         _maxCapacitySet = c.maxCapacitySet;
         _certificatesUsedForWh = c.certificatesUsedForWh;
@@ -389,7 +389,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         view
         returns (bool general, bool location, bool asset)
     {
-        Asset storage a = assets[_assetId];
+        Asset memory a = assets[_assetId];
         return(a.general.exists, a.location.exists, a.exists);
     }
 

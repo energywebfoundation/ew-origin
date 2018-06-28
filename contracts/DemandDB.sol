@@ -371,8 +371,8 @@ contract DemandDB is Owned {
             uint consumingAssets
         ) 
     {
-        Demand storage d = allDemands[_demandId];
-        Coupling storage s = d.couple;
+        Demand memory d = allDemands[_demandId];
+        Coupling memory s = d.couple;
         return (s.producingAssets,s.consumingAssets);
     }
 
@@ -395,8 +395,8 @@ contract DemandDB is Owned {
             uint demandMask
         ) 
     {
-        Demand storage d = allDemands[_assetId];
-        GeneralInfo storage g = d.general;
+        Demand memory d = allDemands[_assetId];
+        GeneralInfo memory g = d.general;
         return (g.originator, g.buyer, g.startTime, g.endTime, g.timeframe, g.pricePerCertifiedKWh, g.currency, d.demandMask);
     }
 
@@ -415,8 +415,8 @@ contract DemandDB is Owned {
             address matcher
         ) 
     {
-        Demand storage d = allDemands[_assetId];
-        MatcherProperties storage m = d.matchProp;
+        Demand memory d = allDemands[_assetId];
+        MatcherProperties memory m = d.matchProp;
         return (m.targetWhPerperiod, m.currentWhPerperiod, m.certInCurrentperiod, m.productionLastSetInPeriod, m.matcher);
     }
 
@@ -439,8 +439,8 @@ contract DemandDB is Owned {
             bool isInitialized
         ) 
     {
-        Demand storage d = allDemands[_assetId];
-        PriceDriving storage p = d.priceDriving;
+        Demand memory d = allDemands[_assetId];
+        PriceDriving memory p = d.priceDriving;
         return (p.location.country, p.location.region, p.assettype, p.minCO2Offset, p.registryCompliance, p.otherGreenAttributes, p.typeOfPublicSupport, p.isInitialized);
     }
 

@@ -199,7 +199,7 @@ contract UserDB is Owned {
             bool active
         )
     {
-        User storage u = userList[_user];
+        User memory u = userList[_user];
         return (u.firstName, u.surname, u.organization, u.location.street, u.location.houseNumber, u.location.zip, u.location.city, u.location.country, u.location.region, u.roles, u.active);
     }  
 

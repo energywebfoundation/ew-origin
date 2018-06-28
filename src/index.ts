@@ -3,12 +3,13 @@ export { Asset, AssetProperties, AssetType, Compliance } from './blockchain-faca
 export { Certificate } from './blockchain-facade/Certificate'
 export { ProducingAsset, ProducingAssetProperties } from './blockchain-facade/ProducingAsset'
 export { ConsumingAsset, ConsumingProperties } from './blockchain-facade/ConsumingAsset'
-export { Demand, TimeFrame, Currency, DemandProperties } from './blockchain-facade/Demand'
+export { Demand, TimeFrame, Currency, DemandProperties, FullDemandProperties } from './blockchain-facade/Demand'
 export { BlockchainProperties } from './blockchain-facade/BlockchainProperties'
 export { ContractEventHandler } from './blockchain-facade/ContractEventHandler'
 export { EventHandlerManager } from './blockchain-facade/EventHandlerManager'
 export { User } from './blockchain-facade/User'
 export { General } from './blockchain-facade/General'
+export { deployContract, deployCoo, logicInit, initCoo } from "./Deployment"
 
 import * as DemandLogicTruffleBuild from '../contracts/DemandLogic.json';
 import * as AssetProducingLogicTruffleBuild from '../contracts/AssetProducingRegistryLogic.json'
@@ -17,6 +18,12 @@ import * as CertificateLogicTruffleBuild from '../contracts/CertificateLogic.jso
 import * as CoOTruffleBuild from '../contracts/CoO.json'
 import * as UserLogicTruffleBuild from '../contracts/UserLogic.json'
 
-export { DemandLogicTruffleBuild, AssetProducingLogicTruffleBuild, AssetConsumingLogicTruffleBuild, CertificateLogicTruffleBuild, CoOTruffleBuild, UserLogicTruffleBuild }
+import * as DemandDBTruffleBuild from '../contracts/DemandDB.json';
+import * as AssetProducingDBTruffleBuild from '../contracts/AssetProducingRegistryDB.json'
+import * as AssetConsumingDBTruffleBuild from '../contracts/AssetConsumingRegistryDB.json'
+import * as CertificateDBTruffleBuild from '../contracts/CertificateDB.json'
+import * as UserDBTruffleBuild from '../contracts/UserDB.json'
 
+export { DemandLogicTruffleBuild, AssetProducingLogicTruffleBuild, AssetConsumingLogicTruffleBuild, CertificateLogicTruffleBuild, CoOTruffleBuild, UserLogicTruffleBuild }
+export { DemandDBTruffleBuild, AssetProducingDBTruffleBuild, AssetConsumingDBTruffleBuild, CertificateDBTruffleBuild, UserDBTruffleBuild }
 

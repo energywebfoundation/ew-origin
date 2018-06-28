@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Asset_1 = require("./Asset");
+const RawTransaction_1 = require("./RawTransaction");
 var AssetType;
 (function (AssetType) {
     AssetType[AssetType["Wind"] = 0] = "Wind";
@@ -99,6 +100,16 @@ class ProducingAsset extends Asset_1.Asset {
             return (new ProducingAsset(assetId, blockchainProperties)).syncWithBlockchain();
         });
     }
+    saveSmartMeterRead(_newMeterRead, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, blockchainProperties) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const account = blockchainProperties.web3.eth.accounts.privateKeyToAccount("0x" + blockchainProperties.privateKey).address;
+            const txdata = this.blockchainProperties.producingAssetLogicInstance.methods.saveSmartMeterRead(this.id, _newMeterRead, false, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, false)
+                .encodeABI();
+            const txGas = yield this.blockchainProperties.producingAssetLogicInstance.methods.saveSmartMeterRead(this.id, _newMeterRead, false, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, false)
+                .estimateGas({ from: account });
+            const tx = yield RawTransaction_1.sendRawTx(account, yield blockchainProperties.web3.eth.getTransactionCount(account), Math.round(txGas * 1.1), txdata, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+        });
+    }
     syncWithBlockchain() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.id != null) {
@@ -164,6 +175,67 @@ class ProducingAsset extends Asset_1.Asset {
                 toBlock: 'latest',
                 topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0'), fileHash]
             }));
+        });
+    }
+    static CREATE_ASSET_RAW(assetProperties, blockchainProperties) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const gasCreate = yield blockchainProperties.producingAssetLogicInstance.methods
+                .createAsset()
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txCreate = yield blockchainProperties.producingAssetLogicInstance.methods
+                .createAsset()
+                .encodeABI();
+            const tx = yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, yield blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount), Math.round(gasCreate * 1.1), txCreate, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            const assetId = Number(tx.logs[0].topics[1]);
+            const initGeneralParams = [
+                assetId,
+                assetProperties.smartMeter,
+                assetProperties.owner,
+                assetProperties.operationalSince,
+                assetProperties.active
+            ];
+            const gasInitGeneral = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initGeneral(...initGeneralParams)
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txInitGeneral = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initGeneral(...initGeneralParams)
+                .encodeABI();
+            const initProducingPrams = [
+                assetId,
+                assetProperties.assetType,
+                assetProperties.capacityWh,
+                assetProperties.complianceRegistry,
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.otherGreenAttributes),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.typeOfPublicSupport)
+            ];
+            const gasInitProducing = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initProducingProperties(...initProducingPrams)
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txInitProducing = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initProducingProperties(...initProducingPrams)
+                .encodeABI();
+            const initLocationParams = [
+                assetId,
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+            ];
+            const gasInitLocation = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initLocation(...initLocationParams)
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txInitLocation = yield blockchainProperties.producingAssetLogicInstance.methods
+                .initLocation(...initLocationParams)
+                .encodeABI();
+            const txCount = yield blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount);
+            RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitProducing * 1.1), txInitProducing, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 2, Math.round(gasInitLocation * 1.1), txInitLocation, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            return (new ProducingAsset(assetId, blockchainProperties)).syncWithBlockchain();
         });
     }
 }

@@ -1,7 +1,9 @@
 import Web3Type from '../types/web3'
 import { BlockchainProperties } from './BlockchainProperties'
 import { Asset, AssetProperties } from './Asset'
-
+import { access } from 'fs';
+import { Transaction } from '../types/types';
+import { sendRawTx } from './RawTransaction'
 export interface ProducingAssetProperties extends AssetProperties {
     // GeneralInformation
 
@@ -60,7 +62,6 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
         return (await ProducingAsset.GET_ALL_ASSETS(blockchainProperties))
             .filter((asset: ProducingAsset) => asset.owner.toLowerCase() === owner.toLowerCase())
     }
-
 
     static async CREATE_ASSET(assetProperties: ProducingAssetProperties, blockchainProperties: BlockchainProperties): Promise<ProducingAsset> {
 
@@ -127,6 +128,23 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             .send({ from: blockchainProperties.assetAdminAccount, gas: Math.round(gasInitLocation * 1.1) })
 
         return (new ProducingAsset(assetId, blockchainProperties)).syncWithBlockchain()
+
+    }
+
+    async saveSmartMeterRead(_newMeterRead, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, blockchainProperties) {
+
+        const account = blockchainProperties.web3.eth.accounts.privateKeyToAccount("0x" + blockchainProperties.privateKey).address;
+
+        const txdata = this.blockchainProperties.producingAssetLogicInstance.methods.saveSmartMeterRead(this.id,
+            _newMeterRead, false, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, false)
+            .encodeABI()
+
+        const txGas = await this.blockchainProperties.producingAssetLogicInstance.methods.saveSmartMeterRead(this.id,
+            _newMeterRead, false, _lastSmartMeterReadFileHash, _CO2OffsetMeterRead, false)
+            .estimateGas({ from: account })
+
+        const tx = await sendRawTx(account, await blockchainProperties.web3.eth.getTransactionCount(
+            account), Math.round(txGas * 1.1), txdata, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address)
 
     }
 
@@ -208,4 +226,83 @@ export class ProducingAsset extends Asset implements ProducingAssetProperties {
             topics: [null, this.blockchainProperties.web3.utils.padLeft(this.blockchainProperties.web3.utils.fromDecimal(this.id), 64, '0'), fileHash]
         }))
     }
+
+    static async CREATE_ASSET_RAW(assetProperties: ProducingAssetProperties, blockchainProperties: BlockchainProperties): Promise<ProducingAsset> {
+
+        const gasCreate = await blockchainProperties.producingAssetLogicInstance.methods
+            .createAsset()
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+        const txCreate = await blockchainProperties.producingAssetLogicInstance.methods
+            .createAsset()
+            .encodeABI()
+
+        const tx = await sendRawTx(blockchainProperties.assetAdminAccount, await blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount), Math.round(gasCreate * 1.1), txCreate, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address)
+
+
+        const assetId = Number(tx.logs[0].topics[1])
+
+
+        const initGeneralParams = [
+            assetId,
+            assetProperties.smartMeter,
+            assetProperties.owner,
+            assetProperties.operationalSince,
+            assetProperties.active
+        ]
+
+        const gasInitGeneral = await blockchainProperties.producingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitGeneral = await blockchainProperties.producingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .encodeABI()
+
+        const initProducingPrams = [
+            assetId,
+            assetProperties.assetType,
+            assetProperties.capacityWh,
+            assetProperties.complianceRegistry,
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.otherGreenAttributes),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.typeOfPublicSupport)
+        ]
+        const gasInitProducing = await blockchainProperties.producingAssetLogicInstance.methods
+            .initProducingProperties(...initProducingPrams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitProducing = await blockchainProperties.producingAssetLogicInstance.methods
+            .initProducingProperties(...initProducingPrams)
+            .encodeABI()
+
+
+        const initLocationParams = [
+            assetId,
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+        ]
+
+        const gasInitLocation = await blockchainProperties.producingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+        const txInitLocation = await blockchainProperties.producingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .encodeABI()
+
+        const txCount = await blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount)
+        sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address)
+        sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitProducing * 1.1), txInitProducing, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address)
+        await sendRawTx(blockchainProperties.assetAdminAccount, txCount + 2, Math.round(gasInitLocation * 1.1), txInitLocation, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address)
+
+        return (new ProducingAsset(assetId, blockchainProperties)).syncWithBlockchain()
+
+    }
+
+
+
 }

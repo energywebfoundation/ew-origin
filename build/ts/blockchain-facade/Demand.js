@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BlockchainDataModelEntity_1 = require("./BlockchainDataModelEntity");
+const RawTransaction_1 = require("./RawTransaction");
 var TimeFrame;
 (function (TimeFrame) {
     TimeFrame[TimeFrame["yearly"] = 0] = "yearly";
@@ -46,7 +47,7 @@ class Demand extends BlockchainDataModelEntity_1.BlockchainDataModelEntity {
                 .estimateGas({ from: account });
             const txCreate = yield blockchainProperties.demandLogicInstance.methods
                 .createDemand(demandProperties.enabledProperties)
-                .send({ from: account, gas: Math.round(gasCreate * 1.1) });
+                .send({ from: account, gas: Math.round(gasCreate * 1.1), gasPrice: 0 });
             const demandId = parseInt(txCreate.events.createdEmptyDemand.returnValues._demandId, 10);
             const initGeneralParams = [
                 demandId,
@@ -65,7 +66,7 @@ class Demand extends BlockchainDataModelEntity_1.BlockchainDataModelEntity {
                 .estimateGas({ from: account });
             const txInitGeneral = yield blockchainProperties.demandLogicInstance.methods
                 .initGeneralAndCoupling(...initGeneralParams)
-                .send({ from: account, gas: Math.round(gasInitGeneral * 1.1) });
+                .send({ from: account, gas: Math.round(gasInitGeneral * 1.1), gasPrice: 0 });
             const initMatchPropertiesParams = [
                 demandId,
                 demandProperties.targetWhPerPeriod,
@@ -77,7 +78,7 @@ class Demand extends BlockchainDataModelEntity_1.BlockchainDataModelEntity {
                 .estimateGas({ from: account });
             const txInitMatcher = yield blockchainProperties.demandLogicInstance.methods
                 .initMatchProperties(...initMatchPropertiesParams)
-                .send({ from: account, gas: Math.round(gasInitMatcher * 1.1) });
+                .send({ from: account, gas: Math.round(gasInitMatcher * 1.1), gasPrice: 0 });
             const initPriceDrivingPropertiesParams = [
                 demandId,
                 blockchainProperties.web3.utils.fromUtf8(demandProperties.locationCountry),
@@ -93,7 +94,70 @@ class Demand extends BlockchainDataModelEntity_1.BlockchainDataModelEntity {
                 .estimateGas({ from: account });
             const txInitPriceDriving = yield blockchainProperties.demandLogicInstance.methods
                 .initPriceDriving(...initPriceDrivingPropertiesParams)
-                .send({ from: account, gas: Math.round(gasInitPriceDriving * 1.1) });
+                .send({ from: account, gas: Math.round(gasInitPriceDriving * 1.1), gasPrice: 0 });
+            return (new Demand(demandId, blockchainProperties)).syncWithBlockchain();
+        });
+    }
+    static CREATE_DEMAND_RAW(demandProperties, blockchainProperties, account) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const gasCreate = yield blockchainProperties.demandLogicInstance.methods
+                .createDemand(demandProperties.enabledProperties)
+                .estimateGas({ from: account });
+            const txCreate = yield blockchainProperties.demandLogicInstance.methods
+                .createDemand(demandProperties.enabledProperties)
+                .encodeABI();
+            let tx = yield RawTransaction_1.sendRawTx(account, yield blockchainProperties.web3.eth.getTransactionCount(account), Math.round(gasCreate * 1.1), txCreate, blockchainProperties, blockchainProperties.demandLogicInstance._address);
+            const demandId = Number(tx.logs[0].topics[1]);
+            const initGeneralParams = [
+                demandId,
+                demandProperties.originator,
+                demandProperties.buyer,
+                demandProperties.startTime,
+                demandProperties.endTime,
+                demandProperties.timeframe,
+                demandProperties.pricePerCertifiedWh,
+                demandProperties.currency,
+                demandProperties.productingAsset,
+                demandProperties.consumingAsset
+            ];
+            const gasInitGeneral = yield blockchainProperties.demandLogicInstance.methods
+                .initGeneralAndCoupling(...initGeneralParams)
+                .estimateGas({ from: account });
+            const txInitGeneral = yield blockchainProperties.demandLogicInstance.methods
+                .initGeneralAndCoupling(...initGeneralParams)
+                .encodeABI();
+            const initMatchPropertiesParams = [
+                demandId,
+                demandProperties.targetWhPerPeriod,
+                0,
+                demandProperties.matcher
+            ];
+            const gasInitMatcher = yield blockchainProperties.demandLogicInstance.methods
+                .initMatchProperties(...initMatchPropertiesParams)
+                .estimateGas({ from: account });
+            const txInitMatcher = yield blockchainProperties.demandLogicInstance.methods
+                .initMatchProperties(...initMatchPropertiesParams)
+                .encodeABI();
+            const initPriceDrivingPropertiesParams = [
+                demandId,
+                blockchainProperties.web3.utils.fromUtf8(demandProperties.locationCountry),
+                blockchainProperties.web3.utils.fromUtf8(demandProperties.locationRegion),
+                demandProperties.assettype,
+                demandProperties.minCO2Offset,
+                demandProperties.registryCompliance,
+                blockchainProperties.web3.utils.fromUtf8(demandProperties.otherGreenAttributes),
+                blockchainProperties.web3.utils.fromUtf8(demandProperties.typeOfPublicSupport)
+            ];
+            const gasInitPriceDriving = yield blockchainProperties.demandLogicInstance.methods
+                .initPriceDriving(...initPriceDrivingPropertiesParams)
+                .estimateGas({ from: account });
+            const txInitPriceDriving = yield blockchainProperties.demandLogicInstance.methods
+                .initPriceDriving(...initPriceDrivingPropertiesParams)
+                .encodeABI();
+            const txCount = yield blockchainProperties.web3.eth.getTransactionCount(account);
+            RawTransaction_1.sendRawTx(account, txCount, Math.round(gasInitMatcher * 1.1), txInitMatcher, blockchainProperties, blockchainProperties.demandLogicInstance._address);
+            RawTransaction_1.sendRawTx(account, txCount + 1, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.demandLogicInstance._address);
+            yield RawTransaction_1.sendRawTx(account, txCount + 2, Math.round(gasInitPriceDriving * 1.1), txInitPriceDriving, blockchainProperties, blockchainProperties.demandLogicInstance._address);
             return (new Demand(demandId, blockchainProperties)).syncWithBlockchain();
         });
     }

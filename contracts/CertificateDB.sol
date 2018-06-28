@@ -99,7 +99,7 @@ contract CertificateDB is Owned {
             uint _creationTime
         ) 
     {
-        Certificate storage c = certificateList[_certificateId];
+        Certificate memory c = certificateList[_certificateId];
 
         _assetId = c.assetId;
         _owner = c.owner;

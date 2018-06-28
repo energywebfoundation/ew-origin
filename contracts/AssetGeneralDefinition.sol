@@ -98,7 +98,7 @@ contract AssetGeneralDefinition is Owned {
     /// @notice function to get the informations about the location of a struct
     /// @param _loc storage location of the locationInformations
     /// @return country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude
-    function getAssetLocationInternal(LocationDefinition.Location storage _loc)
+    function getAssetLocationInternal(LocationDefinition.Location memory _loc)
         internal
         view
         returns(

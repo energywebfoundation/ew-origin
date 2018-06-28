@@ -9,13 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Asset_1 = require("./Asset");
-var AssetType;
-(function (AssetType) {
-    AssetType[AssetType["Wind"] = 0] = "Wind";
-    AssetType[AssetType["Solar"] = 1] = "Solar";
-    AssetType[AssetType["RunRiverHydro"] = 2] = "RunRiverHydro";
-    AssetType[AssetType["BiomassGas"] = 3] = "BiomassGas";
-})(AssetType = exports.AssetType || (exports.AssetType = {}));
+const RawTransaction_1 = require("./RawTransaction");
 var Compliance;
 (function (Compliance) {
     Compliance[Compliance["none"] = 0] = "none";
@@ -68,6 +62,54 @@ class ConsumingAsset extends Asset_1.Asset {
             return (new ConsumingAsset(assetId, blockchainProperties)).syncWithBlockchain();
         });
     }
+    static CREATE_ASSET_RAW(assetProperties, blockchainProperties) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const gasCreate = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .createAsset()
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txCreate = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .createAsset()
+                .encodeABI();
+            const tx = yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, yield blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount), Math.round(gasCreate * 1.1), txCreate, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address);
+            const assetId = Number(tx.logs[0].topics[1]);
+            const initGeneralParams = [
+                assetId,
+                assetProperties.smartMeter,
+                assetProperties.owner,
+                assetProperties.operationalSince,
+                assetProperties.capacityWh,
+                assetProperties.maxCapacitySet,
+                assetProperties.active
+            ];
+            const gasInitGeneral = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .initGeneral(...initGeneralParams)
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txInitGeneral = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .initGeneral(...initGeneralParams)
+                .encodeABI();
+            const initLocationParams = [
+                assetId,
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+                blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+            ];
+            const gasInitLocation = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .initLocation(...initLocationParams)
+                .estimateGas({ from: blockchainProperties.assetAdminAccount });
+            const txInitLocation = yield blockchainProperties.consumingAssetLogicInstance.methods
+                .initLocation(...initLocationParams)
+                .encodeABI();
+            const txCount = yield blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount);
+            RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address);
+            yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitLocation * 1.1), txInitLocation, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address);
+            return (new ConsumingAsset(assetId, blockchainProperties)).syncWithBlockchain();
+        });
+    }
     static GET_ASSET_LIST_LENGTH(blockchainProperties) {
         return __awaiter(this, void 0, void 0, function* () {
             return parseInt(yield blockchainProperties.consumingAssetLogicInstance.methods.getAssetListLength().call(), 10);
@@ -85,6 +127,16 @@ class ConsumingAsset extends Asset_1.Asset {
         return __awaiter(this, void 0, void 0, function* () {
             return (yield ConsumingAsset.GET_ALL_ASSETS(blockchainProperties))
                 .filter((asset) => asset.owner.toLowerCase() === owner.toLowerCase());
+        });
+    }
+    saveSmartMeter(_newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown, blockchainProperties) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const account = blockchainProperties.web3.eth.accounts.privateKeyToAccount("0x" + blockchainProperties.privateKey).address;
+            const txdata = this.blockchainProperties.consumingAssetLogicInstance.methods.saveSmartMeterRead(this.id, _newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown)
+                .encodeABI();
+            const txGas = yield this.blockchainProperties.consumingAssetLogicInstance.methods.saveSmartMeterRead(this.id, _newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown)
+                .estimateGas({ from: account });
+            const tx = yield RawTransaction_1.sendRawTx(account, yield blockchainProperties.web3.eth.getTransactionCount(account), Math.round(txGas * 1.1), txdata, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address);
         });
     }
     syncWithBlockchain() {

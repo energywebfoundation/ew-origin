@@ -37,12 +37,12 @@ contract RoleManagement {
     Tader:          0x0...1-----
     */
     enum Role{
-        TopAdmin,
+        TopAdmin, 
         UserAdmin,
         AssetAdmin,
-        AgreementAdmin,
-        AssetManager,
-        Trader,
+        AgreementAdmin, 
+        AssetManager,  
+        Trader, 
         Matcher
     } 
 

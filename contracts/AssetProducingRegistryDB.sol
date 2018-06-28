@@ -345,7 +345,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
             bytes32 _lastSmartMeterReadFileHash
         )
     {
-       Asset storage asset = assets[_assetId];
+       Asset memory asset = assets[_assetId];
          _smartMeter = asset.general.smartMeter;
         _owner = asset.general.owner;
         _operationalSince = asset.general.operationalSince;
@@ -383,7 +383,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
             bytes32 gpsLongitude
         )
     {
-        LocationDefinition.Location storage loc = assets[_assetId].location;
+        LocationDefinition.Location memory loc = assets[_assetId].location;
         return getAssetLocationInternal(loc);
 
     }
@@ -406,8 +406,8 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
             bytes32 typeOfPublicSupport
         )
     {
-        Asset storage a = assets[_assetId];
-        ProducingProperties storage pp = a.producingProps;
+        Asset memory a = assets[_assetId];
+        ProducingProperties memory pp = a.producingProps;
 
         assetType = pp.assetType;
         capacityWh = pp.capacityWh;
@@ -478,7 +478,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         view
         returns (bool general, bool location, bool asset)
     {
-        Asset storage a = assets[_assetId];
+        Asset memory a = assets[_assetId];
         return(a.general.exists && a.producingProps.capacityWh > 0, a.location.exists, a.exists);
     }
 

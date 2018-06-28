@@ -1,6 +1,7 @@
 import Web3Type from '../types/web3'
 import { BlockchainProperties } from './BlockchainProperties'
 import { Asset, AssetProperties } from './Asset'
+import { sendRawTx } from './RawTransaction'
 
 export interface ConsumingProperties extends AssetProperties {
     // GeneralInformation
@@ -11,12 +12,6 @@ export interface ConsumingProperties extends AssetProperties {
 
 }
 
-export enum AssetType {
-    Wind,
-    Solar,
-    RunRiverHydro,
-    BiomassGas
-}
 
 export enum Compliance {
     none,
@@ -84,6 +79,64 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
 
     }
 
+    static async CREATE_ASSET_RAW(assetProperties: ConsumingProperties, blockchainProperties: BlockchainProperties): Promise<ConsumingAsset> {
+
+        const gasCreate = await blockchainProperties.consumingAssetLogicInstance.methods
+            .createAsset()
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+        const txCreate = await blockchainProperties.consumingAssetLogicInstance.methods
+            .createAsset()
+            .encodeABI()
+
+        const tx = await sendRawTx(blockchainProperties.assetAdminAccount, await blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount), Math.round(gasCreate * 1.1), txCreate, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address)
+
+        const assetId = Number(tx.logs[0].topics[1])
+
+        const initGeneralParams = [
+            assetId,
+            assetProperties.smartMeter,
+            assetProperties.owner,
+            assetProperties.operationalSince,
+            assetProperties.capacityWh,
+            assetProperties.maxCapacitySet,
+            assetProperties.active
+        ]
+
+        const gasInitGeneral = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitGeneral = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initGeneral(...initGeneralParams)
+            .encodeABI()
+        const initLocationParams = [
+            assetId,
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.country),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.region),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.zip),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.city),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.street),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.houseNumber),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLatitude),
+            blockchainProperties.web3.utils.fromUtf8(assetProperties.gpsLongitude)
+        ]
+
+        const gasInitLocation = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .estimateGas({ from: blockchainProperties.assetAdminAccount })
+
+        const txInitLocation = await blockchainProperties.consumingAssetLogicInstance.methods
+            .initLocation(...initLocationParams)
+            .encodeABI()
+
+        const txCount = await blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount)
+        sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address)
+        await sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitLocation * 1.1), txInitLocation, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address)
+
+        return (new ConsumingAsset(assetId, blockchainProperties)).syncWithBlockchain()
+
+    }
+
     static async GET_ASSET_LIST_LENGTH(blockchainProperties: BlockchainProperties) {
 
         return parseInt(await blockchainProperties.consumingAssetLogicInstance.methods.getAssetListLength().call(), 10)
@@ -104,6 +157,21 @@ export class ConsumingAsset extends Asset implements ConsumingProperties {
             .filter((asset: ConsumingAsset) => asset.owner.toLowerCase() === owner.toLowerCase())
     }
 
+    async saveSmartMeter(_newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown, blockchainProperties): Promise<any> {
+        const account = blockchainProperties.web3.eth.accounts.privateKeyToAccount("0x" + blockchainProperties.privateKey).address;
+
+        const txdata = this.blockchainProperties.consumingAssetLogicInstance.methods.saveSmartMeterRead(this.id,
+            _newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown)
+            .encodeABI()
+
+        const txGas = await this.blockchainProperties.consumingAssetLogicInstance.methods.saveSmartMeterRead(this.id,
+            _newMeterRead, _lastSmartMeterReadFileHash, _smartMeterDown)
+            .estimateGas({ from: account })
+
+        const tx = await sendRawTx(account, await blockchainProperties.web3.eth.getTransactionCount(
+            account), Math.round(txGas * 1.1), txdata, blockchainProperties, blockchainProperties.consumingAssetLogicInstance._address)
+
+    }
 
     async syncWithBlockchain(): Promise<ConsumingAsset> {
         if (this.id != null) {
