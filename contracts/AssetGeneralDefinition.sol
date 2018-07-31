@@ -21,7 +21,7 @@ import "./LocationDefinition.sol";
 /// @title this contracts provides those functions that both consuming and producing assets share
 contract AssetGeneralDefinition is Owned {
 
-   struct GeneralInformation {
+    struct GeneralInformation {
         address smartMeter;
         address owner;
         uint operationalSince;
@@ -100,7 +100,7 @@ contract AssetGeneralDefinition is Owned {
     /// @return country, region, zip, city, street, houseNumber, gpsLatitude, gpsLongitude
     function getAssetLocationInternal(LocationDefinition.Location memory _loc)
         internal
-        view
+        pure
         returns(
             bytes32 country,
             bytes32 region,

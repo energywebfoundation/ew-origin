@@ -78,7 +78,7 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         external
         onlyRole(RoleManagement.Role.TopAdmin)
     {
-            if (!isRole(RoleManagement.Role.Matcher,_user)) {
+        if (!isRole(RoleManagement.Role.Matcher,_user)) {
             uint roles = db.getRolesRights(_user);
             db.setRoles(_user, roles + uint(2) ** uint(RoleManagement.Role.Matcher));
         }
@@ -182,7 +182,15 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     /// @param _city new city
     /// @param _country new country
     /// @param _state new state
-    function setOrganizationAddress(address _user, bytes32 _street, bytes32 _number, bytes32 _zip, bytes32 _city, bytes32 _country, bytes32 _state)
+    function setOrganizationAddress(
+        address _user, 
+        bytes32 _street, 
+        bytes32 _number, 
+        bytes32 _zip, 
+        bytes32 _city, 
+        bytes32 _country, 
+        bytes32 _state
+    )
         external
         onlyRole(RoleManagement.Role.UserAdmin) 
     {
@@ -218,7 +226,8 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         onlyRole(RoleManagement.Role.UserAdmin) 
         isInitialized
     {  
-        require(_user != address(0x0)
+        require(
+            _user != address(0x0)
             && _firstName != 0x0 && _surname != 0x0 
             && _organization != 0x0 
             && _city != 0x0 && _street != 0x0 && _number > 0 && _zip != 0x0 && _country != 0x0
@@ -231,7 +240,11 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     /// @param _user ethereum-account of that user
     /// @param _firstName new first name
     /// @param _surname new surname
-    function setUserName(address _user, bytes32 _firstName, bytes32 _surname) 
+    function setUserName(
+        address _user, 
+        bytes32 _firstName, 
+        bytes32 _surname
+    ) 
         external
         onlyRole(RoleManagement.Role.UserAdmin) 
     {   
@@ -241,17 +254,15 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     
     /// @notice function to set / edit the rights of an user / account, only executable for Top-Admins!
     /// @param _user user that rights will change
-    /// beware: if the only TopAdmin revokes its own rights noone will be able to get TopAdmin-rights back, making it impossible to set any new admin-rights
     /// @param _rights rights encoded as bitmask
     function setRoles(address _user, uint _rights) 
         external 
         onlyRole(RoleManagement.Role.UserAdmin)
         isInitialized
-       userExists(_user)
+        userExists(_user)
     {
         db.setRoles(_user, _rights);
     }
-
 
     /// @notice function to update the logic of a smart contract
     /// @param _newLogic contract-address of the new smart contract, replacing the currently active one
@@ -308,9 +319,4 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     {
         return db.getRolesRights(_user);
     }
-
-
-   
-    
-
 }

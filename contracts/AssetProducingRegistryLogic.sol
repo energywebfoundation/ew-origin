@@ -50,7 +50,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
     /// @param _cooContract The address of the coo contract
     function AssetProducingRegistryLogic(CoO _cooContract) 
         public
-        RoleManagement(_cooContract) 
+        AssetLogic(_cooContract)
     {
   
     }
@@ -74,7 +74,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
         onlyRole(RoleManagement.Role.AssetAdmin)
     {  
         AssetProducingRegistryDB((db)).initGeneral(_assetId, _smartMeter, _owner, _operationalSince,0, _active, 0x0);
-        checkForFullAsset(_assetId);
+        updateAssetExistStatus(_assetId);
     }
     
     /// @notice sets the producing properties of an asset
@@ -97,7 +97,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
         onlyRole(RoleManagement.Role.AssetAdmin)
     {
         AssetProducingRegistryDB((db)).initProducing(_assetId, uint(_assetType), 0, 0, _capacityWh, 0, uint(_registryCompliance), _otherGreenAttributes, _typeOfPublicSupport);
-        checkForFullAsset(_assetId);
+        updateAssetExistStatus(_assetId);
 
     }
 
@@ -107,6 +107,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
     /// @param _smartMeterDown flag if there was an error with the smart meter
     /// @param _lastSmartMeterReadFileHash Last meter read file hash
     /// @param _CO2OffsetServiceDown flag if there was an error with the co2-offset-server
+    /// @param _CO2OffsetMeterRead The new CO2-offset reading
     /// @dev The client needs to check if the blockgas limit could be reached and if so the log should be splitted 
     function saveSmartMeterRead(
         uint _assetId, 
@@ -121,14 +122,10 @@ contract AssetProducingRegistryLogic is AssetLogic {
         onlyAccount(AssetProducingRegistryDB(db).getSmartMeter(_assetId))
     {
         require(db.getActive(_assetId));
-
      
         LogNewMeterRead(_assetId, _lastSmartMeterReadFileHash, AssetProducingRegistryDB(db).getLastSmartMeterReadWh(_assetId), _newMeterRead, _smartMeterDown, AssetProducingRegistryDB(db).getCertificatesCreatedForWh(_assetId), AssetProducingRegistryDB(db).getlastSmartMeterCO2OffsetRead(_assetId), _CO2OffsetMeterRead, _CO2OffsetServiceDown);
         /// @dev need to check if new meter read is higher then the old one
-        AssetProducingRegistryDB(db).setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
-        AssetProducingRegistryDB(db).setLastSmartMeterReadWh(_assetId, _newMeterRead);
-        AssetProducingRegistryDB(db).setLastCO2OffsetReading(_assetId,_CO2OffsetMeterRead);
-        db.setLastSmartMeterReadDate(_assetId,now);
+        AssetProducingRegistryDB(address(db)).setSmartMeterReadData(_assetId, _newMeterRead, _CO2OffsetMeterRead, _lastSmartMeterReadFileHash, now);
     }
 
     /// @notice function to set the amount of CO2 used for certificates
@@ -142,7 +139,8 @@ contract AssetProducingRegistryLogic is AssetLogic {
         uint currentCO = AssetProducingRegistryDB(address(db)).getCo2UsedForCertificate(_assetId);
         uint fullCO = AssetProducingRegistryDB(address(db)).getlastSmartMeterCO2OffsetRead(_assetId);
         uint temp = currentCO + _co2;
-        
+        assert(temp >= currentCO);
+
         // we have to check that we can only account that amount of CO2 that was actually saved
         require(temp <= fullCO);
         AssetProducingRegistryDB(address(db)).setCO2UsedForCertificate(_assetId, temp);
@@ -169,7 +167,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
     /// @return the general information of an asset
     function getAssetGeneral(uint _assetId) 
         external
-        constant
+        view
         returns(
             address _smartMeter,
             address _owner,
@@ -177,7 +175,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
             uint _lastSmartMeterReadWh,
             bool _active,
             bytes32 _lastSmartMeterReadFileHash
-            )
+        )
     {
         return AssetProducingRegistryDB(address(db)).getAssetGeneral(_assetId);
     }
@@ -201,13 +199,14 @@ contract AssetProducingRegistryLogic is AssetLogic {
     {
         return AssetProducingRegistryDB(address(db)).getAssetProducingProperties(_assetId);
     }
+
     /// @notice Function to get the Asset-Type
     /// @dev The asset-type gets converted from unsigned integer to an Asset-type enum, can still be accessed as uint
     /// @param _assetId The identifier / index of an asset
     /// @return AssetType as enum 
     function getAssetType(uint _assetId)
         external
-        constant
+        view
         returns(
             AssetType 
         )
@@ -220,7 +219,7 @@ contract AssetProducingRegistryLogic is AssetLogic {
     /// @return the compliance
     function getCompliance(uint _assetId)
         external
-        constant 
+        view 
         returns (Compliance c)
     {
         var ( , , , , , ctemp, , ) = AssetProducingRegistryDB(address(db)).getAssetProducingProperties(_assetId);
@@ -249,12 +248,20 @@ contract AssetProducingRegistryLogic is AssetLogic {
        
         // we have to check for an underflow and if there are even availale Wh
         assert(lastUsedWh <= lastRead);
-        if(availableWh == 0) return 0;
+        if (availableWh == 0) return 0;
 
         uint coRead = AssetProducingRegistryDB(address(db)).getlastSmartMeterCO2OffsetRead(_assetId);
         uint coUsed = AssetProducingRegistryDB(address(db)).getCo2UsedForCertificate(_assetId);
         uint availableCo = coRead - coUsed;
         assert(coUsed <= coRead);
         return (availableCo*((_wh*1000000)/availableWh))/1000000;
+    }
+
+    /// @notice returns whether an asset exists
+    /// @param _assetId The identifier of an asset
+    /// @return bool if asset exists, false if some information are missing
+    function getExistStatus(uint _assetId) external view returns (bool) {
+        var (general, location, asset) = db.getExistStatus(_assetId);
+        return (general && location && asset);
     }
 }

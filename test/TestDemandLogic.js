@@ -501,6 +501,22 @@ contract('DemandLogic', function (accounts) {
 
     })
 
+
+    it("should return correct values when searching for a non existing demand", async function () {
+        let res = await demandLogic.searchForDemand(10, 0, 10)
+
+        assert.isFalse(res[0])
+        assert.equal(0, res[1].toNumber())
+        res = await demandLogic.searchForDemand(0, 10, 100)
+        assert.isFalse(res[0])
+        assert.equal(0, res[1].toNumber())
+
+        res = await demandLogic.searchForDemand(0, 0, 10)
+        assert.isTrue(res[0])
+        assert.equal(0, res[1].toNumber())
+
+    })
+
     it("should not be possible to remove active demands when their endtime is not yet finished", async function () {
 
         let activeDemandsBefore = (await demandLogic.getActiveDemandListLength()).toNumber()
@@ -515,20 +531,33 @@ contract('DemandLogic', function (accounts) {
         assert.equal(activeDemandsBefore, actvieDemandsAfter)
     })
 
-    it("should  be possible to remove active demands when their endtime is passed", async function () {
+    it("should be possible to remove active demands when their endtime is passed", async function () {
 
         await web3.currentProvider.send(
             {
                 jsonrpc: '2.0',
                 method: 'evm_increaseTime',
-                params: [1500],
+                params: [1500000],
                 id: 0
             })
 
 
+        await web3.currentProvider.send(
+            {
+                jsonrpc: '2.0',
+                method: 'evm_mine',
+                params: [],
+                id: 0
+            }
+        )
+
+
+        const block = await web3.eth.getBlock('latest')
+
         let activeDemandsBefore = (await demandLogic.getActiveDemandListLength()).toNumber()
 
-        await demandLogic.removeActiveDemand(0)
+        const blockNumber = block.number
+        await demandLogic.removeActiveDemand(0, 0, 2)
 
         let actvieDemandsAfter = (await demandLogic.getActiveDemandListLength()).toNumber()
 

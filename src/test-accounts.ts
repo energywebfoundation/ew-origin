@@ -1,3 +1,19 @@
+// Copyright 2018 Energy Web Foundation
+//
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+
 export const PrivateKeys = [
     '0x8da129f46c635726d6442fe7299cdb6bdf394d83a663bf8f98b638d9f1d1af96',
     '0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee73603fcead486',
@@ -10,5 +26,3 @@ export const PrivateKeys = [
     '0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98',
     '0xa05ddf7fe8302d117b516c0e401468a30c39a3e467ad3720381cf89500f0854b'
 ]
-
-

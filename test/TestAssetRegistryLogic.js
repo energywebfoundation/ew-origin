@@ -153,7 +153,6 @@ contract('AssetProducingRegistryLogic', function (accounts) {
       { from: accounts[9] }
     )
 
-    console.log(tx.logs[0])
 
     let event = tx.logs[0]
     assert.equal(event.event, "LogNewMeterRead")

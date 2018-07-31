@@ -28,13 +28,14 @@ contract RoleManagement {
 
     /// @notice all possible available roles
     /*
-    no role:        0x0...000000
-    TopAdmin:       0x0...-----1
-    UserAdmin:      0x0...----1-
-    AssetAdmin:     0x0...---1--
-    AgreementAdmin: 0x0...--1---
-    AssetManager:   0x0...-1----
-    Tader:          0x0...1-----
+    no role:        0x0...0000000
+    TopAdmin:       0x0...------1
+    UserAdmin:      0x0...-----1-
+    AssetAdmin:     0x0...----1--
+    AgreementAdmin: 0x0...---1---
+    AssetManager:   0x0...--1----
+    Trader:         0x0...-1-----
+    Matcher:        0x0...1-----
     */
     enum Role{
         TopAdmin, 
@@ -75,9 +76,10 @@ contract RoleManagement {
 
     /// @notice funciton for comparing the role and the needed rights of an user
     /// @param _role role of a user
+    /// @param _caller the address calling that function
     /// @return whether the user has the corresponding rights for the intended action
-    function isRole(RoleManagement.Role _role, address _caller) public constant returns (bool) { 
-
+    function isRole(RoleManagement.Role _role, address _caller) public view returns (bool) { 
+        require(uint(_role) <= 7);
         if (cooContract.owner() == _caller) {
             return true;
         }

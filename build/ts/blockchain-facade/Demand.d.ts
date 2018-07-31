@@ -3,7 +3,7 @@ import { AssetType } from './Asset';
 import { Compliance } from './Asset';
 import { BlockchainDataModelEntity } from './BlockchainDataModelEntity';
 export interface FullDemandProperties {
-    enabledProperties: boolean[];
+    enabledProperties?: boolean[];
     originator: string;
     buyer: string;
     startTime: number;

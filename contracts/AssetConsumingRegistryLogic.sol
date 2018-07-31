@@ -29,14 +29,20 @@ import "./AssetLogic.sol";
 /// @dev Needs a valid AssetProducingRegistryDB contract to function correctly 
 contract AssetConsumingRegistryLogic is AssetLogic {
 
-
-    event LogNewMeterRead(uint indexed _assetId, bytes32 indexed _fileHash, uint _oldMeterRead, uint _newMeterRead, uint _certificatesUsedForWh, bool _smartMeterDown);
+    event LogNewMeterRead(
+        uint indexed _assetId, 
+        bytes32 indexed _fileHash, 
+        uint _oldMeterRead, 
+        uint _newMeterRead, 
+        uint _certificatesUsedForWh,
+        bool _smartMeterDown
+    );
 
     /// @notice Constructor
     /// @param _cooContract The address of the coo contract
     function AssetConsumingRegistryLogic(CoO _cooContract) 
         public
-        RoleManagement(_cooContract) 
+        AssetLogic(_cooContract) 
     {
   
     }
@@ -47,6 +53,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     /// @param _owner The address of the asset owner
     /// @param _operationalSince The timestamp since the asset is operational
     /// @param _capacityWh The capacity in Wh of the asset
+    /// @param _maxCapacitySet flag whether there should be a max capacity
     /// @param _active true if active
     function initGeneral (
         uint _assetId,
@@ -54,7 +61,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         address _owner,
         uint _operationalSince,
         uint _capacityWh,
-        bool maxCapacitySet,
+        bool _maxCapacitySet,
         bool _active
     ) 
         external
@@ -62,14 +69,15 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         userHasRole(RoleManagement.Role.AssetManager, _owner)
         onlyRole(RoleManagement.Role.AssetAdmin)
     {  
-        AssetConsumingRegistryDB(db).initGeneral(_assetId, _smartMeter, _owner, _operationalSince, _capacityWh,maxCapacitySet, 0, 0, _active, 0x0);
-        checkForFullAsset(_assetId);
+        AssetConsumingRegistryDB(db).initGeneral(_assetId, _smartMeter, _owner, _operationalSince, _capacityWh, _maxCapacitySet, 0, 0, _active, 0x0);
+        updateAssetExistStatus(_assetId);
     }
     
     /// @notice Logs meter read
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @param _newMeterRead The current meter read of the asset
     /// @param _lastSmartMeterReadFileHash Last meter read file hash
+    /// @param _smartMeterDown flag whether the smartmeter was down
     /// @dev The client needs to check if the blockgas limit could be reached and if so the log should be splitted 
     function saveSmartMeterRead(uint _assetId, uint _newMeterRead, bytes32 _lastSmartMeterReadFileHash, bool _smartMeterDown) 
         external
@@ -80,26 +88,16 @@ contract AssetConsumingRegistryLogic is AssetLogic {
         uint oldMeterRead = AssetConsumingRegistryDB((db)).getLastSmartMeterReadWh(_assetId);
         LogNewMeterRead(_assetId, _lastSmartMeterReadFileHash, oldMeterRead, _newMeterRead, AssetConsumingRegistryDB((db)).getCertificatesUsedForWh(_assetId), _smartMeterDown);
         /// @dev need to check if new meter read is higher then the old one
-        db.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
-        AssetConsumingRegistryDB((db)).setLastSmartMeterReadWh(_assetId, _newMeterRead);
-        db.setLastSmartMeterReadDate(_assetId,now);
+        AssetConsumingRegistryDB((db)).setSmartMeterReadData(_assetId, _newMeterRead, _lastSmartMeterReadFileHash,  now);
 
     }
 
     /// @notice Gets an asset
     /// @param _assetId The id belonging to an entry in the asset registry
-    /// @param _smartMeter The address of the smart meter
-    /// @param _owner The address of the asset owner
-    /// @param _operationalSince The timestamp since the asset is operational
-    /// @param _capacityWh The capacity in Wh of the asset
-    /// @param _lastSmartMeterReadWh The smart meter read in Wh
-    /// @param _certificatesUsedForWh The amount of Wh used to issue certificates
-    /// @param _active true if active
-    /// @param _lastSmartMeterReadFileHash last meter read file hash
-    /// @return true if asset is active
+    /// @return general information of an asset
     function getAssetGeneral(uint _assetId) 
         external
-        constant
+        view
         returns (
             address _smartMeter,
             address _owner,
@@ -127,7 +125,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
             uint certificatesUsedForWh
         )
     {
-       (capacityWh, maxCapacitySet, certificatesUsedForWh) = AssetConsumingRegistryDB(address(db)).getConsumingProperies(_assetId);
+        (capacityWh, maxCapacitySet, certificatesUsedForWh) = AssetConsumingRegistryDB(address(db)).getConsumingProperies(_assetId);
     }
 
     /// @notice sets the consumption for a period (in Wh)

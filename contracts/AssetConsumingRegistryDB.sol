@@ -57,21 +57,20 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
 
     } 
 
-    /// @notice functin to create a new empty asset
+    /// @notice function to create a new empty asset
     /// @return returns the array-position and thus the index / identifier of this new asset
     function createAsset() 
         external
         onlyOwner
         returns (uint _assetId)
     {
+        _assetId = assets.length;
         assets.push(AssetConsumingRegistryDB.Asset({
             general: generalEmpty,
             consumingProps: consumingEmpty,
             location: locationEmpty,
             exists: false
         }));
-        _assetId = assets.length>0?assets.length-1:0;        
-
     }
 
     /// @notice Sets the general information for an asset
@@ -85,30 +84,29 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     /// @param _active true if active
     /// @param _lastSmartMeterReadFileHash The last meter read file hash
     function initGeneral (       
-            uint _assetId, 
-            address _smartMeter,
-            address _owner,
-            uint _operationalSince,
-            uint _capacityWh,
-            bool _maxCapacitySet,
-            uint _lastSmartMeterReadWh,
-            uint _certificatesUsedForWh,
-            bool _active,
-            bytes32 _lastSmartMeterReadFileHash
-        ) 
+        uint _assetId, 
+        address _smartMeter,
+        address _owner,
+        uint _operationalSince,
+        uint _capacityWh,
+        bool _maxCapacitySet,
+        uint _lastSmartMeterReadWh,
+        uint _certificatesUsedForWh,
+        bool _active,
+        bytes32 _lastSmartMeterReadFileHash
+    ) 
         onlyOwner
         external
     {
         Asset storage a = assets[_assetId];
 
-        GeneralInformation storage gi = a.general; 
+        GeneralInformation storage gi = a.general; // just want to doublecheck, gi is a pointer to the storage, right?
         ConsumingProperties storage cp = a.consumingProps;
         setGeneralInformationInternal(gi, _smartMeter, _owner, _operationalSince,_lastSmartMeterReadWh, _active, _lastSmartMeterReadFileHash);
    
         cp.certificatesUsedForWh = _certificatesUsedForWh;
         cp.capacityWh = _capacityWh;
         cp.maxCapacitySet = _maxCapacitySet;
-
     }
  
     /// @notice function to set all the location Informations for an asset
@@ -136,7 +134,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         external
     {
         LocationDefinition.Location storage loc = assets[_assetId].location;
-        initLocationInternal(loc,_country,_region,_zip,_city,_street,_houseNumber,_gpsLatitude,_gpsLongitude);
+        initLocationInternal(loc, _country, _region, _zip, _city, _street, _houseNumber, _gpsLatitude, _gpsLongitude);
     } 
  
     /// @notice Sets if an entry in the asset registry is active
@@ -156,8 +154,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         external
         onlyOwner
     {
-        Asset storage a = assets[_assetId];
-        a.exists = _exist;
+        assets[_assetId].exists = _exist;
     }
 
 
@@ -181,6 +178,9 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
         assets[_assetId].consumingProps.certificatesUsedForWh = _certificatesUsedForWh;
     }
 
+    /// @notice Sets a timestamp for the last meterreading
+    /// @param _assetId the id belonging to an entry in the asset registry
+    /// @param _timestamp new UNIX-timestamp
     function setLastSmartMeterReadDate(uint _assetId, uint _timestamp)
         onlyOwner
         external
@@ -227,6 +227,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     {
         assets[_assetId].location.region = _region;
     }
+
     
     /// @notice Sets the operational since field of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
@@ -257,11 +258,26 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     {
         assets[_assetId].general.smartMeter = _smartMeter;
     }
+
+    /// @notice Sets multiple information of a meterreading
+    /// @param _assetId The id belonging to an entry in the asset registry
+    /// @param _newMeterRead the new meterreading
+    /// @param _lastSmartMeterReadFileHash the filehash belonging to that reading
+    /// @param _timestamp the timestamp of that reading
+    function setSmartMeterReadData(uint _assetId, uint _newMeterRead, bytes32 _lastSmartMeterReadFileHash, uint _timestamp)
+        onlyOwner
+        external 
+    {
+        assets[_assetId].general.lastSmartMeterReadWh = _newMeterRead;
+        assets[_assetId].general.lastSmartMeterReadFileHash = _lastSmartMeterReadFileHash;
+        assets[_assetId].general.lastMeterReadReceived = _timestamp;
+
+    }
     
     /// @notice Gets if an entry in the asset registry is active
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return true if asset is active
-    function getActive(uint _assetId) 
+    function getActive(uint _assetId)
         onlyOwner
         external
         view
@@ -273,7 +289,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     /// @notice Gets the general information of an asset
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return general information of an asset
-    function getAssetGeneral(uint _assetId) 
+    function getAssetGeneral(uint _assetId)
         onlyOwner
         external
         view
@@ -289,7 +305,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
             bytes32 _lastSmartMeterReadFileHash
             )
     {
-        Asset memory asset = assets[_assetId];
+        Asset storage asset = assets[_assetId];
         GeneralInformation memory gi = asset.general;
         ConsumingProperties memory cp = asset.consumingProps;
 
@@ -307,9 +323,9 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     /// @notice function to get the amount of assets
     /// @return amount of assets
     function getAssetListLength()
+        onlyOwner
         external
         view
-        onlyOwner 
         returns (uint)
     {
         return assets.length;
@@ -457,7 +473,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     function getLocationRegion(uint _assetId)
         onlyOwner
         external
-        constant
+        view
         returns(bytes32)
     {
         return assets[_assetId].location.region;
@@ -465,10 +481,11 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
 
     /// @notice Gets the operational since field of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
+    /// @return date when the asset went into production 
     function getOperationalSince(uint _assetId)
         onlyOwner
         external
-        constant
+        view
         returns(uint)
     {
         return assets[_assetId].general.operationalSince;
@@ -480,7 +497,7 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     function getOwner(uint _assetId) 
         onlyOwner
         external
-        constant
+        view
         returns(address)
     {
         return assets[_assetId].general.owner;
@@ -492,10 +509,9 @@ contract AssetConsumingRegistryDB is Owned, AssetGeneralDefinition, AssetDbInter
     function getSmartMeter(uint _assetId)
         onlyOwner
         external
-        constant
+        view
         returns(address)
     {
         return assets[_assetId].general.smartMeter;
     }
-    
 }

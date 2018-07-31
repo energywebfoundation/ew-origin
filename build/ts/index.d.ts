@@ -1,5 +1,5 @@
 export { Asset, AssetProperties, AssetType, Compliance } from './blockchain-facade/Asset';
-export { Certificate } from './blockchain-facade/Certificate';
+export { Certificate, CertificateProperties } from './blockchain-facade/Certificate';
 export { ProducingAsset, ProducingAssetProperties } from './blockchain-facade/ProducingAsset';
 export { ConsumingAsset, ConsumingProperties } from './blockchain-facade/ConsumingAsset';
 export { Demand, TimeFrame, Currency, DemandProperties, FullDemandProperties } from './blockchain-facade/Demand';

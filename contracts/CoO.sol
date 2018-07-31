@@ -22,6 +22,12 @@ import "./Updatable.sol";
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract CoO is Owned {
 
+    event LogUserRegistryUpdated(address _old, address _new);
+    event LogAssetProducingRegistryUpdated(address _old, address _new);
+    event LogCertificateRegistryUpdated(address _old, address _new);
+    event LogDemandRegistryUpdated(address _old, address _new);
+    event LogAssetConsumingRegistryUpdated(address _old, address _new);
+
     Updatable public userRegistry;
     Updatable public assetProducingRegistry;
     Updatable public certificateRegistry;
@@ -38,9 +44,17 @@ contract CoO is Owned {
 
     /// @notice function to initialize the contracts, setting the needed contract-addresses
     /// @param _userRegistry user-registry logic contract address
-    /// @param _assetProducingRegistry asset-registry logic contract address
+    /// @param _assetProducingRegistry producing-asset-registry logic contract address
     /// @param _certificateRegistry certificate-registry logic contract address
-    function init(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry) 
+    /// @param _demandRegistry demand-registry logic contract address
+    /// @param _assetConsumingRegistry consuming-asset-registry logic contract address
+    function init(
+        Updatable _userRegistry, 
+        Updatable _assetProducingRegistry, 
+        Updatable _certificateRegistry, 
+        Updatable _demandRegistry, 
+        Updatable _assetConsumingRegistry
+    ) 
         onlyOwner
         external
     {
@@ -53,38 +67,51 @@ contract CoO is Owned {
         certificateRegistry = _certificateRegistry;
         demandRegistry = _demandRegistry;
         assetConsumingRegistry = _assetConsumingRegistry;
-        
     }
 
     /// @notice function to update one or more logic-contracts
     /// @param _userRegistry address of the new user-registry-logic-contract
     /// @param _assetProducingRegistry address of the new asset-registry-logic-contract
     /// @param _certificateRegistry address of the new certificate-registry-logic-contract
-    function update(Updatable _userRegistry, Updatable _assetProducingRegistry, Updatable _certificateRegistry, Updatable _demandRegistry, Updatable _assetConsumingRegistry)
+    /// @param _demandRegistry demand-registry logic contract address
+    /// @param _assetConsumingRegistry consuming-asset-registry logic contract address
+    function update(
+        Updatable _userRegistry,
+        Updatable _assetProducingRegistry, 
+        Updatable _certificateRegistry, 
+        Updatable _demandRegistry, 
+        Updatable _assetConsumingRegistry
+    )
         onlyOwner 
         external
     {
         if (_userRegistry != address(0)) {
-           userRegistry.update(_userRegistry);
+
+            LogUserRegistryUpdated(userRegistry, _userRegistry);
+            userRegistry.update(_userRegistry);
             userRegistry = _userRegistry;
         }
 
         if (_assetProducingRegistry != address(0)) {
+            LogAssetProducingRegistryUpdated(assetProducingRegistry, _assetProducingRegistry);
             assetProducingRegistry.update(_assetProducingRegistry);
             assetProducingRegistry = _assetProducingRegistry;
         }
 
         if (_certificateRegistry != address(0)) {
+            LogCertificateRegistryUpdated(certificateRegistry, _certificateRegistry);
             certificateRegistry.update(_certificateRegistry);
             certificateRegistry = _certificateRegistry;
         }
 
         if (_demandRegistry != address(0)) {
+            LogDemandRegistryUpdated(demandRegistry, _demandRegistry);
             demandRegistry.update(_demandRegistry);
             demandRegistry = _demandRegistry;
         }
 
         if(_assetConsumingRegistry != address(0)) {
+            LogAssetConsumingRegistryUpdated(assetConsumingRegistry, _assetConsumingRegistry);
             assetConsumingRegistry.update(_assetConsumingRegistry);
             assetConsumingRegistry = _assetConsumingRegistry;
         }        

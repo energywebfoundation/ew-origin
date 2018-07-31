@@ -36,7 +36,7 @@ contract UserDB is Owned {
     }
 
     /// @notice mapping for addresses to users
-    mapping(address => User) private userList;  
+    mapping(address => User) private userList;  // why private?
 
     modifier userExists(address _user) {
         require(userList[_user].firstName != 0x0 && userList[_user].surname != 0x0);
@@ -57,7 +57,15 @@ contract UserDB is Owned {
     /// @param _city new city
     /// @param _country new country
     /// @param _state new state
-    function setAddress(address _user, bytes32 _street, bytes32 _number, bytes32 _zip, bytes32 _city, bytes32 _country, bytes32 _state)
+    function setAddress(
+        address _user, 
+        bytes32 _street, 
+        bytes32 _number, 
+        bytes32 _zip, 
+        bytes32 _city, 
+        bytes32 _country, 
+        bytes32 _state
+    )
         external
         onlyOwner
         userExists(_user)
@@ -71,11 +79,19 @@ contract UserDB is Owned {
         u.location.region = _state;
         u.active = true;
     }
+
     /// @notice function to change the name of an existing organization, can only be used when the user already exists
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user ethereum-address of an user
     /// @param _organization new name of the organization
-    function setOrganization(address _user, bytes32 _organization) external onlyOwner userExists(_user){
+    function setOrganization(
+        address _user, 
+        bytes32 _organization
+    ) 
+        external 
+        onlyOwner 
+        userExists(_user)
+    {
         User storage u = userList[_user];
         u.organization = _organization;
         u.active = true;
@@ -135,7 +151,13 @@ contract UserDB is Owned {
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user ethereum-address of an user
     /// @param _active flag if the account should be active
-    function setUserActive(address _user, bool _active) external onlyOwner {
+    function setUserActive(
+        address _user, 
+        bool _active
+    ) 
+        external 
+        onlyOwner 
+    {
         User storage u = userList[_user];
         u.active = _active;
     }
@@ -145,7 +167,11 @@ contract UserDB is Owned {
     /// @param _user ethereum-address of an user
     /// @param _firstName new first name
     /// @param _surname new surname
-    function setUserName(address _user, bytes32 _firstName, bytes32 _surname) 
+    function setUserName(
+        address _user, 
+        bytes32 _firstName, 
+        bytes32 _surname
+    ) 
         external 
         onlyOwner 
         userExists(_user) 
@@ -160,7 +186,13 @@ contract UserDB is Owned {
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user address of the user
     /// @param _roles first name of the user
-    function setRoles(address _user, uint _roles) external onlyOwner {
+    function setRoles(
+        address _user, 
+        uint _roles
+    ) 
+        external 
+        onlyOwner 
+    {
         User storage u = userList[_user];
         u.roles = _roles;
     }
@@ -170,7 +202,6 @@ contract UserDB is Owned {
     /// @param _user ethereum-address of that user
     /// @return bool if the user exists
     function doesUserExist(address _user) 
-        onlyOwner
         external 
         view 
     returns (bool) {
@@ -182,7 +213,6 @@ contract UserDB is Owned {
     /// @param _user user 
     /// @return returns firstName, surname, organization, street, number, zip, city, country, state, roles and the active-flag
     function getFullUser(address _user)
-        onlyOwner
         external
         view 
         returns (
@@ -209,7 +239,6 @@ contract UserDB is Owned {
     /// @param _user user someone wants to know its rights
     /// @return bitmask with the rights of the user
     function getRolesRights(address _user) 
-        onlyOwner
         external 
         view 
         returns (uint) 

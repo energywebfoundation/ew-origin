@@ -68,13 +68,13 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         onlyOwner
         returns (uint _assetId)
     {
+        _assetId = assets.length;
         assets.push(AssetProducingRegistryDB.Asset({
             general: generalEmpty,
             producingProps: producingEmpty,
             location: locationEmpty,
             exists: false
-        }));
-       _assetId = assets.length>0?assets.length-1:0;        
+        }));   
     }
 
     /// @notice function to set the general information for an asset
@@ -86,27 +86,26 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @param _active active-flag
     /// @param _lastSmartMeterReadFileHash the last filehash of the smartmeter-readings
     function initGeneral(       
-            uint _assetId, 
-            address _smartMeter,
-            address _owner,
-            uint _operationalSince,
-            uint _lastSmartMeterReadWh,
-            bool _active,
-            bytes32 _lastSmartMeterReadFileHash
-        ) 
+        uint _assetId, 
+        address _smartMeter,
+        address _owner,
+        uint _operationalSince,
+        uint _lastSmartMeterReadWh,
+        bool _active,
+        bytes32 _lastSmartMeterReadFileHash
+    ) 
         onlyOwner
         external
     {
         Asset storage a = assets[_assetId];
-
         setGeneralInformationInternal(a.general, _smartMeter, _owner, _operationalSince,_lastSmartMeterReadWh, _active, _lastSmartMeterReadFileHash);
-
     }
 
     /// @notice function to set the producing-properties of an asset
     /// @param _assetId the ID belonging to the asset
     /// @param _assetType the assetType of the asset 
     /// @param _lastSmartMeterCO2OffsetRead the last CO2-Offsetreading of the smartmeter
+    /// @param _cO2UsedForCertificate the amount of CO2 used for certificates already
     /// @param _capacityWh the capacity of the asset in Wh
     /// @param _certificatesCreatedForWh the amount of Wh already certificated
     /// @param _registryCompliance the registry-compliance
@@ -122,9 +121,9 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
         uint _registryCompliance,
         bytes32 _otherGreenAttributes,
         bytes32 _typeOfPublicSupport
-        )
-    onlyOwner
-    external
+    )
+        onlyOwner
+        external
     {
         Asset storage a = assets[_assetId];
         a.producingProps.assetType = _assetType;
@@ -285,6 +284,28 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     {
         assets[_assetId].location.region = _region;
     }
+
+    /// @notice Sets multiple information of a meterreading
+    /// @param _assetId The id belonging to an entry in the asset registry
+    /// @param _newMeterRead the new meterreading of the smart meter
+    /// @param _CO2OffsetMeterRead the new CO2-offset reading
+    /// @param _lastSmartMeterReadFileHash the filehash belonging to that reading
+    /// @param _timestamp the timestamp of that reading
+    function setSmartMeterReadData(
+        uint _assetId, 
+        uint _newMeterRead, 
+        uint _CO2OffsetMeterRead, 
+        bytes32 _lastSmartMeterReadFileHash, 
+        uint _timestamp
+    )
+        onlyOwner
+        external 
+    {
+        assets[_assetId].producingProps.lastSmartMeterCO2OffsetRead = _CO2OffsetMeterRead;
+        assets[_assetId].general.lastSmartMeterReadWh = _newMeterRead;
+        assets[_assetId].general.lastSmartMeterReadFileHash = _lastSmartMeterReadFileHash;
+        assets[_assetId].general.lastMeterReadReceived = _timestamp;
+    }
     
     /// @notice Sets the operational since field of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
@@ -345,8 +366,8 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
             bytes32 _lastSmartMeterReadFileHash
         )
     {
-       Asset memory asset = assets[_assetId];
-         _smartMeter = asset.general.smartMeter;
+        Asset memory asset = assets[_assetId];
+        _smartMeter = asset.general.smartMeter;
         _owner = asset.general.owner;
         _operationalSince = asset.general.operationalSince;
         _lastSmartMeterReadWh = asset.general.lastSmartMeterReadWh;
@@ -357,9 +378,9 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @notice function to get the amount of assets
     /// @return amount of assets
     function getAssetListLength()
+        onlyOwner
         external
         view
-        onlyOwner 
         returns (uint)
     {
         return assets.length;
@@ -461,7 +482,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return the aount of already used CO2-offset
     function getCo2UsedForCertificate(uint _assetId) 
-        onlyOwner 
+        onlyOwner
         external 
         view 
         returns (uint) 
@@ -558,7 +579,7 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     function getLocationRegion(uint _assetId)
         onlyOwner
         external
-        constant
+        view
         returns(bytes32)
     {
         return assets[_assetId].location.region;
@@ -567,9 +588,9 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @notice Gets the operational since field of an entry in the asset registry
     /// @param _assetId The id belonging to an entry in the asset registry
     function getOperationalSince(uint _assetId)
-        onlyOwner
         external
-        constant
+        onlyOwner
+        view
         returns(uint)
     {
         return assets[_assetId].general.operationalSince;
@@ -579,9 +600,9 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return the owner address
     function getOwner(uint _assetId) 
-        onlyOwner
         external
-        constant
+        onlyOwner
+        view
         returns(address)
     {
         return assets[_assetId].general.owner;
@@ -591,9 +612,9 @@ contract AssetProducingRegistryDB is AssetGeneralDefinition, AssetDbInterface {
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @return the smart meter address
     function getSmartMeter(uint _assetId)
-        onlyOwner
         external
-        constant
+        onlyOwner
+        view
         returns(address)
     {
         return assets[_assetId].general.smartMeter;

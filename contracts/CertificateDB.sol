@@ -23,11 +23,6 @@ import "./Owned.sol";
 
 contract CertificateDB is Owned {
 
-    /// @notice The structure of a certificate
-    /// @param assetId The id of the certificate
-    /// @param owner The owner of a certificate
-    /// @oaram powerInW The amount of Watts the Certificate holds. Should never be changed after creation
-    /// @param retired Shows if the certificate is retired
     struct Certificate {
         uint assetId;
         address owner;
@@ -40,7 +35,7 @@ contract CertificateDB is Owned {
     }
 
     /// @notice An array containing all created certificates
-    Certificate[] private certificateList;
+    Certificate[] private certificateList; // why is it private read? People can still read it, just not use from within a smart contract (even there it is possible)
     
     /// @notice Constructor
     /// @param _certificateLogic The address of the corresbonding logic contract
@@ -53,10 +48,8 @@ contract CertificateDB is Owned {
     /// @param _powerInW The amount of Watts the Certificate holds
     /// @return The id of the certificate
     function createCertificate(uint _assetId, address _owner, uint _powerInW, bytes32 _dataLog, uint _coSaved, address _escrow) public onlyOwner returns (uint _certId) {
-         certificateList.push(Certificate(_assetId, _owner, _powerInW, false, _dataLog, _coSaved, _escrow, now));
-                _certId = certificateList.length>0?certificateList.length-1:0;        
-
-        
+        _certId = certificateList.length;
+        certificateList.push(Certificate(_assetId, _owner, _powerInW, false, _dataLog, _coSaved, _escrow, now)); 
     }
 
     /// @notice sets the escrow-address of a certificate
@@ -114,20 +107,35 @@ contract CertificateDB is Owned {
     /// @notice Returns the certificate owner
     /// @param _certificateId The array position in which the certificate is stored
     /// @return address owner
-    function getCertificateOwner(uint _certificateId) public onlyOwner view returns (address) {
+    function getCertificateOwner(uint _certificateId) 
+        public 
+        onlyOwner 
+        view 
+        returns (address)
+    {
         return certificateList[_certificateId].owner;
     }
 
     /// @notice Getter for state of retirement
     /// @param _certificateId The id of the requested certificate
     /// @return bool if it is retired
-    function isRetired(uint _certificateId) public onlyOwner view returns (bool) {
+    function isRetired(uint _certificateId) 
+        public 
+        onlyOwner 
+        view 
+        returns (bool) 
+    {
         return certificateList[_certificateId].retired;
     }
 
     /// @notice function to get the amount of all certificates
     /// @return the amount of all certificates
-    function getCertificateListLength() public onlyOwner view returns (uint) {
+    function getCertificateListLength() 
+        public 
+        onlyOwner 
+        view 
+        returns (uint) 
+    {
         return certificateList.length;
     }
 

@@ -18,7 +18,7 @@
 var AssetProducingRegistryLogic = artifacts.require("AssetProducingRegistryLogic");
 var AssetProducingRegistryDB = artifacts.require("AssetProducingRegistryDB");
 var CoO = artifacts.require("CoO")
-contract('AssetProducingRegistryDB', function (accounts) {
+contract('AssetRegistry', function (accounts) {
 
   var assetLog,
     assetDb,

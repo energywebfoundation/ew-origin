@@ -20,7 +20,6 @@ pragma solidity ^0.4.17;
 /// @notice This contract provides the logic that determines how the data is stored
 /// @dev Needs a valid CertificateDB contract to function correctly
 
-import "./Owned.sol";
 import "./RoleManagement.sol";
 import "./UserDB.sol";
 import "./CoO.sol";
@@ -76,6 +75,8 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @param _assetId The id of the Certificate
     /// @param _owner The owner of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
+    /// @param _escrow The escrow of a certificate
+    /// @return a certificate-id
     function createCertificateIntern(uint _assetId, address _owner, uint _powerInW, address _escrow) 
         internal 
         isInitialized  
@@ -94,20 +95,25 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @dev the msg.sender (a matcher) will become the escrow-of that certificate and is allowed to change the change the ownership
     /// @param _assetId The id of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
+    /// @return the certificate-id
     function createCertificateForAssetOwner(uint _assetId, uint _powerInW) 
         public 
         onlyRole(RoleManagement.Role.Matcher)
         isInitialized  
         returns (uint) 
     {
+        require( AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getExistStatus(_assetId));
         var ( , ownerAddress, , , , ) = AssetProducingRegistryLogic(address(cooContract.assetProducingRegistry())).getAssetGeneral(_assetId);
         return createCertificateIntern(_assetId, ownerAddress, _powerInW, msg.sender);
     }
 
     /// @notice Request a certificate to retire. Only Certificate owner can retire
     /// @param _id The id of the certificate
-    function retireCertificate(uint _id) public isInitialized() {
-       var (, owner, , retired,, ,,) = certificateDb.getCertificate(_id);
+    function retireCertificate(uint _id) 
+        public 
+        isInitialized
+    {
+        var (, owner, , retired,, ,,) = certificateDb.getCertificate(_id);
         require(owner == msg.sender);
         if (!retired) {
             certificateDb.setCertificateEscrow(_id, 0x0);
@@ -159,14 +165,19 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @notice Getter for a specific Certificate
     /// @param _certificateId The id of the requested certificate
     /// @return the certificate as single values
-    function getCertificate(uint _certificateId) public view returns (  uint _assetId, 
+    function getCertificate(uint _certificateId) 
+        public 
+        view 
+        returns (  
+            uint _assetId, 
             address _owner, 
             uint _powerInW, 
             bool _retired, 
             bytes32 _dataLog, 
             uint _coSaved, 
             address _escrow, 
-            uint _creationTime) 
+            uint _creationTime
+        ) 
     {
         return certificateDb.getCertificate(_certificateId);
     }
@@ -174,20 +185,32 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @notice Getter for a specific Certificate
     /// @param _certificateId The id of the requested certificate
     /// @return the certificate as single values
-    function getCertificateOwner(uint _certificateId) public view returns (address) {
+    function getCertificateOwner(uint _certificateId) 
+        public 
+        view 
+        returns (address) 
+    {
         return certificateDb.getCertificateOwner(_certificateId);
     }
 
     /// @notice Getter for a specific Certificate
     /// @param _certificateId The id of the requested certificate
     /// @return the certificate as single values
-    function isRetired(uint _certificateId) public view returns (bool) {
+    function isRetired(uint _certificateId) 
+        public 
+        view 
+        returns (bool) 
+    {
         return certificateDb.isRetired(_certificateId);
     }
 
     /// @notice Getter for the length of the list of certificates
     /// @return the length of the array
-    function getCertificateListLength() public view returns (uint) {
+    function getCertificateListLength() 
+        public 
+        view 
+        returns (uint) 
+    {
         return certificateDb.getCertificateListLength();
     }
 
@@ -195,8 +218,9 @@ contract CertificateLogic is RoleManagement, Updatable {
     /// @param _newLogic Address of the new logic contract
     function update(address _newLogic) 
         external
-        onlyAccount(address(cooContract))
+        onlyAccount(address(cooContract)) 
     {
+        require(address(cooContract) == msg.sender);
         certificateDb.changeOwner(_newLogic);
     }
 }

@@ -1,6 +1,21 @@
+// Copyright 2018 Energy Web Foundation
+//
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
 
 export { Asset, AssetProperties, AssetType, Compliance } from './blockchain-facade/Asset'
-export { Certificate } from './blockchain-facade/Certificate'
+export { Certificate, CertificateProperties } from './blockchain-facade/Certificate'
 export { ProducingAsset, ProducingAssetProperties } from './blockchain-facade/ProducingAsset'
 export { ConsumingAsset, ConsumingProperties } from './blockchain-facade/ConsumingAsset'
 export { Demand, TimeFrame, Currency, DemandProperties, FullDemandProperties } from './blockchain-facade/Demand'
@@ -26,4 +41,3 @@ import * as UserDBTruffleBuild from '../contracts/UserDB.json'
 
 export { DemandLogicTruffleBuild, AssetProducingLogicTruffleBuild, AssetConsumingLogicTruffleBuild, CertificateLogicTruffleBuild, CoOTruffleBuild, UserLogicTruffleBuild }
 export { DemandDBTruffleBuild, AssetProducingDBTruffleBuild, AssetConsumingDBTruffleBuild, CertificateDBTruffleBuild, UserDBTruffleBuild }
-

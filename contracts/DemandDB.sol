@@ -22,11 +22,6 @@ import "./LocationDefinition.sol";
 /// @notice This contract only provides getter and setter methods and only its logic-contract is able to call the functions
 contract DemandDB is Owned {
 
-    GeneralInfo generalEmpty;
-    Coupling coupleEmpty;
-    PriceDriving  priceDrivingEmpty;
-    MatcherProperties matchPropEmpty; 
-
     /// @notice struct for all the data belonging to the matcher
     struct MatcherProperties {
         // how many Wh per Period
@@ -79,14 +74,19 @@ contract DemandDB is Owned {
         uint demandMask;
     }
 
+    GeneralInfo generalEmpty;
+    Coupling coupleEmpty;
+    PriceDriving  priceDrivingEmpty;
+    MatcherProperties matchPropEmpty; 
+
     /// @notice list with all currenty active Demands
     uint[] private activeDemands; 
 
     /// @notice empty location struct for initializing, used to avoid compile warnings
-    LocationDefinition.Location private locationEmpty;
+    LocationDefinition.Location private locationEmpty;  
 
     /// @notice list with all created demands
-    Demand[] private allDemands;
+    Demand[] private allDemands;  
 
     /// @notice Constructor
     /// @param _owner The owner of the contract
@@ -133,7 +133,8 @@ contract DemandDB is Owned {
         onlyOwner
         returns (uint _demandId)
     {
-     allDemands.push(Demand({
+        _demandId = allDemands.length;
+        allDemands.push(Demand({
             general: generalEmpty,
             couple: coupleEmpty,
             priceDriving: priceDrivingEmpty,
@@ -142,8 +143,6 @@ contract DemandDB is Owned {
             created : 0,
             demandMask: _mask
         }));
-        _demandId = allDemands.length>0?allDemands.length-1:0;        
-
     }
 
     /// @notice function to create the general informations of a demand
@@ -152,6 +151,7 @@ contract DemandDB is Owned {
     /// @param _buyer buyer of a certiface, can be 0x0
     /// @param _startTime eariest accepted certificates
     /// @param _endTime latest accepted certificates
+    /// @param _timeframe the timeframe for the demand
     /// @param _pricePerCertifiedKWh price per certified kWh
     /// @param _currency currency the originator wants to be paid with
     function createGeneralDemand(
@@ -216,6 +216,7 @@ contract DemandDB is Owned {
     /// @param _region region the energy has to come from
     /// @param _zip zip code the energy has to come from
     /// @param _street the streetname
+    /// @param _houseNumber the housenumber
     /// @param _gpsLatitude latitude of coordinates
     /// @param _gpsLongitude longitude of coordinates
     /// @param _type fuel-tyoe 
@@ -256,18 +257,33 @@ contract DemandDB is Owned {
 
     /// @notice function to remove an entry in the activeDemands-array
     /// @param _demandId the index position of the full demand in the allDemands-array
+    /// @param _from the start-index to search for the demandID
+    /// @param _to the end-index to search for the demandID
     /// @dev due to the design the order of elements in the array will change when removing an element!
-    /// @dev we're using a for-loop here. Due to the fact that there could be multiple thousands an error could cause problems
-    function removeActiveDemand(uint _demandId)
+    function removeActiveDemand(uint _demandId, uint _from, uint _to)
         external
         onlyOwner
+        returns (bool _success)
     {
-        for (uint i = 0; i < activeDemands.length; i++) {
+        /*
+        uint end = _to < activeDemands.length ? _to : activeDemands.length-1;
+
+        for (uint i = _from; i < end; i++) { 
             if ( activeDemands[i] == _demandId) {
                 activeDemands[i] = activeDemands[activeDemands.length-1];
                 activeDemands.length--;
+                return _success;
             }
+        }*/
+        var (found, index) = searchForDemand(_demandId, _from, _to);
+
+        if(found){
+            activeDemands[index] = activeDemands[activeDemands.length-1];
+            activeDemands.length--;
         }
+
+        return found;
+
     }
 
     /// @notice function to set the creation-time of a demand
@@ -317,6 +333,7 @@ contract DemandDB is Owned {
     /// @param _demandId identifier
     /// @return true if demand exists
     function demandExists(uint _demandId)
+        onlyOwner
         external
         view 
         returns (bool)
@@ -329,8 +346,8 @@ contract DemandDB is Owned {
     /// @return hash-identifier of an active demand
     function getActiveDemandIdAt(uint _demandId)
         external 
-        view 
         onlyOwner
+        view 
         returns (uint)
     {
         return activeDemands[_demandId];
@@ -340,8 +357,8 @@ contract DemandDB is Owned {
     /// @return the length of the activeDemands-array
     function getActiveDemandListLength()
         external
-        view 
         onlyOwner
+        view 
         returns (uint)
     {
         return activeDemands.length;
@@ -351,8 +368,8 @@ contract DemandDB is Owned {
     /// @return the length of the allDemands-array
     function getAllDemandListLength() 
         external
-        view
         onlyOwner
+        view
         returns (uint)
     {
         return allDemands.length;
@@ -364,15 +381,14 @@ contract DemandDB is Owned {
     /// @return used timeFrame, arrays of producing and consuming assets
     function getDemandCoupling(uint _demandId)
         external
-        view 
         onlyOwner
+        view 
         returns(
             uint producingAssets,
             uint consumingAssets
         ) 
     {
-        Demand memory d = allDemands[_demandId];
-        Coupling memory s = d.couple;
+        Coupling memory s = allDemands[_demandId].couple;
         return (s.producingAssets,s.consumingAssets);
     }
 
@@ -382,8 +398,8 @@ contract DemandDB is Owned {
     /// @return the originator, buyer, startTime, endTime, currency, coupled
     function getDemandGeneral(uint _assetId)
         external
+        onlyOwner
         view 
-        onlyOwner 
         returns(
             address originator,
             address buyer,
@@ -395,8 +411,8 @@ contract DemandDB is Owned {
             uint demandMask
         ) 
     {
-        Demand memory d = allDemands[_assetId];
-        GeneralInfo memory g = d.general;
+        Demand memory d = allDemands[_assetId];	
+        GeneralInfo memory g = allDemands[_assetId].general;
         return (g.originator, g.buyer, g.startTime, g.endTime, g.timeframe, g.pricePerCertifiedKWh, g.currency, d.demandMask);
     }
 
@@ -405,8 +421,8 @@ contract DemandDB is Owned {
     /// @return amount of Wh per period, current Wh per period, certificates in current period, last period where a consumption was set and the matcher-address
     function getDemandMatcherProperties(uint _assetId)
         external
-        view 
         onlyOwner
+        view 
         returns (  
             uint wHAmountPerperiod,
             uint currentWhPerperiod,
@@ -415,8 +431,7 @@ contract DemandDB is Owned {
             address matcher
         ) 
     {
-        Demand memory d = allDemands[_assetId];
-        MatcherProperties memory m = d.matchProp;
+        MatcherProperties memory m = allDemands[_assetId].matchProp;
         return (m.targetWhPerperiod, m.currentWhPerperiod, m.certInCurrentperiod, m.productionLastSetInPeriod, m.matcher);
     }
 
@@ -426,8 +441,8 @@ contract DemandDB is Owned {
     /// @return location country and region, fueltype and CO2-offset
     function getDemandPriceDriving(uint _assetId)
         external
-        view 
         onlyOwner
+        view 
         returns (
             bytes32 locationCountry,
             bytes32 locationRegion,
@@ -439,8 +454,7 @@ contract DemandDB is Owned {
             bool isInitialized
         ) 
     {
-        Demand memory d = allDemands[_assetId];
-        PriceDriving memory p = d.priceDriving;
+        PriceDriving memory p = allDemands[_assetId].priceDriving;
         return (p.location.country, p.location.region, p.assettype, p.minCO2Offset, p.registryCompliance, p.otherGreenAttributes, p.typeOfPublicSupport, p.isInitialized);
     }
 
@@ -449,6 +463,7 @@ contract DemandDB is Owned {
     /// @return bitmask with the set properties of a demand
     function getDemandMask(uint _demandId)
         external
+        onlyOwner
         view 
         returns (uint)
     {
@@ -460,14 +475,15 @@ contract DemandDB is Owned {
     /// @return blocktime of the creation of the demand
     function getStartEpoche(uint _demandId)
         external
+        onlyOwner
         view 
-        onlyOwner 
         returns (uint)
     {    
         return allDemands[_demandId].created;
     }
 
     /// @notice Funtion to get the used timeframe for an demand
+    /// @param _assetId the asset-id
     /// @dev will return an unsigned integer, that has to be converted to a timeframe in the logic-contract
     /// @return the chosen timeframe for a demand
     function getTimeFrame(uint _assetId)
@@ -476,16 +492,42 @@ contract DemandDB is Owned {
         view
         returns (uint)
     {
-            return allDemands[_assetId].general.timeframe;
+        return allDemands[_assetId].general.timeframe;
     }
 
-      /// @notice sets the demand Location
+    /// @notice funciton to search for an active demands
+    /// @param _demandId the demandId to search for
+    /// @param _from starting index
+    /// @param _to ending index
+    /// @return returns true and index if an index was found, otherwise false and 0
+    function searchForDemand(
+        uint _demandId, 
+        uint _from, 
+        uint _to
+    ) 
+        onlyOwner
+        public 
+        view 
+        returns (bool, uint)
+    {
+        uint end = _to < activeDemands.length ? _to : activeDemands.length-1;
+
+        for(uint i = _from; i < end; i++){
+            if(activeDemands[i] == _demandId) {
+                return (true,i);
+            }
+        }
+    }
+
+    /// @notice sets the demand Location
     /// @dev internal helper function
     /// @param _assetId identifier
     /// @param _country country the engery has to come from
     /// @param _region region the energy has to come from
     /// @param _zip zip code the energy has to come from
+    /// @param _city the city the energy has to come from
     /// @param _street the streetname
+    /// @param _houseNumber the housenumber the energy has to come from
     /// @param _gpsLatitude latitude of coordinates
     /// @param _gpsLongitude longitude of coordinates
     function setDemandLocation(
@@ -501,15 +543,15 @@ contract DemandDB is Owned {
     )
         internal
     {
-            allDemands[_assetId].priceDriving.location.country = _country;
-            allDemands[_assetId].priceDriving.location.region = _region;
-            allDemands[_assetId].priceDriving.location.zip = _zip;
-            allDemands[_assetId].priceDriving.location.city = _city;
-            allDemands[_assetId].priceDriving.location.street = _street;
-            allDemands[_assetId].priceDriving.location.houseNumber = _houseNumber;
-            allDemands[_assetId].priceDriving.location.gpsLatitude = _gpsLatitude;
-            allDemands[_assetId].priceDriving.location.gpsLongitude = _gpsLongitude;
-            allDemands[_assetId].priceDriving.location.exists = true;
+        allDemands[_assetId].priceDriving.location.country = _country;
+        allDemands[_assetId].priceDriving.location.region = _region;
+        allDemands[_assetId].priceDriving.location.zip = _zip;
+        allDemands[_assetId].priceDriving.location.city = _city;
+        allDemands[_assetId].priceDriving.location.street = _street;
+        allDemands[_assetId].priceDriving.location.houseNumber = _houseNumber;
+        allDemands[_assetId].priceDriving.location.gpsLatitude = _gpsLatitude;
+        allDemands[_assetId].priceDriving.location.gpsLongitude = _gpsLongitude;
+        allDemands[_assetId].priceDriving.location.exists = true;
     }
 
 }

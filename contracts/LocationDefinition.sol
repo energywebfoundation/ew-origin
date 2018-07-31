@@ -19,7 +19,7 @@ pragma solidity ^0.4.19;
 contract LocationDefinition {
 
     struct Location {
-        bytes32 country;
+        bytes32 country; //why do you use bytes32 for everything instead of string, uint, ...?
         bytes32 region;
         bytes32 city;
         bytes32 street;

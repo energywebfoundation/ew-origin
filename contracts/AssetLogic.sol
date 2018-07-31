@@ -35,11 +35,21 @@ contract AssetLogic is RoleManagement, Updatable {
         _;
     }
 
+    /// @notice Constructor
+    /// @param _cooContract The address of the coo contract
+    function AssetLogic(CoO _cooContract) 
+        public
+        RoleManagement(_cooContract) 
+    {
+  
+    }
+
     /// @notice function to create a new empty asset, triggers event with created AssetID. To actually create an Asset the functions initGeneral and initLocations have to be called
     function createAsset() 
         external
         onlyRole(RoleManagement.Role.AssetAdmin)
-     {
+        isInitialized
+    {
         uint assetId = db.createAsset();
         LogAssetCreated(msg.sender, assetId);
     }
@@ -80,7 +90,7 @@ contract AssetLogic is RoleManagement, Updatable {
         onlyRole(RoleManagement.Role.AssetAdmin)
     {
         db.initLocation(_assetId, _country, _region, _zip, _city, _street, _houseNumber, _gpsLatitude, _gpsLongitude);
-         checkForFullAsset(_assetId);
+        updateAssetExistStatus(_assetId);
     }
 
     /// @notice Sets active to false
@@ -162,21 +172,6 @@ contract AssetLogic is RoleManagement, Updatable {
         return db.getAssetLocation(_assetId);
     }
 
-    /// @notice Checks if a fully Asset-struct is created, enabled if asset all information are there
-    /// @dev only for internal use
-    /// @param _assetId the The index / identifier of an asset
-    function checkForFullAsset(uint _assetId)
-        internal
-    {
-        var (general, location, asset) = db.getExistStatus(_assetId);
-
-        if(general && location && !asset) {
-            db.setAssetExistStatus(_assetId,true);
-            LogAssetFullyInitialized(_assetId);
-            db.setLastSmartMeterReadDate(_assetId, now);
-        }
-    }
-
     /// @notice Changes the address of a smart meter belonging to an asset
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @param _newSmartMeter The address of the new smart meter
@@ -186,6 +181,21 @@ contract AssetLogic is RoleManagement, Updatable {
         onlyRole(RoleManagement.Role.AssetAdmin)
     {
         db.setSmartMeter(_assetId, _newSmartMeter);
+    }
+
+    /// @notice Checks if a fully Asset-struct is created, enabled if asset all information are there
+    /// @dev only for internal use
+    /// @param _assetId the The index / identifier of an asset
+    function updateAssetExistStatus(uint _assetId) 
+        internal
+    {
+        var (general, location, asset) = db.getExistStatus(_assetId);
+
+        if(general && location && !asset) {
+            db.setAssetExistStatus(_assetId,true);
+            LogAssetFullyInitialized(_assetId);
+            db.setLastSmartMeterReadDate(_assetId, now);
+        }
     }
 
 }
