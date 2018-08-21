@@ -247,8 +247,8 @@ class ProducingAsset extends Asset_1.Asset {
                 .initLocation(...initLocationParams)
                 .encodeABI();
             const txCount = yield blockchainProperties.web3.eth.getTransactionCount(blockchainProperties.assetAdminAccount);
-            RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
-            RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitProducing * 1.1), txInitProducing, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount, Math.round(gasInitGeneral * 1.1), txInitGeneral, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
+            yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 1, Math.round(gasInitProducing * 1.1), txInitProducing, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
             yield RawTransaction_1.sendRawTx(blockchainProperties.assetAdminAccount, txCount + 2, Math.round(gasInitLocation * 1.1), txInitLocation, blockchainProperties, blockchainProperties.producingAssetLogicInstance._address);
             return (new ProducingAsset(assetId, blockchainProperties)).syncWithBlockchain();
         });
