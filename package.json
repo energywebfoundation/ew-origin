@@ -20,15 +20,11 @@
     "winmigrate": "rmdir build /s && truffle migrate",
     "windeploy": "rmdir build /s && truffle deploy",
     "wintest": "rmdir build /s && truffle compile && truffle test",
-    "remixd": "open https://remix.ethereum.org/#version=soljson-v0.4.17+commit.bdeb9e52.js; remixd -S $(pwd)/contracts",
     "start-ganache": "ganache-cli -m 'outer moment twin salmon shuffle amused twice evil rapid hotel burst stand' -g 0 -l 80000000 -e 1000000 -a 20"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/slockit/ewf-coo.git"
-  },
-  "Dependencies": {
-    "remixd": "^0.1.2"
   },
   "author": "",
   "license": "ISC",
