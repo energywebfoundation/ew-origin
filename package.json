@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-origin#readme",
   "dependencies": {
+    "ethereumjs-tx": "^1.3.4",
     "ganache-cli": "^6.1.0",
     "solidity-coverage": "^0.4.9",
     "truffle": "^4.1.0",
