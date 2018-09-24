@@ -52,7 +52,7 @@ contract('AssetConsumingLogic', function (accounts) {
         assert.equal(await consumingLogic.db(), ConsumingDB.address)
     })
 
-    it("should not have any conuming assets yet", async function () {
+    it("should not have any consuming assets yet", async function () {
         assert.equal(await consumingLogic.getAssetListLength(), 0)
     })
 
@@ -64,7 +64,7 @@ contract('AssetConsumingLogic', function (accounts) {
         assert.equal(event.args._assetId.toNumber(), 0)
     })
 
-    it("should have 1 conuming assets yet", async function () {
+    it("should have 1 consuming assets yet", async function () {
         assert.equal(await consumingLogic.getAssetListLength(), 1)
     })
 
