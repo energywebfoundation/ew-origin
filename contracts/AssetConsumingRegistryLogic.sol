@@ -115,7 +115,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
 
     /// @notice gets the consuming properties of an asset
     /// @param _assetId the assetId
-    /// @return retuns capacity, maxCapacitySet-falg and certificatesUsedForWh
+    /// @return returns capacity, maxCapacitySet-falg and certificatesUsedForWh
     function getConsumingProperies(uint _assetId) 
         external
         view
