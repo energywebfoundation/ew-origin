@@ -79,9 +79,9 @@ Example: Power Plant
 
 (You should recieve a `LogAssetFullyInitialized` event including your `assetId`)
 
-#### Logging Energy Consumption
+#### Logging Energy Production
 
-`saveSmartMeterRead()` to log consumed energy
+`saveSmartMeterRead()` to log produced energy
 
 ### Consuming Assets
 
