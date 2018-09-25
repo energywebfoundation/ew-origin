@@ -447,7 +447,7 @@ contract DemandLogic is RoleManagement, Updatable {
                 var(wHAmountPerperiod, , , , ) = db.getDemandMatcherProperties(_demandId);
                 if(certificatesUsedForWh + _wCreated > wHAmountPerperiod) { 
                     assert(wHAmountPerperiod >= certificatesUsedForWh);
-                    return (false, "too much energy for for consuming target");}
+                    return (false, "too much energy for consuming target");}
             }
             
         }
