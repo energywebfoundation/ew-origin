@@ -6,6 +6,11 @@ This repository is not designed for productive usage. Instead it should be used 
 
 ## Getting Started
 
+#### Contracts Overview
+
+[Open in Piet](https://piet.slock.it/?gitHubRepo=energywebfoundation%2Few-origin&subDir=contracts&contract=CertificateLogic&contractAddress=0xefE4F05B363d216354749a1E0BE423b2e50291bD&rpc=https%3A%2F%2Frpc.slock.it%2Ftobalaba)
+
+
 #### Install
 Install the **Certificate of Origin**: `npm install`.
 
