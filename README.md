@@ -1,6 +1,6 @@
-# Deprecation notice
+# <span style="color:red">Deprecation notice</span>
 
-This package is deprecated and is no longer maintained.
+<span style="color:red">This package is deprecated and is no longer maintained.</span>
 
 **For the latest version or Origin please visit [energywebfoundation/origin](https://github.com/energywebfoundation/origin).**
 
