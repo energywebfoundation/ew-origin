@@ -1,3 +1,9 @@
+# Deprecation notice
+
+This package is deprecated and is no longer maintained.
+
+**For the latest version or Origin please visit [energywebfoundation/origin](https://github.com/energywebfoundation/origin).**
+
 # Energy Web Foundation: Certificate of Origin (EWF CoO)
 
 ## Warning
