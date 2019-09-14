@@ -219,7 +219,7 @@ contract DemandLogic is RoleManagement, Updatable {
         var(prodAssetId, , powerInW, retired, , coSaved, escrow, creationTime) = CertificateLogic(address(cooContract.certificateRegistry())).getCertificate(_certificateId);
        
         // we accept only non retired certificates and they have to creates less then 1 year ago 
-        // we also make sure that only the scrow-address (aka a matcher) is able to call this function
+        // we also make sure that only the escrow-address (aka a matcher) is able to call this function
         require(!retired && (creationTime + 365 days) >= now && msg.sender == escrow);
         require(!hasDemandPropertySet(DemandProperties.consuming, db.getDemandMask(_demandId)));
        
