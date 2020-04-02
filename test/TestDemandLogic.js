@@ -1055,7 +1055,7 @@ contract('DemandLogic', function (accounts) {
         assert.isFalse(checkResult[3])
     })
 
-    it("should return true when matchingis right in later period ", async function () {
+    it("should return true when matching is right in later period ", async function () {
         let checkResult = await demandLogic.checkMatcher(4, 100, { from: accounts[8] })
         assert.equal(checkResult[0].toNumber(), 100)
         assert.equal(checkResult[1].toNumber(), 1)
