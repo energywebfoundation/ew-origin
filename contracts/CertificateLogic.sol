@@ -92,7 +92,7 @@ contract CertificateLogic is RoleManagement, Updatable {
     }
 
     /// @notice Creates a certificate of origin for the asset owner. Checks in the AssetRegistry if requested wh are available. 
-    /// @dev the msg.sender (a matcher) will become the escrow-of that certificate and is allowed to change the change the ownership
+    /// @dev the msg.sender (a matcher) will become the escrow-of that certificate and is allowed to change the ownership
     /// @param _assetId The id of the Certificate
     /// @param _powerInW The amount of Watts the Certificate holds
     /// @return the certificate-id
