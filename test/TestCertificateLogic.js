@@ -40,7 +40,7 @@ contract('CertificateLogic', function (accounts) {
     assert.equal(await certLog.certificateDb.call(), CertificateDB.address, "should be equal")
   })
 
-  it("should create a certificate and change the owner owner", async function () {
+  it("should create a certificate and change the owner", async function () {
     //called by asset admin
     //new owner needs to be a user
     await assetLogic.createAsset()
