@@ -131,7 +131,7 @@ contract AssetConsumingRegistryLogic is AssetLogic {
     /// @notice sets the consumption for a period (in Wh)
     /// @param _assetId assetId
     /// @param _consumed the amount of energy consumed
-    function setConsumptionForPeriode(uint _assetId, uint _consumed)
+    function setConsumptionForPeriod(uint _assetId, uint _consumed)
         external
         onlyAccount(address(cooContract.demandRegistry()))
     {
